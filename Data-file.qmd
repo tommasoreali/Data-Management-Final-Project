@@ -1,0 +1,26 @@
+---
+title: "Data-Project_phase2"
+author: "Sander Beerepoot and Tommaso Reali"
+format: html
+---
+
+```{r}
+library(here)
+library(ggplot2)
+library(dplyr)
+library(vroom)
+```
+
+```{r}
+here::i_am("Data-Management-Final-Project.Rproj")
+```
+Description of how to get the data sets
+
+To get the data of the CHR&R, download each file per year seperately
+
+Link: "https://www.countyhealthrankings.org/health-data/methodology-and-sources/data-documentation/national-data-documentation-2010-2023"
+
+To get the education data from the census bureau: Select all of the counties as variables, pick the variable you want to pick (in this case pick the education attainment) and download the data for all the years you are interested in
+
+Link: "https://data.census.gov/table?q=S1501:+Educational+Attainment&g=010XX00US$0500000_040XX00US01$0500000"
+
