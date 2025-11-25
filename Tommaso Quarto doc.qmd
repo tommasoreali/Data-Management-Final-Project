@@ -25,3 +25,40 @@ To get the education data from the census bureau: Select all of the counties as 
 
 Link: "https://data.census.gov/table?q=S1501:+Educational+Attainment&g=010XX00US$0500000_040XX00US01$0500000"
 
+```{r}
+health2020 <- vroom(here("Data", "2020health.csv"))
+health2021 <- vroom(here("Data", "2021health.csv"))
+health2022 <- vroom(here("Data", "2022health.csv"))
+health2023 <- vroom(here("Data", "2023health.csv"))
+education2020 <- vroom(here("Data", "ACSST5Y2020.S1501-Data.csv"))
+education2021 <- vroom(here("Data", "ACSST5Y2021.S1501-Data.csv"))
+education2022 <- vroom(here("Data", "ACSST5Y2022.S1501-Data.csv"))
+education2023 <- vroom(here("Data", "ACSST5Y2023.S1501-Data.csv"))
+```
+```{r}
+#replace wrong column names with first row:
+new_names <- as.character(health2020[1, ])
+colnames(health2020) <- new_names
+health2020 <- health2020[-1, ]
+
+```
+```{r}
+#remove duplicates and their first occurence because we don't care about them
+names(health2020) <- make.names(names(health2020), unique = TRUE)
+to_drop <- grep("\\.[0-9]+$", names(health2020), value = TRUE)
+health2020 <- health2020 %>% select(-all_of(to_drop))
+
+```
+
+
+
+
+```{r}
+#change character columns in numeric
+health2020 <- health2020 %>%
+  mutate(across(
+    -c(State, County),   # keep these as character
+    ~ suppressWarnings(as.numeric(.x))
+  ))
+```
+
