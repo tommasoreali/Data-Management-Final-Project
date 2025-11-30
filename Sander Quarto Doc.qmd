@@ -7,6 +7,8 @@ library(here)
 library(ggplot2)
 library(dplyr)
 library(vroom)
+library(tidyr)
+library(tidyverse)
 ```
 
 ##Dowload data
@@ -319,3 +321,15 @@ education2023 <- education2023 %>%
   ))
 
 ```
+
+What is left to do for the Data cleaning part: 
+- Separate the county and state in two separate columns
+- Look into the issue of spec() why does it read NULL instead of specifying the columns of the data
+- Remove the puerto rico variables, However this can be done just by matching the datasets
+
+
+Description of variables
+
+variables of Interest
+
+Adult smoking (in percentage of total of population of adults): 
