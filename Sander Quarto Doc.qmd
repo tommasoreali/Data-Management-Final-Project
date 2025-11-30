@@ -326,10 +326,36 @@ What is left to do for the Data cleaning part:
 - Separate the county and state in two separate columns
 - Look into the issue of spec() why does it read NULL instead of specifying the columns of the data
 - Remove the puerto rico variables, However this can be done just by matching the datasets
+- Append the datasets to eachother so that there is only one dataset for each datasets
 
 
-Description of variables
+## Description of variables
 
 variables of Interest
 
-Adult smoking (in percentage of total of population of adults): 
+- Adult smoking (in percentage of total of population of adults): This variable describes the reported rate of current daily smokers in the population of the county.
+
+- Excessive drinking: This variable describes the self-reported rate of excessive drinkers of the population in the county.
+
+- Teen births: This variable describes the amount of teen births per 1000 females aged 15-19.
+
+Main variable
+
+- Education level (percent of 25 > year olds that have a Bachelors degree minimum): This variable describes the percentage of 25 year olds or older that have a diploma for a Bachelors degree or higher. 
+
+Control variables to complete model: 
+
+- Unemployment: This variable describes the unemployment rate in the county. Unemployed people are 16 years old or older and are actively looking for work. 
+
+- Income Inequality: This variable describes the income inequality levels, computed as the ratio of income at the 80th percentile over the income at the 20th percentile. 
+
+- Severe Housing Problems: this variable describes the percentage of households that have at least one of the 4 reported housing problems: high housing costs, overcrowding, lack of kitchen or plumbing facilities.
+
+- Children in single parent households: This variable describes the percentage of children that grow up in single parent households currently.
+
+- Mental health providers: This variable describes the rate of mental health providers per 100000 inhabitants. 
+
+
+
+
+
