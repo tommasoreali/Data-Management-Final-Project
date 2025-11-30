@@ -1,0 +1,1776 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Sander Quarto Doc</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="Sander Quarto Doc_files/libs/clipboard/clipboard.min.js"></script>
+<script src="Sander Quarto Doc_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="Sander Quarto Doc_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="Sander Quarto Doc_files/libs/quarto-html/popper.min.js"></script>
+<script src="Sander Quarto Doc_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="Sander Quarto Doc_files/libs/quarto-html/anchor.min.js"></script>
+<link href="Sander Quarto Doc_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="Sander Quarto Doc_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="Sander Quarto Doc_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="Sander Quarto Doc_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="Sander Quarto Doc_files/libs/bootstrap/bootstrap-81267100e462c21b3d6c0d5bf76a3417.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Sander Quarto Doc</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>here() starts at /Users/sanderbeerepoot/DAUPHINE_PSL_M1/Data_Management_and_Programming/Data-Project-Final</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'dplyr'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:stats':
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(vroom)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ forcats   1.0.1     ✔ readr     2.1.5
+✔ lubridate 1.9.4     ✔ stringr   1.5.1
+✔ purrr     1.1.0     ✔ tibble    3.3.0</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ readr::col_character()   masks vroom::col_character()
+✖ readr::col_date()        masks vroom::col_date()
+✖ readr::col_datetime()    masks vroom::col_datetime()
+✖ readr::col_double()      masks vroom::col_double()
+✖ readr::col_factor()      masks vroom::col_factor()
+✖ readr::col_guess()       masks vroom::col_guess()
+✖ readr::col_integer()     masks vroom::col_integer()
+✖ readr::col_logical()     masks vroom::col_logical()
+✖ readr::col_number()      masks vroom::col_number()
+✖ readr::col_skip()        masks vroom::col_skip()
+✖ readr::col_time()        masks vroom::col_time()
+✖ readr::cols()            masks vroom::cols()
+✖ readr::date_names_lang() masks vroom::date_names_lang()
+✖ readr::default_locale()  masks vroom::default_locale()
+✖ dplyr::filter()          masks stats::filter()
+✖ readr::fwf_cols()        masks vroom::fwf_cols()
+✖ readr::fwf_empty()       masks vroom::fwf_empty()
+✖ readr::fwf_positions()   masks vroom::fwf_positions()
+✖ readr::fwf_widths()      masks vroom::fwf_widths()
+✖ dplyr::lag()             masks stats::lag()
+✖ readr::locale()          masks vroom::locale()
+✖ readr::output_column()   masks vroom::output_column()
+✖ readr::problems()        masks vroom::problems()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+</div>
+<p>##Dowload data</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>here<span class="sc">::</span><span class="fu">i_am</span>(<span class="st">"Data-Management-Final-Project.Rproj"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>here() starts at /Users/sanderbeerepoot/DAUPHINE_PSL_M1/Data_Management_and_Programming/Data-Project-Final</code></pre>
+</div>
+</div>
+<p>Description of how to get the data sets</p>
+<p>To get the data of the CHR&amp;R, download each file per year seperately</p>
+<p>Link: “https://www.countyhealthrankings.org/health-data/methodology-and-sources/data-documentation/national-data-documentation-2010-2023”</p>
+<p>To get the education data from the census bureau: Select all of the counties as variables, pick the variable you want to pick (in this case pick the education attainment) and download the data for all the years you are interested in</p>
+<p>Link: “https://data.census.gov/table?q=S1501:+Educational+Attainment&amp;g=010XX00US$0500000_040XX00US01$0500000”</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>health2020 <span class="ot">&lt;-</span> <span class="fu">vroom</span>(<span class="fu">here</span>(<span class="st">"Data"</span>, <span class="st">"2020health.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>New names:
+Rows: 3194 Columns: 241
+── Column specification
+──────────────────────────────────────────────────────── Delimiter: ";" chr
+(240): ...1, ...2, ...3, Premature death, ...5, ...6, ...7, ...8, ...9, ... lgl
+(1): ...241
+ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+Specify the column types or set `show_col_types = FALSE` to quiet this message.
+• `` -&gt; `...1`
+• `` -&gt; `...2`
+• `` -&gt; `...3`
+• `` -&gt; `...5`
+• `` -&gt; `...6`
+• `` -&gt; `...7`
+• `` -&gt; `...8`
+• `` -&gt; `...9`
+• `` -&gt; `...10`
+• `` -&gt; `...11`
+• `` -&gt; `...12`
+• `` -&gt; `...13`
+• `` -&gt; `...14`
+• `` -&gt; `...15`
+• `` -&gt; `...16`
+• `` -&gt; `...17`
+• `` -&gt; `...18`
+• `` -&gt; `...19`
+• `` -&gt; `...20`
+• `` -&gt; `...21`
+• `` -&gt; `...22`
+• `` -&gt; `...23`
+• `` -&gt; `...25`
+• `` -&gt; `...26`
+• `` -&gt; `...27`
+• `` -&gt; `...29`
+• `` -&gt; `...30`
+• `` -&gt; `...31`
+• `` -&gt; `...33`
+• `` -&gt; `...34`
+• `` -&gt; `...35`
+• `` -&gt; `...37`
+• `` -&gt; `...38`
+• `` -&gt; `...39`
+• `` -&gt; `...40`
+• `` -&gt; `...41`
+• `` -&gt; `...42`
+• `` -&gt; `...43`
+• `` -&gt; `...44`
+• `` -&gt; `...45`
+• `` -&gt; `...46`
+• `` -&gt; `...47`
+• `` -&gt; `...48`
+• `` -&gt; `...49`
+• `` -&gt; `...50`
+• `` -&gt; `...51`
+• `` -&gt; `...52`
+• `` -&gt; `...53`
+• `` -&gt; `...54`
+• `` -&gt; `...55`
+• `` -&gt; `...57`
+• `` -&gt; `...58`
+• `` -&gt; `...59`
+• `` -&gt; `...61`
+• `` -&gt; `...62`
+• `` -&gt; `...63`
+• `` -&gt; `...65`
+• `` -&gt; `...67`
+• `` -&gt; `...68`
+• `` -&gt; `...69`
+• `` -&gt; `...71`
+• `` -&gt; `...73`
+• `` -&gt; `...74`
+• `` -&gt; `...75`
+• `` -&gt; `...77`
+• `` -&gt; `...78`
+• `` -&gt; `...79`
+• `` -&gt; `...80`
+• `` -&gt; `...81`
+• `` -&gt; `...83`
+• `` -&gt; `...84`
+• `` -&gt; `...86`
+• `` -&gt; `...87`
+• `` -&gt; `...88`
+• `` -&gt; `...89`
+• `` -&gt; `...90`
+• `` -&gt; `...91`
+• `` -&gt; `...92`
+• `` -&gt; `...93`
+• `` -&gt; `...94`
+• `` -&gt; `...95`
+• `` -&gt; `...96`
+• `` -&gt; `...97`
+• `` -&gt; `...98`
+• `` -&gt; `...99`
+• `` -&gt; `...100`
+• `` -&gt; `...101`
+• `` -&gt; `...102`
+• `` -&gt; `...103`
+• `` -&gt; `...105`
+• `` -&gt; `...106`
+• `` -&gt; `...107`
+• `` -&gt; `...108`
+• `` -&gt; `...110`
+• `` -&gt; `...111`
+• `` -&gt; `...112`
+• `` -&gt; `...114`
+• `` -&gt; `...115`
+• `` -&gt; `...116`
+• `` -&gt; `...118`
+• `` -&gt; `...119`
+• `` -&gt; `...120`
+• `` -&gt; `...122`
+• `` -&gt; `...123`
+• `` -&gt; `...124`
+• `` -&gt; `...125`
+• `` -&gt; `...126`
+• `` -&gt; `...127`
+• `` -&gt; `...129`
+• `` -&gt; `...130`
+• `` -&gt; `...131`
+• `` -&gt; `...132`
+• `` -&gt; `...133`
+• `` -&gt; `...134`
+• `` -&gt; `...136`
+• `` -&gt; `...137`
+• `` -&gt; `...138`
+• `` -&gt; `...139`
+• `` -&gt; `...140`
+• `` -&gt; `...141`
+• `` -&gt; `...143`
+• `` -&gt; `...144`
+• `` -&gt; `...146`
+• `` -&gt; `...147`
+• `` -&gt; `...148`
+• `` -&gt; `...149`
+• `` -&gt; `...150`
+• `` -&gt; `...152`
+• `` -&gt; `...153`
+• `` -&gt; `...154`
+• `` -&gt; `...156`
+• `` -&gt; `...157`
+• `` -&gt; `...158`
+• `` -&gt; `...159`
+• `` -&gt; `...160`
+• `` -&gt; `...161`
+• `` -&gt; `...162`
+• `` -&gt; `...163`
+• `` -&gt; `...165`
+• `` -&gt; `...166`
+• `` -&gt; `...167`
+• `` -&gt; `...169`
+• `` -&gt; `...170`
+• `` -&gt; `...171`
+• `` -&gt; `...172`
+• `` -&gt; `...173`
+• `` -&gt; `...175`
+• `` -&gt; `...176`
+• `` -&gt; `...178`
+• `` -&gt; `...179`
+• `` -&gt; `...181`
+• `` -&gt; `...182`
+• `` -&gt; `...183`
+• `` -&gt; `...184`
+• `` -&gt; `...185`
+• `` -&gt; `...186`
+• `` -&gt; `...187`
+• `` -&gt; `...188`
+• `` -&gt; `...189`
+• `` -&gt; `...190`
+• `` -&gt; `...191`
+• `` -&gt; `...192`
+• `` -&gt; `...193`
+• `` -&gt; `...194`
+• `` -&gt; `...195`
+• `` -&gt; `...196`
+• `` -&gt; `...197`
+• `` -&gt; `...198`
+• `` -&gt; `...199`
+• `` -&gt; `...201`
+• `` -&gt; `...203`
+• `` -&gt; `...205`
+• `` -&gt; `...206`
+• `` -&gt; `...207`
+• `` -&gt; `...208`
+• `` -&gt; `...209`
+• `` -&gt; `...210`
+• `` -&gt; `...211`
+• `` -&gt; `...212`
+• `` -&gt; `...213`
+• `` -&gt; `...214`
+• `` -&gt; `...215`
+• `` -&gt; `...216`
+• `` -&gt; `...218`
+• `` -&gt; `...219`
+• `` -&gt; `...220`
+• `` -&gt; `...221`
+• `` -&gt; `...222`
+• `` -&gt; `...223`
+• `` -&gt; `...224`
+• `` -&gt; `...225`
+• `` -&gt; `...226`
+• `` -&gt; `...227`
+• `` -&gt; `...228`
+• `` -&gt; `...229`
+• `` -&gt; `...230`
+• `` -&gt; `...231`
+• `` -&gt; `...232`
+• `` -&gt; `...233`
+• `` -&gt; `...234`
+• `` -&gt; `...235`
+• `` -&gt; `...237`
+• `` -&gt; `...238`
+• `` -&gt; `...239`
+• `` -&gt; `...240`
+• `` -&gt; `...241`</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>health2021 <span class="ot">&lt;-</span> <span class="fu">vroom</span>(<span class="fu">here</span>(<span class="st">"Data"</span>, <span class="st">"2021health.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>New names:
+Rows: 3194 Columns: 250
+── Column specification
+──────────────────────────────────────────────────────── Delimiter: ";" chr
+(249): ...1, ...2, ...3, Premature death, ...5, ...6, ...7, ...8, ...9, ... lgl
+(1): ...250
+ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+Specify the column types or set `show_col_types = FALSE` to quiet this message.
+• `` -&gt; `...1`
+• `` -&gt; `...2`
+• `` -&gt; `...3`
+• `` -&gt; `...5`
+• `` -&gt; `...6`
+• `` -&gt; `...7`
+• `` -&gt; `...8`
+• `` -&gt; `...9`
+• `` -&gt; `...10`
+• `` -&gt; `...11`
+• `` -&gt; `...12`
+• `` -&gt; `...13`
+• `` -&gt; `...14`
+• `` -&gt; `...15`
+• `` -&gt; `...16`
+• `` -&gt; `...17`
+• `` -&gt; `...18`
+• `` -&gt; `...19`
+• `` -&gt; `...20`
+• `` -&gt; `...21`
+• `` -&gt; `...22`
+• `` -&gt; `...23`
+• `` -&gt; `...24`
+• `` -&gt; `...25`
+• `` -&gt; `...26`
+• `` -&gt; `...27`
+• `` -&gt; `...28`
+• `` -&gt; `...29`
+• `` -&gt; `...31`
+• `` -&gt; `...32`
+• `` -&gt; `...33`
+• `` -&gt; `...35`
+• `` -&gt; `...36`
+• `` -&gt; `...37`
+• `` -&gt; `...39`
+• `` -&gt; `...40`
+• `` -&gt; `...41`
+• `` -&gt; `...43`
+• `` -&gt; `...44`
+• `` -&gt; `...45`
+• `` -&gt; `...46`
+• `` -&gt; `...47`
+• `` -&gt; `...48`
+• `` -&gt; `...49`
+• `` -&gt; `...50`
+• `` -&gt; `...51`
+• `` -&gt; `...52`
+• `` -&gt; `...53`
+• `` -&gt; `...54`
+• `` -&gt; `...55`
+• `` -&gt; `...56`
+• `` -&gt; `...57`
+• `` -&gt; `...58`
+• `` -&gt; `...59`
+• `` -&gt; `...60`
+• `` -&gt; `...61`
+• `` -&gt; `...63`
+• `` -&gt; `...64`
+• `` -&gt; `...65`
+• `` -&gt; `...67`
+• `` -&gt; `...68`
+• `` -&gt; `...69`
+• `` -&gt; `...71`
+• `` -&gt; `...73`
+• `` -&gt; `...74`
+• `` -&gt; `...75`
+• `` -&gt; `...77`
+• `` -&gt; `...79`
+• `` -&gt; `...80`
+• `` -&gt; `...81`
+• `` -&gt; `...83`
+• `` -&gt; `...84`
+• `` -&gt; `...85`
+• `` -&gt; `...86`
+• `` -&gt; `...87`
+• `` -&gt; `...89`
+• `` -&gt; `...90`
+• `` -&gt; `...92`
+• `` -&gt; `...93`
+• `` -&gt; `...94`
+• `` -&gt; `...95`
+• `` -&gt; `...96`
+• `` -&gt; `...97`
+• `` -&gt; `...98`
+• `` -&gt; `...99`
+• `` -&gt; `...100`
+• `` -&gt; `...101`
+• `` -&gt; `...102`
+• `` -&gt; `...103`
+• `` -&gt; `...104`
+• `` -&gt; `...105`
+• `` -&gt; `...106`
+• `` -&gt; `...107`
+• `` -&gt; `...108`
+• `` -&gt; `...109`
+• `` -&gt; `...111`
+• `` -&gt; `...112`
+• `` -&gt; `...113`
+• `` -&gt; `...114`
+• `` -&gt; `...116`
+• `` -&gt; `...117`
+• `` -&gt; `...118`
+• `` -&gt; `...120`
+• `` -&gt; `...121`
+• `` -&gt; `...122`
+• `` -&gt; `...124`
+• `` -&gt; `...125`
+• `` -&gt; `...126`
+• `` -&gt; `...128`
+• `` -&gt; `...129`
+• `` -&gt; `...130`
+• `` -&gt; `...131`
+• `` -&gt; `...132`
+• `` -&gt; `...133`
+• `` -&gt; `...135`
+• `` -&gt; `...136`
+• `` -&gt; `...137`
+• `` -&gt; `...138`
+• `` -&gt; `...139`
+• `` -&gt; `...140`
+• `` -&gt; `...142`
+• `` -&gt; `...143`
+• `` -&gt; `...144`
+• `` -&gt; `...145`
+• `` -&gt; `...146`
+• `` -&gt; `...147`
+• `` -&gt; `...149`
+• `` -&gt; `...150`
+• `` -&gt; `...151`
+• `` -&gt; `...152`
+• `` -&gt; `...153`
+• `` -&gt; `...155`
+• `` -&gt; `...156`
+• `` -&gt; `...157`
+• `` -&gt; `...158`
+• `` -&gt; `...159`
+• `` -&gt; `...161`
+• `` -&gt; `...162`
+• `` -&gt; `...163`
+• `` -&gt; `...165`
+• `` -&gt; `...166`
+• `` -&gt; `...167`
+• `` -&gt; `...168`
+• `` -&gt; `...169`
+• `` -&gt; `...170`
+• `` -&gt; `...171`
+• `` -&gt; `...172`
+• `` -&gt; `...174`
+• `` -&gt; `...175`
+• `` -&gt; `...176`
+• `` -&gt; `...178`
+• `` -&gt; `...179`
+• `` -&gt; `...180`
+• `` -&gt; `...181`
+• `` -&gt; `...182`
+• `` -&gt; `...184`
+• `` -&gt; `...185`
+• `` -&gt; `...187`
+• `` -&gt; `...188`
+• `` -&gt; `...190`
+• `` -&gt; `...191`
+• `` -&gt; `...192`
+• `` -&gt; `...193`
+• `` -&gt; `...194`
+• `` -&gt; `...195`
+• `` -&gt; `...196`
+• `` -&gt; `...197`
+• `` -&gt; `...198`
+• `` -&gt; `...199`
+• `` -&gt; `...200`
+• `` -&gt; `...201`
+• `` -&gt; `...202`
+• `` -&gt; `...203`
+• `` -&gt; `...204`
+• `` -&gt; `...205`
+• `` -&gt; `...206`
+• `` -&gt; `...207`
+• `` -&gt; `...208`
+• `` -&gt; `...210`
+• `` -&gt; `...212`
+• `` -&gt; `...214`
+• `` -&gt; `...215`
+• `` -&gt; `...216`
+• `` -&gt; `...217`
+• `` -&gt; `...218`
+• `` -&gt; `...219`
+• `` -&gt; `...220`
+• `` -&gt; `...221`
+• `` -&gt; `...222`
+• `` -&gt; `...223`
+• `` -&gt; `...224`
+• `` -&gt; `...225`
+• `` -&gt; `...227`
+• `` -&gt; `...228`
+• `` -&gt; `...229`
+• `` -&gt; `...230`
+• `` -&gt; `...231`
+• `` -&gt; `...232`
+• `` -&gt; `...233`
+• `` -&gt; `...234`
+• `` -&gt; `...235`
+• `` -&gt; `...236`
+• `` -&gt; `...237`
+• `` -&gt; `...238`
+• `` -&gt; `...239`
+• `` -&gt; `...240`
+• `` -&gt; `...241`
+• `` -&gt; `...242`
+• `` -&gt; `...243`
+• `` -&gt; `...244`
+• `` -&gt; `...246`
+• `` -&gt; `...247`
+• `` -&gt; `...248`
+• `` -&gt; `...249`
+• `` -&gt; `...250`</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>health2022 <span class="ot">&lt;-</span> <span class="fu">vroom</span>(<span class="fu">here</span>(<span class="st">"Data"</span>, <span class="st">"2022health.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>New names:
+Rows: 3194 Columns: 249
+── Column specification
+──────────────────────────────────────────────────────── Delimiter: ";" chr
+(249): ...1, ...2, ...3, Premature death, ...5, ...6, ...7, ...8, ...9, ...
+ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+Specify the column types or set `show_col_types = FALSE` to quiet this message.
+• `` -&gt; `...1`
+• `` -&gt; `...2`
+• `` -&gt; `...3`
+• `` -&gt; `...5`
+• `` -&gt; `...6`
+• `` -&gt; `...7`
+• `` -&gt; `...8`
+• `` -&gt; `...9`
+• `` -&gt; `...10`
+• `` -&gt; `...11`
+• `` -&gt; `...12`
+• `` -&gt; `...13`
+• `` -&gt; `...14`
+• `` -&gt; `...15`
+• `` -&gt; `...16`
+• `` -&gt; `...17`
+• `` -&gt; `...18`
+• `` -&gt; `...19`
+• `` -&gt; `...20`
+• `` -&gt; `...21`
+• `` -&gt; `...22`
+• `` -&gt; `...23`
+• `` -&gt; `...24`
+• `` -&gt; `...25`
+• `` -&gt; `...26`
+• `` -&gt; `...27`
+• `` -&gt; `...28`
+• `` -&gt; `...29`
+• `` -&gt; `...31`
+• `` -&gt; `...32`
+• `` -&gt; `...33`
+• `` -&gt; `...35`
+• `` -&gt; `...36`
+• `` -&gt; `...37`
+• `` -&gt; `...39`
+• `` -&gt; `...40`
+• `` -&gt; `...41`
+• `` -&gt; `...43`
+• `` -&gt; `...44`
+• `` -&gt; `...45`
+• `` -&gt; `...46`
+• `` -&gt; `...47`
+• `` -&gt; `...48`
+• `` -&gt; `...49`
+• `` -&gt; `...50`
+• `` -&gt; `...51`
+• `` -&gt; `...52`
+• `` -&gt; `...53`
+• `` -&gt; `...54`
+• `` -&gt; `...55`
+• `` -&gt; `...56`
+• `` -&gt; `...57`
+• `` -&gt; `...58`
+• `` -&gt; `...59`
+• `` -&gt; `...60`
+• `` -&gt; `...61`
+• `` -&gt; `...63`
+• `` -&gt; `...64`
+• `` -&gt; `...65`
+• `` -&gt; `...67`
+• `` -&gt; `...68`
+• `` -&gt; `...69`
+• `` -&gt; `...71`
+• `` -&gt; `...73`
+• `` -&gt; `...74`
+• `` -&gt; `...75`
+• `` -&gt; `...77`
+• `` -&gt; `...79`
+• `` -&gt; `...80`
+• `` -&gt; `...81`
+• `` -&gt; `...83`
+• `` -&gt; `...84`
+• `` -&gt; `...85`
+• `` -&gt; `...86`
+• `` -&gt; `...87`
+• `` -&gt; `...89`
+• `` -&gt; `...90`
+• `` -&gt; `...92`
+• `` -&gt; `...93`
+• `` -&gt; `...94`
+• `` -&gt; `...95`
+• `` -&gt; `...96`
+• `` -&gt; `...97`
+• `` -&gt; `...98`
+• `` -&gt; `...99`
+• `` -&gt; `...100`
+• `` -&gt; `...101`
+• `` -&gt; `...102`
+• `` -&gt; `...103`
+• `` -&gt; `...104`
+• `` -&gt; `...105`
+• `` -&gt; `...106`
+• `` -&gt; `...107`
+• `` -&gt; `...108`
+• `` -&gt; `...109`
+• `` -&gt; `...111`
+• `` -&gt; `...112`
+• `` -&gt; `...113`
+• `` -&gt; `...114`
+• `` -&gt; `...116`
+• `` -&gt; `...117`
+• `` -&gt; `...118`
+• `` -&gt; `...120`
+• `` -&gt; `...121`
+• `` -&gt; `...122`
+• `` -&gt; `...124`
+• `` -&gt; `...125`
+• `` -&gt; `...126`
+• `` -&gt; `...128`
+• `` -&gt; `...129`
+• `` -&gt; `...130`
+• `` -&gt; `...131`
+• `` -&gt; `...132`
+• `` -&gt; `...133`
+• `` -&gt; `...135`
+• `` -&gt; `...136`
+• `` -&gt; `...137`
+• `` -&gt; `...138`
+• `` -&gt; `...139`
+• `` -&gt; `...140`
+• `` -&gt; `...142`
+• `` -&gt; `...143`
+• `` -&gt; `...144`
+• `` -&gt; `...145`
+• `` -&gt; `...146`
+• `` -&gt; `...147`
+• `` -&gt; `...149`
+• `` -&gt; `...150`
+• `` -&gt; `...151`
+• `` -&gt; `...152`
+• `` -&gt; `...153`
+• `` -&gt; `...155`
+• `` -&gt; `...156`
+• `` -&gt; `...157`
+• `` -&gt; `...158`
+• `` -&gt; `...159`
+• `` -&gt; `...161`
+• `` -&gt; `...162`
+• `` -&gt; `...163`
+• `` -&gt; `...165`
+• `` -&gt; `...166`
+• `` -&gt; `...167`
+• `` -&gt; `...168`
+• `` -&gt; `...169`
+• `` -&gt; `...170`
+• `` -&gt; `...171`
+• `` -&gt; `...172`
+• `` -&gt; `...174`
+• `` -&gt; `...175`
+• `` -&gt; `...176`
+• `` -&gt; `...178`
+• `` -&gt; `...179`
+• `` -&gt; `...180`
+• `` -&gt; `...181`
+• `` -&gt; `...182`
+• `` -&gt; `...184`
+• `` -&gt; `...185`
+• `` -&gt; `...187`
+• `` -&gt; `...188`
+• `` -&gt; `...190`
+• `` -&gt; `...191`
+• `` -&gt; `...192`
+• `` -&gt; `...193`
+• `` -&gt; `...194`
+• `` -&gt; `...195`
+• `` -&gt; `...196`
+• `` -&gt; `...197`
+• `` -&gt; `...198`
+• `` -&gt; `...199`
+• `` -&gt; `...200`
+• `` -&gt; `...201`
+• `` -&gt; `...202`
+• `` -&gt; `...203`
+• `` -&gt; `...204`
+• `` -&gt; `...205`
+• `` -&gt; `...206`
+• `` -&gt; `...207`
+• `` -&gt; `...208`
+• `` -&gt; `...210`
+• `` -&gt; `...212`
+• `` -&gt; `...214`
+• `` -&gt; `...215`
+• `` -&gt; `...216`
+• `` -&gt; `...217`
+• `` -&gt; `...218`
+• `` -&gt; `...219`
+• `` -&gt; `...220`
+• `` -&gt; `...221`
+• `` -&gt; `...222`
+• `` -&gt; `...223`
+• `` -&gt; `...224`
+• `` -&gt; `...225`
+• `` -&gt; `...227`
+• `` -&gt; `...228`
+• `` -&gt; `...229`
+• `` -&gt; `...230`
+• `` -&gt; `...231`
+• `` -&gt; `...232`
+• `` -&gt; `...233`
+• `` -&gt; `...234`
+• `` -&gt; `...235`
+• `` -&gt; `...236`
+• `` -&gt; `...237`
+• `` -&gt; `...238`
+• `` -&gt; `...239`
+• `` -&gt; `...240`
+• `` -&gt; `...241`
+• `` -&gt; `...242`
+• `` -&gt; `...243`
+• `` -&gt; `...244`
+• `` -&gt; `...246`
+• `` -&gt; `...247`
+• `` -&gt; `...248`
+• `` -&gt; `...249`</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>health2023 <span class="ot">&lt;-</span> <span class="fu">vroom</span>(<span class="fu">here</span>(<span class="st">"Data"</span>, <span class="st">"2023health.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>New names:
+Rows: 3194 Columns: 247
+── Column specification
+──────────────────────────────────────────────────────── Delimiter: ";" chr
+(246): ...1, ...2, ...3, Premature Death, ...5, ...6, ...7, ...8, ...9, ... lgl
+(1): ...247
+ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+Specify the column types or set `show_col_types = FALSE` to quiet this message.
+• `` -&gt; `...1`
+• `` -&gt; `...2`
+• `` -&gt; `...3`
+• `` -&gt; `...5`
+• `` -&gt; `...6`
+• `` -&gt; `...7`
+• `` -&gt; `...8`
+• `` -&gt; `...9`
+• `` -&gt; `...10`
+• `` -&gt; `...11`
+• `` -&gt; `...12`
+• `` -&gt; `...13`
+• `` -&gt; `...14`
+• `` -&gt; `...15`
+• `` -&gt; `...16`
+• `` -&gt; `...17`
+• `` -&gt; `...18`
+• `` -&gt; `...19`
+• `` -&gt; `...20`
+• `` -&gt; `...21`
+• `` -&gt; `...22`
+• `` -&gt; `...23`
+• `` -&gt; `...24`
+• `` -&gt; `...25`
+• `` -&gt; `...26`
+• `` -&gt; `...27`
+• `` -&gt; `...28`
+• `` -&gt; `...29`
+• `` -&gt; `...31`
+• `` -&gt; `...32`
+• `` -&gt; `...33`
+• `` -&gt; `...35`
+• `` -&gt; `...36`
+• `` -&gt; `...37`
+• `` -&gt; `...39`
+• `` -&gt; `...40`
+• `` -&gt; `...41`
+• `` -&gt; `...43`
+• `` -&gt; `...44`
+• `` -&gt; `...45`
+• `` -&gt; `...46`
+• `` -&gt; `...47`
+• `` -&gt; `...48`
+• `` -&gt; `...49`
+• `` -&gt; `...50`
+• `` -&gt; `...51`
+• `` -&gt; `...52`
+• `` -&gt; `...53`
+• `` -&gt; `...54`
+• `` -&gt; `...55`
+• `` -&gt; `...56`
+• `` -&gt; `...57`
+• `` -&gt; `...58`
+• `` -&gt; `...59`
+• `` -&gt; `...60`
+• `` -&gt; `...61`
+• `` -&gt; `...63`
+• `` -&gt; `...64`
+• `` -&gt; `...65`
+• `` -&gt; `...67`
+• `` -&gt; `...68`
+• `` -&gt; `...69`
+• `` -&gt; `...71`
+• `` -&gt; `...73`
+• `` -&gt; `...74`
+• `` -&gt; `...75`
+• `` -&gt; `...77`
+• `` -&gt; `...79`
+• `` -&gt; `...80`
+• `` -&gt; `...81`
+• `` -&gt; `...83`
+• `` -&gt; `...84`
+• `` -&gt; `...85`
+• `` -&gt; `...86`
+• `` -&gt; `...87`
+• `` -&gt; `...89`
+• `` -&gt; `...90`
+• `` -&gt; `...92`
+• `` -&gt; `...93`
+• `` -&gt; `...94`
+• `` -&gt; `...95`
+• `` -&gt; `...96`
+• `` -&gt; `...97`
+• `` -&gt; `...98`
+• `` -&gt; `...99`
+• `` -&gt; `...100`
+• `` -&gt; `...101`
+• `` -&gt; `...102`
+• `` -&gt; `...103`
+• `` -&gt; `...104`
+• `` -&gt; `...105`
+• `` -&gt; `...106`
+• `` -&gt; `...107`
+• `` -&gt; `...108`
+• `` -&gt; `...109`
+• `` -&gt; `...111`
+• `` -&gt; `...112`
+• `` -&gt; `...113`
+• `` -&gt; `...114`
+• `` -&gt; `...116`
+• `` -&gt; `...117`
+• `` -&gt; `...118`
+• `` -&gt; `...120`
+• `` -&gt; `...121`
+• `` -&gt; `...122`
+• `` -&gt; `...124`
+• `` -&gt; `...125`
+• `` -&gt; `...126`
+• `` -&gt; `...128`
+• `` -&gt; `...129`
+• `` -&gt; `...130`
+• `` -&gt; `...131`
+• `` -&gt; `...132`
+• `` -&gt; `...133`
+• `` -&gt; `...135`
+• `` -&gt; `...136`
+• `` -&gt; `...137`
+• `` -&gt; `...138`
+• `` -&gt; `...139`
+• `` -&gt; `...140`
+• `` -&gt; `...142`
+• `` -&gt; `...143`
+• `` -&gt; `...144`
+• `` -&gt; `...145`
+• `` -&gt; `...146`
+• `` -&gt; `...147`
+• `` -&gt; `...149`
+• `` -&gt; `...150`
+• `` -&gt; `...151`
+• `` -&gt; `...152`
+• `` -&gt; `...153`
+• `` -&gt; `...155`
+• `` -&gt; `...156`
+• `` -&gt; `...157`
+• `` -&gt; `...158`
+• `` -&gt; `...159`
+• `` -&gt; `...161`
+• `` -&gt; `...162`
+• `` -&gt; `...163`
+• `` -&gt; `...165`
+• `` -&gt; `...166`
+• `` -&gt; `...167`
+• `` -&gt; `...168`
+• `` -&gt; `...169`
+• `` -&gt; `...170`
+• `` -&gt; `...171`
+• `` -&gt; `...172`
+• `` -&gt; `...174`
+• `` -&gt; `...175`
+• `` -&gt; `...176`
+• `` -&gt; `...178`
+• `` -&gt; `...179`
+• `` -&gt; `...180`
+• `` -&gt; `...181`
+• `` -&gt; `...182`
+• `` -&gt; `...184`
+• `` -&gt; `...185`
+• `` -&gt; `...187`
+• `` -&gt; `...188`
+• `` -&gt; `...189`
+• `` -&gt; `...190`
+• `` -&gt; `...191`
+• `` -&gt; `...192`
+• `` -&gt; `...193`
+• `` -&gt; `...194`
+• `` -&gt; `...195`
+• `` -&gt; `...196`
+• `` -&gt; `...197`
+• `` -&gt; `...198`
+• `` -&gt; `...199`
+• `` -&gt; `...200`
+• `` -&gt; `...201`
+• `` -&gt; `...202`
+• `` -&gt; `...203`
+• `` -&gt; `...204`
+• `` -&gt; `...205`
+• `` -&gt; `...207`
+• `` -&gt; `...209`
+• `` -&gt; `...211`
+• `` -&gt; `...212`
+• `` -&gt; `...213`
+• `` -&gt; `...214`
+• `` -&gt; `...215`
+• `` -&gt; `...216`
+• `` -&gt; `...217`
+• `` -&gt; `...218`
+• `` -&gt; `...219`
+• `` -&gt; `...220`
+• `` -&gt; `...221`
+• `` -&gt; `...222`
+• `` -&gt; `...224`
+• `` -&gt; `...225`
+• `` -&gt; `...226`
+• `` -&gt; `...227`
+• `` -&gt; `...228`
+• `` -&gt; `...229`
+• `` -&gt; `...230`
+• `` -&gt; `...231`
+• `` -&gt; `...232`
+• `` -&gt; `...233`
+• `` -&gt; `...234`
+• `` -&gt; `...235`
+• `` -&gt; `...236`
+• `` -&gt; `...237`
+• `` -&gt; `...238`
+• `` -&gt; `...239`
+• `` -&gt; `...240`
+• `` -&gt; `...241`
+• `` -&gt; `...243`
+• `` -&gt; `...244`
+• `` -&gt; `...245`
+• `` -&gt; `...246`
+• `` -&gt; `...247`</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>education2020 <span class="ot">&lt;-</span> <span class="fu">vroom</span>(<span class="fu">here</span>(<span class="st">"Data"</span>, <span class="st">"ACSST5Y2020.S1501-Data.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>New names:
+Rows: 3289 Columns: 771
+── Column specification
+──────────────────────────────────────────────────────── Delimiter: "," chr
+(770): GEO_ID, NAME, S1501_C01_001E, S1501_C01_001M, S1501_C01_002E, S15... lgl
+(1): ...771
+ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+Specify the column types or set `show_col_types = FALSE` to quiet this message.
+• `` -&gt; `...771`</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>education2021 <span class="ot">&lt;-</span> <span class="fu">vroom</span>(<span class="fu">here</span>(<span class="st">"Data"</span>, <span class="st">"ACSST5Y2021.S1501-Data.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>New names:
+Rows: 3289 Columns: 771
+── Column specification
+──────────────────────────────────────────────────────── Delimiter: "," chr
+(770): GEO_ID, NAME, S1501_C01_001E, S1501_C01_001M, S1501_C01_002E, S15... lgl
+(1): ...771
+ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+Specify the column types or set `show_col_types = FALSE` to quiet this message.
+• `` -&gt; `...771`</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>education2022 <span class="ot">&lt;-</span> <span class="fu">vroom</span>(<span class="fu">here</span>(<span class="st">"Data"</span>, <span class="st">"ACSST5Y2022.S1501-Data.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>New names:
+Rows: 3290 Columns: 771
+── Column specification
+──────────────────────────────────────────────────────── Delimiter: "," chr
+(770): GEO_ID, NAME, S1501_C01_001E, S1501_C01_001M, S1501_C01_002E, S15... lgl
+(1): ...771
+ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+Specify the column types or set `show_col_types = FALSE` to quiet this message.
+• `` -&gt; `...771`</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>education2023 <span class="ot">&lt;-</span> <span class="fu">vroom</span>(<span class="fu">here</span>(<span class="st">"Data"</span>, <span class="st">"ACSST5Y2023.S1501-Data.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>New names:
+Rows: 3290 Columns: 771
+── Column specification
+──────────────────────────────────────────────────────── Delimiter: "," chr
+(770): GEO_ID, NAME, S1501_C01_001E, S1501_C01_001M, S1501_C01_002E, S15... lgl
+(1): ...771
+ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+Specify the column types or set `show_col_types = FALSE` to quiet this message.
+• `` -&gt; `...771`</code></pre>
+</div>
+</div>
+<section id="changes-made-to-health-data" class="level2">
+<h2 class="anchored" data-anchor-id="changes-made-to-health-data">Changes made to health data</h2>
+<section id="changes-for-health2020" class="level3">
+<h3 class="anchored" data-anchor-id="changes-for-health2020">Changes for health2020</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co">#replace wrong column names with first row:</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>new_names <span class="ot">&lt;-</span> <span class="fu">as.character</span>(health2020[<span class="dv">1</span>, ])</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(health2020) <span class="ot">&lt;-</span> new_names</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>health2020 <span class="ot">&lt;-</span> health2020[<span class="sc">-</span><span class="dv">1</span>, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co">#remove duplicates and their first occurence because we don't care about them</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(health2020) <span class="ot">&lt;-</span> <span class="fu">make.names</span>(<span class="fu">names</span>(health2020), <span class="at">unique =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>to_drop <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">.[0-9]+$"</span>, <span class="fu">names</span>(health2020), <span class="at">value =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>health2020 <span class="ot">&lt;-</span> health2020 <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span><span class="fu">all_of</span>(to_drop))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co">#change character columns in numeric</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>health2020 <span class="ot">&lt;-</span> health2020 <span class="sc">%&gt;%</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">c</span>(State, County),   <span class="co"># keep these as character</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    <span class="sc">~</span> <span class="fu">suppressWarnings</span>(<span class="fu">as.numeric</span>(.x))</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>  ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="changes-made-for-education-data" class="level2">
+<h2 class="anchored" data-anchor-id="changes-made-for-education-data">Changes made for Education data</h2>
+<p>###changes for education2020</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co">#replace wrong column names with first row:</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>new_names_education <span class="ot">&lt;-</span> <span class="fu">as.character</span>(education2020[<span class="dv">1</span>, ])</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(education2020) <span class="ot">&lt;-</span> new_names_education</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>education2020 <span class="ot">&lt;-</span> education2020[<span class="sc">-</span><span class="dv">1</span>, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co">#remove useless columns</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>education2020 <span class="ot">&lt;-</span> education2020 <span class="sc">%&gt;%</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">contains</span>(<span class="st">"Margin of Error"</span>, <span class="at">ignore.case =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>education2020 <span class="ot">&lt;-</span> education2020 <span class="sc">%&gt;%</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">contains</span>(<span class="st">"Total"</span>, <span class="at">ignore.case =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>education2020 <span class="ot">&lt;-</span> education2020 <span class="sc">%&gt;%</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">contains</span>(<span class="st">"Estimate!!Male!!"</span>, <span class="at">ignore.case =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>education2020 <span class="ot">&lt;-</span> education2020 <span class="sc">%&gt;%</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">contains</span>(<span class="st">"Estimate!!Female!!"</span>, <span class="at">ignore.case =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">#easier code for directly deleting all the rows in a single code </span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>education2020 <span class="ot">&lt;-</span> education2020 <span class="sc">%&gt;%</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">matches</span>(<span class="st">"Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!"</span>,</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">ignore.case =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># remove columns that are ONLY "(X)" (ignoring NAs)</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>education2020 <span class="ot">&lt;-</span> education2020 <span class="sc">%&gt;%</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">where</span>(<span class="sc">~</span> <span class="sc">!</span><span class="fu">all</span>(.x <span class="sc">==</span> <span class="st">"(X)"</span> <span class="sc">|</span> <span class="fu">is.na</span>(.x)))</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co">#remove also percent of females and percent of males in this column (if you want), this code can be kept or deleted depending on our decision to keep Percentage Female, PErcentage Male.</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>education2020 <span class="ot">&lt;-</span> education2020 <span class="sc">%&gt;%</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">matches</span>(<span class="st">"Estimate!!Percent Male!!|Estimate!!Percent Female!!"</span>,</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">ignore.case =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co">#convert to numeric columns the ones that need it</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>education2020 <span class="ot">&lt;-</span> education2020 <span class="sc">%&gt;%</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">c</span>(Geography, <span class="st">`</span><span class="at">Geographic Area Name</span><span class="st">`</span>),</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>    <span class="sc">~</span> <span class="fu">suppressWarnings</span>(<span class="fu">as.numeric</span>(.x))</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>  ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="changes-for-education-2021" class="level2">
+<h2 class="anchored" data-anchor-id="changes-for-education-2021">Changes for education 2021</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co">#replace wrong column names with first row:</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>new_names_education <span class="ot">&lt;-</span> <span class="fu">as.character</span>(education2021[<span class="dv">1</span>, ])</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(education2021) <span class="ot">&lt;-</span> new_names_education</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>education2021 <span class="ot">&lt;-</span> education2021[<span class="sc">-</span><span class="dv">1</span>, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co">#remove useless columns</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>education2021 <span class="ot">&lt;-</span> education2021 <span class="sc">%&gt;%</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">contains</span>(<span class="st">"Margin of Error"</span>, <span class="at">ignore.case =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>education2021 <span class="ot">&lt;-</span> education2021 <span class="sc">%&gt;%</span></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">contains</span>(<span class="st">"Total"</span>, <span class="at">ignore.case =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>education2021 <span class="ot">&lt;-</span> education2021 <span class="sc">%&gt;%</span></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">contains</span>(<span class="st">"Estimate!!Male!!"</span>, <span class="at">ignore.case =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>education2021 <span class="ot">&lt;-</span> education2021 <span class="sc">%&gt;%</span></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">contains</span>(<span class="st">"Estimate!!Female!!"</span>, <span class="at">ignore.case =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co">#easier code for directly deleting all the rows in a single code </span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>education2021 <span class="ot">&lt;-</span> education2021 <span class="sc">%&gt;%</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">matches</span>(<span class="st">"Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!"</span>,</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">ignore.case =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># remove columns that are ONLY "(X)" (ignoring NAs)</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>education2021 <span class="ot">&lt;-</span> education2021 <span class="sc">%&gt;%</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">where</span>(<span class="sc">~</span> <span class="sc">!</span><span class="fu">all</span>(.x <span class="sc">==</span> <span class="st">"(X)"</span> <span class="sc">|</span> <span class="fu">is.na</span>(.x)))</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co">#remove also percent of females and percent of males in this column (if you want), this code can be kept or deleted depending on our decision to keep Percentage Female, PErcentage Male.</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>education2021 <span class="ot">&lt;-</span> education2021 <span class="sc">%&gt;%</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">matches</span>(<span class="st">"Estimate!!Percent Male!!|Estimate!!Percent Female!!"</span>,</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">ignore.case =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co">#convert to numeric columns the ones that need it</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>education2021 <span class="ot">&lt;-</span> education2021 <span class="sc">%&gt;%</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">c</span>(Geography, <span class="st">`</span><span class="at">Geographic Area Name</span><span class="st">`</span>),</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>    <span class="sc">~</span> <span class="fu">suppressWarnings</span>(<span class="fu">as.numeric</span>(.x))</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>  ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="changes-for-education-2022" class="level2">
+<h2 class="anchored" data-anchor-id="changes-for-education-2022">Changes for education 2022</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co">#replace wrong column names with first row:</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>new_names_education <span class="ot">&lt;-</span> <span class="fu">as.character</span>(education2022[<span class="dv">1</span>, ])</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(education2022) <span class="ot">&lt;-</span> new_names_education</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>education2022 <span class="ot">&lt;-</span> education2022[<span class="sc">-</span><span class="dv">1</span>, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co">#remove useless columns</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>education2022 <span class="ot">&lt;-</span> education2022 <span class="sc">%&gt;%</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">contains</span>(<span class="st">"Margin of Error"</span>, <span class="at">ignore.case =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>education2022 <span class="ot">&lt;-</span> education2022 <span class="sc">%&gt;%</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">contains</span>(<span class="st">"Total"</span>, <span class="at">ignore.case =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>education2022 <span class="ot">&lt;-</span> education2022 <span class="sc">%&gt;%</span></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">contains</span>(<span class="st">"Estimate!!Male!!"</span>, <span class="at">ignore.case =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>education2022 <span class="ot">&lt;-</span> education2022 <span class="sc">%&gt;%</span></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">contains</span>(<span class="st">"Estimate!!Female!!"</span>, <span class="at">ignore.case =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co">#easier code for directly deleting all the rows in a single code </span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>education2022 <span class="ot">&lt;-</span> education2022 <span class="sc">%&gt;%</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">matches</span>(<span class="st">"Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!"</span>,</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">ignore.case =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># remove columns that are ONLY "(X)" (ignoring NAs)</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>education2022 <span class="ot">&lt;-</span> education2022 <span class="sc">%&gt;%</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">where</span>(<span class="sc">~</span> <span class="sc">!</span><span class="fu">all</span>(.x <span class="sc">==</span> <span class="st">"(X)"</span> <span class="sc">|</span> <span class="fu">is.na</span>(.x)))</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co">#remove also percent of females and percent of males in this column (if you want), this code can be kept or deleted depending on our decision to keep Percentage Female, PErcentage Male.</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>education2022 <span class="ot">&lt;-</span> education2022 <span class="sc">%&gt;%</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">matches</span>(<span class="st">"Estimate!!Percent Male!!|Estimate!!Percent Female!!"</span>,</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">ignore.case =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co">#convert to numeric columns the ones that need it</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>education2022 <span class="ot">&lt;-</span> education2022 <span class="sc">%&gt;%</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">c</span>(Geography, <span class="st">`</span><span class="at">Geographic Area Name</span><span class="st">`</span>),</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>    <span class="sc">~</span> <span class="fu">suppressWarnings</span>(<span class="fu">as.numeric</span>(.x))</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>  ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="changes-for-education-2023" class="level2">
+<h2 class="anchored" data-anchor-id="changes-for-education-2023">Changes for education 2023</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co">#replace wrong column names with first row:</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>new_names_education <span class="ot">&lt;-</span> <span class="fu">as.character</span>(education2023[<span class="dv">1</span>, ])</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(education2023) <span class="ot">&lt;-</span> new_names_education</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>education2023 <span class="ot">&lt;-</span> education2023[<span class="sc">-</span><span class="dv">1</span>, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co">#remove useless columns</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>education2023 <span class="ot">&lt;-</span> education2023 <span class="sc">%&gt;%</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">contains</span>(<span class="st">"Margin of Error"</span>, <span class="at">ignore.case =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>education2023 <span class="ot">&lt;-</span> education2023 <span class="sc">%&gt;%</span></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">contains</span>(<span class="st">"Total"</span>, <span class="at">ignore.case =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>education2023 <span class="ot">&lt;-</span> education2023 <span class="sc">%&gt;%</span></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">contains</span>(<span class="st">"Estimate!!Male!!"</span>, <span class="at">ignore.case =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>education2023 <span class="ot">&lt;-</span> education2023 <span class="sc">%&gt;%</span></span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">contains</span>(<span class="st">"Estimate!!Female!!"</span>, <span class="at">ignore.case =</span> <span class="cn">TRUE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co">#easier code for directly deleting all the rows in a single code </span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>education2023 <span class="ot">&lt;-</span> education2023 <span class="sc">%&gt;%</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">matches</span>(<span class="st">"Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!"</span>,</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">ignore.case =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># remove columns that are ONLY "(X)" (ignoring NAs)</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>education2023 <span class="ot">&lt;-</span> education2023 <span class="sc">%&gt;%</span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">where</span>(<span class="sc">~</span> <span class="sc">!</span><span class="fu">all</span>(.x <span class="sc">==</span> <span class="st">"(X)"</span> <span class="sc">|</span> <span class="fu">is.na</span>(.x)))</span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co">#remove also percent of females and percent of males in this column (if you want), this code can be kept or deleted depending on our decision to keep Percentage Female, PErcentage Male.</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>education2023 <span class="ot">&lt;-</span> education2023 <span class="sc">%&gt;%</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">matches</span>(<span class="st">"Estimate!!Percent Male!!|Estimate!!Percent Female!!"</span>,</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">ignore.case =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co">#convert to numeric columns the ones that need it</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>education2023 <span class="ot">&lt;-</span> education2023 <span class="sc">%&gt;%</span></span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span><span class="fu">c</span>(Geography, <span class="st">`</span><span class="at">Geographic Area Name</span><span class="st">`</span>),</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a>    <span class="sc">~</span> <span class="fu">suppressWarnings</span>(<span class="fu">as.numeric</span>(.x))</span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>  ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>What is left to do for the Data cleaning part: - Separate the county and state in two separate columns - Look into the issue of spec() why does it read NULL instead of specifying the columns of the data - Remove the puerto rico variables, However this can be done just by matching the datasets - Append the datasets to eachother so that there is only one dataset for each datasets</p>
+</section>
+<section id="description-of-variables" class="level2">
+<h2 class="anchored" data-anchor-id="description-of-variables">Description of variables</h2>
+<p>variables of Interest</p>
+<ul>
+<li><p>Adult smoking (in percentage of total of population of adults): This variable describes the reported rate of current daily smokers in the population of the county.</p></li>
+<li><p>Excessive drinking: This variable describes the self-reported rate of excessive drinkers of the population in the county.</p></li>
+<li><p>Teen births: This variable describes the amount of teen births per 1000 females aged 15-19.</p></li>
+</ul>
+<p>Main variable</p>
+<ul>
+<li>Education level (percent of 25 &gt; year olds that have a Bachelors degree minimum): This variable describes the percentage of 25 year olds or older that have a diploma for a Bachelors degree or higher.</li>
+</ul>
+<p>Control variables to complete model:</p>
+<ul>
+<li><p>Unemployment: This variable describes the unemployment rate in the county. Unemployed people are 16 years old or older and are actively looking for work.</p></li>
+<li><p>Income Inequality: This variable describes the income inequality levels, computed as the ratio of income at the 80th percentile over the income at the 20th percentile.</p></li>
+<li><p>Severe Housing Problems: this variable describes the percentage of households that have at least one of the 4 reported housing problems: high housing costs, overcrowding, lack of kitchen or plumbing facilities.</p></li>
+<li><p>Children in single parent households: This variable describes the percentage of children that grow up in single parent households currently.</p></li>
+<li><p>Mental health providers: This variable describes the rate of mental health providers per 100000 inhabitants.</p></li>
+</ul>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
