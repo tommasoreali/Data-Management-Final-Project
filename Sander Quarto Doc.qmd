@@ -81,16 +81,24 @@ education2020 <- education2020[-1, ]
 
 
 ```{r}
-#remove useless columns
 education2020 <- education2020 %>%
-  select(-contains("Margin of Error", ignore.case = TRUE))
-education2020 <- education2020 %>%
-  select(-contains("Total", ignore.case = TRUE))
-education2020 <- education2020 %>%
-  select(-contains("Estimate!!Male!!", ignore.case = TRUE))
-education2020 <- education2020 %>%
-  select(-contains("Estimate!!Female!!", ignore.case = TRUE))
-
+  select(-contains("Margin of Error", ignore.case = TRUE))|>
+  select(-contains("Total", ignore.case = TRUE))|>
+  select(-contains("Estimate!!Male!!", ignore.case = TRUE))|>
+  select(-contains("Estimate!!Female!!", ignore.case = TRUE))|>
+  select(-contains("High school", ignore.case = TRUE)) |>
+  select(-contains("Graduate", ignore.case = TRUE))|>
+  select(-contains("18 to 24", ignore.case = TRUE))|>
+  select(-contains("34", ignore.case = TRUE))|>
+  select(-contains("9th", ignore.case = TRUE))|>
+  select(-contains("34", ignore.case = TRUE))|>
+  select(-contains("Associate's", ignore.case = TRUE))|>
+  select(-contains("34", ignore.case = TRUE))|>
+  select(-contains("Population 65 years and over", ignore.case = TRUE))|>
+  select(-contains("Population 45 to 64 years", ignore.case = TRUE))|>
+  select(-contains("Population 35 to 44 years", ignore.case = TRUE))|>
+  select(-contains("RACE", ignore.case = TRUE))|>
+  select(-contains("college", ignore.case = TRUE))
 ```
 
 
@@ -144,15 +152,24 @@ education2021 <- education2021[-1, ]
 
 
 ```{r}
-#remove useless columns
 education2021 <- education2021 %>%
-  select(-contains("Margin of Error", ignore.case = TRUE))
-education2021 <- education2021 %>%
-  select(-contains("Total", ignore.case = TRUE))
-education2021 <- education2021 %>%
-  select(-contains("Estimate!!Male!!", ignore.case = TRUE))
-education2021 <- education2021 %>%
-  select(-contains("Estimate!!Female!!", ignore.case = TRUE))
+  select(-contains("Margin of Error", ignore.case = TRUE))|>
+  select(-contains("Total", ignore.case = TRUE))|>
+  select(-contains("Estimate!!Male!!", ignore.case = TRUE))|>
+  select(-contains("Estimate!!Female!!", ignore.case = TRUE))|>
+  select(-contains("High school", ignore.case = TRUE)) |>
+  select(-contains("Graduate", ignore.case = TRUE))|>
+  select(-contains("18 to 24", ignore.case = TRUE))|>
+  select(-contains("34", ignore.case = TRUE))|>
+  select(-contains("9th", ignore.case = TRUE))|>
+  select(-contains("34", ignore.case = TRUE))|>
+  select(-contains("Associate's", ignore.case = TRUE))|>
+  select(-contains("34", ignore.case = TRUE))|>
+  select(-contains("Population 65 years and over", ignore.case = TRUE))|>
+  select(-contains("Population 45 to 64 years", ignore.case = TRUE))|>
+  select(-contains("Population 35 to 44 years", ignore.case = TRUE))|>
+  select(-contains("RACE", ignore.case = TRUE))|>
+  select(-contains("college", ignore.case = TRUE))
 
 ```
 
@@ -209,14 +226,23 @@ education2022 <- education2022[-1, ]
 ```{r}
 #remove useless columns
 education2022 <- education2022 %>%
-  select(-contains("Margin of Error", ignore.case = TRUE))
-education2022 <- education2022 %>%
-  select(-contains("Total", ignore.case = TRUE))
-education2022 <- education2022 %>%
-  select(-contains("Estimate!!Male!!", ignore.case = TRUE))
-education2022 <- education2022 %>%
-  select(-contains("Estimate!!Female!!", ignore.case = TRUE))
-
+  select(-contains("Margin of Error", ignore.case = TRUE))|>
+  select(-contains("Total", ignore.case = TRUE))|>
+  select(-contains("Estimate!!Male!!", ignore.case = TRUE))|>
+  select(-contains("Estimate!!Female!!", ignore.case = TRUE))|>
+  select(-contains("High school", ignore.case = TRUE)) |>
+  select(-contains("Graduate", ignore.case = TRUE))|>
+  select(-contains("18 to 24", ignore.case = TRUE))|>
+  select(-contains("34", ignore.case = TRUE))|>
+  select(-contains("9th", ignore.case = TRUE))|>
+  select(-contains("34", ignore.case = TRUE))|>
+  select(-contains("Associate's", ignore.case = TRUE))|>
+  select(-contains("34", ignore.case = TRUE))|>
+  select(-contains("Population 65 years and over", ignore.case = TRUE))|>
+  select(-contains("Population 45 to 64 years", ignore.case = TRUE))|>
+  select(-contains("Population 35 to 44 years", ignore.case = TRUE))|>
+  select(-contains("RACE", ignore.case = TRUE))|>
+  select(-contains("college", ignore.case = TRUE))
 ```
 
 
@@ -270,16 +296,24 @@ education2023 <- education2023[-1, ]
 
 
 ```{r}
-#remove useless columns
 education2023 <- education2023 %>%
-  select(-contains("Margin of Error", ignore.case = TRUE))
-education2023 <- education2023 %>%
-  select(-contains("Total", ignore.case = TRUE))
-education2023 <- education2023 %>%
-  select(-contains("Estimate!!Male!!", ignore.case = TRUE))
-education2023 <- education2023 %>%
-  select(-contains("Estimate!!Female!!", ignore.case = TRUE))
-
+  select(-contains("Margin of Error", ignore.case = TRUE))|>
+  select(-contains("Total", ignore.case = TRUE))|>
+  select(-contains("Estimate!!Male!!", ignore.case = TRUE))|>
+  select(-contains("Estimate!!Female!!", ignore.case = TRUE))|>
+  select(-contains("High school", ignore.case = TRUE)) |>
+  select(-contains("Graduate", ignore.case = TRUE))|>
+  select(-contains("18 to 24", ignore.case = TRUE))|>
+  select(-contains("34", ignore.case = TRUE))|>
+  select(-contains("9th", ignore.case = TRUE))|>
+  select(-contains("34", ignore.case = TRUE))|>
+  select(-contains("Associate's", ignore.case = TRUE))|>
+  select(-contains("34", ignore.case = TRUE))|>
+  select(-contains("Population 65 years and over", ignore.case = TRUE))|>
+  select(-contains("Population 45 to 64 years", ignore.case = TRUE))|>
+  select(-contains("Population 35 to 44 years", ignore.case = TRUE))|>
+  select(-contains("RACE", ignore.case = TRUE))|>
+  select(-contains("college", ignore.case = TRUE))
 ```
 
 
@@ -329,6 +363,67 @@ What is left to do for the Data cleaning part:
 - Append the datasets to eachother so that there is only one dataset for each datasets
 
 
+```{r}
+Edu2121 <- 
+  education2020 |>
+  left_join(education2021, by = "Geographic Area Name")
+```
+```{r}
+edu2122 <- 
+  Edu2121|>
+  left_join(education2022, "Geographic Area Name")
+```
+```{r}
+edutotal <-
+  edu2122|>
+  left_join(education2023, "Geographic Area Name")
+```
+```{r}
+edutotal<- edutotal|>
+  select(-contains("Geography", ignore.case = TRUE))|>
+  
+  separate(
+    col = `Geographic Area Name`,  # The column to split
+    into = c("County", "State"), # The names of the two new columns
+    sep = ", " # The character string used to split the column
+  )
+```
+
+```{r}
+# Keep only the first row encountered for each unique County name
+df_unique_counties <- edutotal %>%
+  distinct(County, .keep_all = TRUE)
+```
+
+```{r}
+EDU2 <- df_unique_counties |>
+  select(-contains("POVERTY", ignore.case = TRUE))|>
+  rename(Bacmore_2020 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.x`,
+         Bacmore_2021 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.y`,
+         Bacmore_2022 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.x.x`,
+         Bacmore_2023 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.y.y`,
+         )|>
+  select(-contains("Estimate", ignore.case = TRUE))
+```
+
+```{r}
+
+EDU2Long <- EDU2 |>
+  pivot_longer(
+    
+    cols = ends_with(c("2020", "2021", "2022", "2023")),
+    names_to = c(".value", "Year"),
+    
+    # 3. Specify the delimiter separating the variable name and the year
+    names_sep = "_",
+    
+    # 4. (Optional) Convert the new Year column to an integer type
+    values_transform = list(Year = as.integer)
+  )
+```
+
+
+
 ## Description of variables
 
 variables of Interest
@@ -354,6 +449,12 @@ Control variables to complete model:
 - Children in single parent households: This variable describes the percentage of children that grow up in single parent households currently.
 
 - Mental health providers: This variable describes the rate of mental health providers per 100000 inhabitants. 
+
+
+Also need to describe the research question (500 words)
+
+Description of the sources
+
 
 
 
