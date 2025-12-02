@@ -398,11 +398,28 @@ df_unique_counties <- edutotal %>%
 ```{r}
 EDU2 <- df_unique_counties |>
   select(-contains("POVERTY", ignore.case = TRUE))|>
-  rename(Bacmore2020 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.x`,
-         Bacmore2021 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.y`,
-         Bacmore2022 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.x.x`,
-         Bacmore2023 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.y.y`,
-         )
+  rename(Bacmore_2020 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.x`,
+         Bacmore_2021 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.y`,
+         Bacmore_2022 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.x.x`,
+         Bacmore_2023 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.y.y`,
+         )|>
+  select(-contains("Estimate", ignore.case = TRUE))
+```
+
+```{r}
+
+EDU2Long <- EDU2 |>
+  pivot_longer(
+    
+    cols = ends_with(c("2020", "2021", "2022", "2023")),
+    names_to = c(".value", "Year"),
+    
+    # 3. Specify the delimiter separating the variable name and the year
+    names_sep = "_",
+    
+    # 4. (Optional) Convert the new Year column to an integer type
+    values_transform = list(Year = as.integer)
+  )
 ```
 
 
