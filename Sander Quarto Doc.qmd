@@ -362,6 +362,7 @@ What is left to do for the Data cleaning part:
 - Remove the puerto rico variables, However this can be done just by matching the datasets
 - Append the datasets to eachother so that there is only one dataset for each datasets
 
+
 ```{r}
 Edu2121 <- 
   education2020 |>
@@ -405,6 +406,7 @@ EDU2 <- df_unique_counties |>
 ```
 
 
+
 ## Description of variables
 
 variables of Interest
@@ -431,9 +433,11 @@ Control variables to complete model:
 
 - Mental health providers: This variable describes the rate of mental health providers per 100000 inhabitants. 
 
+
 Also need to describe the research question (500 words)
 
 Description of the sources
+
 
 
 
