@@ -44,14 +44,7 @@ education2023 <- vroom(here("Data", "ACSST5Y2023.S1501-Data.csv"))
 
 ## variables names to keep in dataset health:
 
-% Severe Housing Problems
-Income Ratio
-% Unemployed
-Mental Health Provider Rate
-Teen Birth Rate
-% Excessive Drinking
-% Smokers
-% Single-Parent Households
+\% Severe Housing Problems Income Ratio % Unemployed Mental Health Provider Rate Teen Birth Rate % Excessive Drinking % Smokers % Single-Parent Households
 
 ### Changes for health2020
 
@@ -63,7 +56,6 @@ health2020 <- health2020[-1, ]
 
 ```
 
-
 ```{r}
 #remove all the columns which are not usefull (use the same technique for the other years datasets)
 
@@ -74,8 +66,6 @@ cols_health_2020 <- c(
   "% Severe Housing Problems",
   "Income Ratio",
   "% Unemployed",
-  "80th Percentile Income",
-  "% Children in Poverty",
   "Mental Health Provider Rate",
   "Teen Birth Rate",
   "% Excessive Drinking",
@@ -104,7 +94,6 @@ health2020 <- health2020 %>%
 
 ```
 
-
 ```{r}
 #convert to numeric columns the ones that need it
 
@@ -126,7 +115,6 @@ health2021 <- health2021[-1, ]
 
 ```
 
-
 ```{r}
 #remove all the columns which are not usefull 
 
@@ -137,8 +125,6 @@ cols_health_2021 <- c(
   "% Severe Housing Problems",
   "Income Ratio",
   "% Unemployed",
-  "80th Percentile Income",
-  "% Children in Poverty",
   "Mental Health Provider Rate",
   "Teen Birth Rate",
   "% Excessive Drinking",
@@ -178,7 +164,6 @@ health2021 <- health2021 %>%
 
 ```
 
-
 ## Changes for Health2022
 
 ```{r}
@@ -188,7 +173,6 @@ colnames(health2022) <- new_names
 health2022 <- health2022[-1, ]
 
 ```
-
 
 ```{r}
 #remove all the columns which are not usefull 
@@ -207,8 +191,6 @@ cols_health_2022 <- c(
   "% Severe Housing Problems",
   "Income Ratio",
   "% Unemployed",
-  "80th Percentile Income",
-  "% Children in Poverty",
   "Mental Health Provider Rate",
   "Teen Birth Rate",
   "% Excessive Drinking",
@@ -258,7 +240,6 @@ health2023 <- health2023[-1, ]
 
 ```
 
-
 ```{r}
 #remove all the columns which are not usefull 
 
@@ -277,8 +258,6 @@ cols_health_2023 <- c(
   "% Severe Housing Problems",
   "Income Ratio",
   "% Unemployed",
-  "80th Percentile Income",
-  "% Children in Poverty",
   "Mental Health Provider Rate",
   "Teen Birth Rate",
   "% Excessive Drinking",
@@ -318,9 +297,105 @@ health2023 <- health2023 %>%
 
 ```
 
+## Merging the health datasets together
+
+```{r}
+#First match the names for Adult moking and single children in household
+
+health2023 <- health2023 %>%
+  rename(`% Smokers` = `% Adults Reporting Currently Smoking`)
+
+health2020 <- health2020 %>%
+  rename(`% Children in Single-Parent Households` = `% Single-Parent Households`)
+```
+
+
+```{r}
+Hea2021 <- 
+  health2020 |>
+  left_join(health2021, by = c("County", "State"))
+```
+
+```{r}
+Hea2122 <- 
+  Hea2021|>
+  left_join(health2022, by = c("County", "State"))
+```
+
+```{r}
+Healthtotal <-
+  Hea2122|>
+  left_join(health2023, by = c("County", "State"))
+```
+
+
+```{r}
+
+Healthtotal <- Healthtotal |>
+  select(-contains("FIPS", ignore.case = TRUE)) |>
+  rename(
+    HousingP_2020   = `% Severe Housing Problems.x`,
+    HousingP_2021   = `% Severe Housing Problems.y`,
+    HousingP_2022   = `% Severe Housing Problems.x.x`,
+    HousingP_2023   = `% Severe Housing Problems.y.y`,
+    
+    IncomeRatio_2020 = `Income Ratio.x`,
+    IncomeRatio_2021 = `Income Ratio.y`,
+    IncomeRatio_2022 = `Income Ratio.x.x`,
+    IncomeRatio_2023 = `Income Ratio.y.y`,
+    
+    Unemployed_2020 = `% Unemployed.x`,
+    Unemployed_2021 = `% Unemployed.y`,
+    Unemployed_2022 = `% Unemployed.x.x`,
+    Unemployed_2023 = `% Unemployed.y.y`,
+    
+    Mentalhealth_2020 = `Mental Health Provider Rate.x`,
+    Mentalhealth_2021 = `Mental Health Provider Rate.y`,
+    Mentalhealth_2022 = `Mental Health Provider Rate.x.x`,
+    Mentalhealth_2023 = `Mental Health Provider Rate.y.y`,
+    
+    TeenBirth_2020 = `Teen Birth Rate.x`,
+    TeenBirth_2021 = `Teen Birth Rate.y`,
+    TeenBirth_2022 = `Teen Birth Rate.x.x`,
+    TeenBirth_2023 = `Teen Birth Rate.y.y`,
+    
+    ExcessiveDrink_2020 = `% Excessive Drinking.x`,
+    ExcessiveDrink_2021 = `% Excessive Drinking.y`,
+    ExcessiveDrink_2022 = `% Excessive Drinking.x.x`,
+    ExcessiveDrink_2023 = `% Excessive Drinking.y.y`,
+    
+    Smokers_2020 = `% Smokers.x`,
+    Smokers_2021 = `% Smokers.y`,
+    Smokers_2022 = `% Smokers.x.x`,
+    Smokers_2023 = `% Smokers.y.y`,
+    
+    SingleParent_2020 = `% Children in Single-Parent Households.x`,
+    SingleParent_2021 = `% Children in Single-Parent Households.y`,
+    SingleParent_2022 = `% Children in Single-Parent Households.x.x`,
+    SingleParent_2023 = `% Children in Single-Parent Households.y.y`
+  )
+
+```
+
+```{r}
+
+Healthtotal <- Healthtotal |>
+  pivot_longer(
+    
+    cols = ends_with(c("2020", "2021", "2022", "2023")),
+    names_to = c(".value", "Year"),
+    
+    # 3. Specify the delimiter separating the variable name and the year
+    names_sep = "_",
+    
+    # 4. (Optional) Convert the new Year column to an integer type
+    values_transform = list(Year = as.integer)
+  )
+```
+
 ## Changes made for Education data
 
-### Changes for education2020
+###changes for education2020
 
 ```{r}
 #replace wrong column names with first row:
@@ -329,21 +404,26 @@ colnames(education2020) <- new_names_education
 education2020 <- education2020[-1, ]
 ```
 
-
 ```{r}
-#remove useless columns
 education2020 <- education2020 %>%
-  select(-contains("Margin of Error", ignore.case = TRUE))
-education2020 <- education2020 %>%
-  select(-contains("Total", ignore.case = TRUE))
-education2020 <- education2020 %>%
-  select(-contains("Estimate!!Male!!", ignore.case = TRUE))
-education2020 <- education2020 %>%
-  select(-contains("Estimate!!Female!!", ignore.case = TRUE))
-
+  select(-contains("Margin of Error", ignore.case = TRUE))|>
+  select(-contains("Total", ignore.case = TRUE))|>
+  select(-contains("Estimate!!Male!!", ignore.case = TRUE))|>
+  select(-contains("Estimate!!Female!!", ignore.case = TRUE))|>
+  select(-contains("High school", ignore.case = TRUE)) |>
+  select(-contains("Graduate", ignore.case = TRUE))|>
+  select(-contains("18 to 24", ignore.case = TRUE))|>
+  select(-contains("34", ignore.case = TRUE))|>
+  select(-contains("9th", ignore.case = TRUE))|>
+  select(-contains("34", ignore.case = TRUE))|>
+  select(-contains("Associate's", ignore.case = TRUE))|>
+  select(-contains("34", ignore.case = TRUE))|>
+  select(-contains("Population 65 years and over", ignore.case = TRUE))|>
+  select(-contains("Population 45 to 64 years", ignore.case = TRUE))|>
+  select(-contains("Population 35 to 44 years", ignore.case = TRUE))|>
+  select(-contains("RACE", ignore.case = TRUE))|>
+  select(-contains("college", ignore.case = TRUE))
 ```
-
-
 
 ```{r}
 #easier code for directly deleting all the rows in a single code 
@@ -361,7 +441,6 @@ education2020 <- education2020 %>%
     where(~ !all(.x == "(X)" | is.na(.x)))
   )
 ```
-
 
 ```{r}
 #remove also percent of females and percent of males in this column (if you want), this code can be kept or deleted depending on our decision to keep Percentage Female, PErcentage Male.
@@ -392,21 +471,27 @@ colnames(education2021) <- new_names_education
 education2021 <- education2021[-1, ]
 ```
 
-
 ```{r}
-#remove useless columns
 education2021 <- education2021 %>%
-  select(-contains("Margin of Error", ignore.case = TRUE))
-education2021 <- education2021 %>%
-  select(-contains("Total", ignore.case = TRUE))
-education2021 <- education2021 %>%
-  select(-contains("Estimate!!Male!!", ignore.case = TRUE))
-education2021 <- education2021 %>%
-  select(-contains("Estimate!!Female!!", ignore.case = TRUE))
+  select(-contains("Margin of Error", ignore.case = TRUE))|>
+  select(-contains("Total", ignore.case = TRUE))|>
+  select(-contains("Estimate!!Male!!", ignore.case = TRUE))|>
+  select(-contains("Estimate!!Female!!", ignore.case = TRUE))|>
+  select(-contains("High school", ignore.case = TRUE)) |>
+  select(-contains("Graduate", ignore.case = TRUE))|>
+  select(-contains("18 to 24", ignore.case = TRUE))|>
+  select(-contains("34", ignore.case = TRUE))|>
+  select(-contains("9th", ignore.case = TRUE))|>
+  select(-contains("34", ignore.case = TRUE))|>
+  select(-contains("Associate's", ignore.case = TRUE))|>
+  select(-contains("34", ignore.case = TRUE))|>
+  select(-contains("Population 65 years and over", ignore.case = TRUE))|>
+  select(-contains("Population 45 to 64 years", ignore.case = TRUE))|>
+  select(-contains("Population 35 to 44 years", ignore.case = TRUE))|>
+  select(-contains("RACE", ignore.case = TRUE))|>
+  select(-contains("college", ignore.case = TRUE))
 
 ```
-
-
 
 ```{r}
 #easier code for directly deleting all the rows in a single code 
@@ -424,7 +509,6 @@ education2021 <- education2021 %>%
     where(~ !all(.x == "(X)" | is.na(.x)))
   )
 ```
-
 
 ```{r}
 #remove also percent of females and percent of males in this column (if you want), this code can be kept or deleted depending on our decision to keep Percentage Female, PErcentage Male.
@@ -455,21 +539,27 @@ colnames(education2022) <- new_names_education
 education2022 <- education2022[-1, ]
 ```
 
-
 ```{r}
 #remove useless columns
 education2022 <- education2022 %>%
-  select(-contains("Margin of Error", ignore.case = TRUE))
-education2022 <- education2022 %>%
-  select(-contains("Total", ignore.case = TRUE))
-education2022 <- education2022 %>%
-  select(-contains("Estimate!!Male!!", ignore.case = TRUE))
-education2022 <- education2022 %>%
-  select(-contains("Estimate!!Female!!", ignore.case = TRUE))
-
+  select(-contains("Margin of Error", ignore.case = TRUE))|>
+  select(-contains("Total", ignore.case = TRUE))|>
+  select(-contains("Estimate!!Male!!", ignore.case = TRUE))|>
+  select(-contains("Estimate!!Female!!", ignore.case = TRUE))|>
+  select(-contains("High school", ignore.case = TRUE)) |>
+  select(-contains("Graduate", ignore.case = TRUE))|>
+  select(-contains("18 to 24", ignore.case = TRUE))|>
+  select(-contains("34", ignore.case = TRUE))|>
+  select(-contains("9th", ignore.case = TRUE))|>
+  select(-contains("34", ignore.case = TRUE))|>
+  select(-contains("Associate's", ignore.case = TRUE))|>
+  select(-contains("34", ignore.case = TRUE))|>
+  select(-contains("Population 65 years and over", ignore.case = TRUE))|>
+  select(-contains("Population 45 to 64 years", ignore.case = TRUE))|>
+  select(-contains("Population 35 to 44 years", ignore.case = TRUE))|>
+  select(-contains("RACE", ignore.case = TRUE))|>
+  select(-contains("college", ignore.case = TRUE))
 ```
-
-
 
 ```{r}
 #easier code for directly deleting all the rows in a single code 
@@ -487,7 +577,6 @@ education2022 <- education2022 %>%
     where(~ !all(.x == "(X)" | is.na(.x)))
   )
 ```
-
 
 ```{r}
 #remove also percent of females and percent of males in this column (if you want), this code can be kept or deleted depending on our decision to keep Percentage Female, PErcentage Male.
@@ -518,21 +607,26 @@ colnames(education2023) <- new_names_education
 education2023 <- education2023[-1, ]
 ```
 
-
 ```{r}
-#remove useless columns
 education2023 <- education2023 %>%
-  select(-contains("Margin of Error", ignore.case = TRUE))
-education2023 <- education2023 %>%
-  select(-contains("Total", ignore.case = TRUE))
-education2023 <- education2023 %>%
-  select(-contains("Estimate!!Male!!", ignore.case = TRUE))
-education2023 <- education2023 %>%
-  select(-contains("Estimate!!Female!!", ignore.case = TRUE))
-
+  select(-contains("Margin of Error", ignore.case = TRUE))|>
+  select(-contains("Total", ignore.case = TRUE))|>
+  select(-contains("Estimate!!Male!!", ignore.case = TRUE))|>
+  select(-contains("Estimate!!Female!!", ignore.case = TRUE))|>
+  select(-contains("High school", ignore.case = TRUE)) |>
+  select(-contains("Graduate", ignore.case = TRUE))|>
+  select(-contains("18 to 24", ignore.case = TRUE))|>
+  select(-contains("34", ignore.case = TRUE))|>
+  select(-contains("9th", ignore.case = TRUE))|>
+  select(-contains("34", ignore.case = TRUE))|>
+  select(-contains("Associate's", ignore.case = TRUE))|>
+  select(-contains("34", ignore.case = TRUE))|>
+  select(-contains("Population 65 years and over", ignore.case = TRUE))|>
+  select(-contains("Population 45 to 64 years", ignore.case = TRUE))|>
+  select(-contains("Population 35 to 44 years", ignore.case = TRUE))|>
+  select(-contains("RACE", ignore.case = TRUE))|>
+  select(-contains("college", ignore.case = TRUE))
 ```
-
-
 
 ```{r}
 #easier code for directly deleting all the rows in a single code 
@@ -550,7 +644,6 @@ education2023 <- education2023 %>%
     where(~ !all(.x == "(X)" | is.na(.x)))
   )
 ```
-
 
 ```{r}
 #remove also percent of females and percent of males in this column (if you want), this code can be kept or deleted depending on our decision to keep Percentage Female, PErcentage Male.
@@ -572,36 +665,96 @@ education2023 <- education2023 %>%
 
 ```
 
-What is left to do for the Data cleaning part: 
-- Separate the county and state in two separate columns
-- Look into the issue of spec() why does it read NULL instead of specifying the columns of the data
-- Remove the puerto rico variables, However this can be done just by matching the datasets
-- Append the datasets to eachother so that there is only one dataset for each datasets
+What is left to do for the Data cleaning part: - Separate the county and state in two separate columns - Look into the issue of spec() why does it read NULL instead of specifying the columns of the data - Remove the puerto rico variables, However this can be done just by matching the datasets - Append the datasets to eachother so that there is only one dataset for each datasets
 
+```{r}
+Edu2121 <- 
+  education2020 |>
+  left_join(education2021, by = "Geographic Area Name")
+```
+
+```{r}
+edu2122 <- 
+  Edu2121|>
+  left_join(education2022, "Geographic Area Name")
+```
+
+```{r}
+edutotal <-
+  edu2122|>
+  left_join(education2023, "Geographic Area Name")
+```
+
+```{r}
+edutotal<- edutotal|>
+  select(-contains("Geography", ignore.case = TRUE))|>
+  
+  separate(
+    col = `Geographic Area Name`,  # The column to split
+    into = c("County", "State"), # The names of the two new columns
+    sep = ", " # The character string used to split the column
+  )
+```
+
+```{r}
+# Keep only the first row encountered for each unique County name
+df_unique_counties <- edutotal %>%
+  distinct(County, .keep_all = TRUE)
+```
+
+```{r}
+EDU2 <- df_unique_counties |>
+  select(-contains("POVERTY", ignore.case = TRUE))|>
+  rename(Bacmore_2020 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.x`,
+         Bacmore_2021 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.y`,
+         Bacmore_2022 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.x.x`,
+         Bacmore_2023 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.y.y`,
+         )|>
+  select(-contains("Estimate", ignore.case = TRUE))
+```
+
+```{r}
+
+EDU2Long <- EDU2 |>
+  pivot_longer(
+    
+    cols = ends_with(c("2020", "2021", "2022", "2023")),
+    names_to = c(".value", "Year"),
+    
+    # 3. Specify the delimiter separating the variable name and the year
+    names_sep = "_",
+    
+    # 4. (Optional) Convert the new Year column to an integer type
+    values_transform = list(Year = as.integer)
+  )
+```
 
 ## Description of variables
 
 variables of Interest
 
-- Adult smoking (in percentage of total of population of adults): This variable describes the reported rate of current daily smokers in the population of the county.
+-   Adult smoking (in percentage of total of population of adults): This variable describes the reported rate of current daily smokers in the population of the county.
 
-- Excessive drinking: This variable describes the self-reported rate of excessive drinkers of the population in the county.
+-   Excessive drinking: This variable describes the self-reported rate of excessive drinkers of the population in the county.
 
-- Teen births: This variable describes the amount of teen births per 1000 females aged 15-19.
+-   Teen births: This variable describes the amount of teen births per 1000 females aged 15-19.
 
 Main variable
 
-- Education level (percent of 25 > year olds that have a Bachelors degree minimum): This variable describes the percentage of 25 year olds or older that have a diploma for a Bachelors degree or higher. 
+-   Education level (percent of 25 \> year olds that have a Bachelors degree minimum): This variable describes the percentage of 25 year olds or older that have a diploma for a Bachelors degree or higher.
 
-Control variables to complete model: 
+Control variables to complete model:
 
-- Unemployment: This variable describes the unemployment rate in the county. Unemployed people are 16 years old or older and are actively looking for work. 
+-   Unemployment: This variable describes the unemployment rate in the county. Unemployed people are 16 years old or older and are actively looking for work.
 
-- Income Inequality: This variable describes the income inequality levels, computed as the ratio of income at the 80th percentile over the income at the 20th percentile. 
+-   Income Inequality: This variable describes the income inequality levels, computed as the ratio of income at the 80th percentile over the income at the 20th percentile.
 
-- Severe Housing Problems: this variable describes the percentage of households that have at least one of the 4 reported housing problems: high housing costs, overcrowding, lack of kitchen or plumbing facilities.
+-   Severe Housing Problems: this variable describes the percentage of households that have at least one of the 4 reported housing problems: high housing costs, overcrowding, lack of kitchen or plumbing facilities.
 
-- Children in single parent households: This variable describes the percentage of children that grow up in single parent households currently.
+-   Children in single parent households: This variable describes the percentage of children that grow up in single parent households currently.
 
-- Mental health providers: This variable describes the rate of mental health providers per 100000 inhabitants. 
+-   Mental health providers: This variable describes the rate of mental health providers per 100000 inhabitants.
 
+Also need to describe the research question (500 words)
+
+Description of the sources
