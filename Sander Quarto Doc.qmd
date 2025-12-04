@@ -453,8 +453,9 @@ Control variables to complete model:
 
 Also need to describe the research question (500 words)
 
-Description of the sources
 
+Description of the sources
+The education data set comes from the United States Census Bureau. It is a national data organization that serves the mission to be the US's leading provider of data about the US citizens and the country's economy. The bureau collects a varying range of data on businesses, education, housing, 
 
 
 
