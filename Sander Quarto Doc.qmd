@@ -422,7 +422,8 @@ EDU2Long <- EDU2 |>
   )
 ```
 
-
+## Description of data obtention and cleaning
+To get the education data from the census bureau: Select all of the counties as variables, pick the variable you want to pick (in this case pick the education attainment) and download the data for all the years you are interested in
 
 ## Description of variables
 
@@ -452,10 +453,21 @@ Control variables to complete model:
 
 
 Also need to describe the research question (500 words)
+The topic we are going to analyse focuses on studying different health habits based on the educational attainment in an observed area, in this case, a county. The variables that will be looked into are adult smoking, excessive drinking, and teen births per 1000 15-19 year old women. We have chosen these variables because these are in someway based on choices that individuals make, rather than an unlucky occurrence in someones life. This means that, for example, getting sick can be the result of bad choices, however someone can not decide to become sick from one day to the other. On the contrary, choosing to smoke, choosing to excessively drink or delivering a baby during teen years are more closely related to choices and thus the environment. This is why we believe it is important to look into the determinants of these habits. One of the possible determinants is educational attainment because it not only influences individuals in their own lives, it also influences individuals in a community. Educational Attainment is computed as the proportion of people in a county that have obtained a Bachelors degree at least. The goal will be to analyse the aggregate decisions of individuals on health habits based on the aggregated educational attainment in a county and compare between more and less educated counties to see whether there are disparities based on educational attainment. 
+Maralani V. (2014) advances that education on its own does not lead to better health, rather, the bundle of educational inequality and environment plays a much larger role in predicting whether someone will smoke. 
+This research will thus try and adapt these findings further on smoking and adapting it to other health habits. 
+The estimation will be completed with different control variables, which we believe can isolate the impact of educational attainment. these are: - Children in single parent households
+- mental health providers
+- Severe Housing Problems
+- Income inequality
+- Unemployment
+The vast amount of counties in this dataset, spread through the 51 states of the USA, allow for a large sample size, and thus the development of different conclusions, whether some choices are regionally based, due to a certain education level, or completely random.  
 
 
-Description of the sources
-The education data set comes from the United States Census Bureau. It is a national data organization that serves the mission to be the US's leading provider of data about the US citizens and the country's economy. The bureau collects a varying range of data on businesses, education, housing, 
+Description of the sources (Roughly 500 words): 
+The education data set comes from the United States Census Bureau. It serves as the main national statistics agency in the US. It is a national data organization that serves the mission to be the US's leading provider of data about the US citizens and the country's economy. The bureau collects a varying range of data on businesses, education, and housing. The datasets which we have chosen from the US census bureau are the datasets relating to the educational attainment, 5-year ACS estimates, for the years 2020-2023. These datasets provides data on education across the counties of the US, dividing in different groups based on age, ethnicity, and poverty rate if needed. 
+
+
 
 
 
