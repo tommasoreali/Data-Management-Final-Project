@@ -97,11 +97,25 @@ education2020 <- education2020 %>%
   )
 ```
 
+```{r}
+#remove also percent of females and percent of males in this column (if you want), this code can be kept or deleted depending on our decision to keep Percentage Female, PErcentage Male.
+education2020 <- education2020 %>%
+  select(
+    -matches("Estimate!!Percent Male!!|Estimate!!Percent Female!!",
+             ignore.case = TRUE)
+  )
+```
+
+```{r}
+# Keep only the first row encountered for each unique County name
+df_unique_counties2020 <- education2020 %>%
+  distinct(`Geographic Area Name`, .keep_all = TRUE)
+```
 
 ```{r}
 #convert to numeric columns the ones that need it
 
-education2020 <- education2020 %>%
+df_unique_counties2020 <- df_unique_counties2020%>%
   mutate(across(
     -c(Geography, `Geographic Area Name`),
     ~ suppressWarnings(as.numeric(.x))
@@ -156,6 +170,13 @@ education2021 <- education2021 %>%
 
 ```
 
+```{r}
+# Keep only the first row encountered for each unique County name
+df_unique_counties2021 <- education2021 %>%
+  distinct(`Geographic Area Name`, .keep_all = TRUE)
+```
+
+
 ## Changes for education 2022
 
 ```{r}
@@ -182,6 +203,14 @@ education2022 <- education2022 %>%
   )
 ```
 
+```{r}
+#remove also percent of females and percent of males in this column (if you want), this code can be kept or deleted depending on our decision to keep Percentage Female, PErcentage Male.
+education2022 <- education2022 %>%
+  select(
+    -matches("Estimate!!Percent Male!!|Estimate!!Percent Female!!",
+             ignore.case = TRUE)
+  )
+```
 
 ```{r}
 #convert to numeric columns the ones that need it
@@ -193,6 +222,13 @@ education2022 <- education2022 %>%
   ))
 
 ```
+
+```{r}
+# Keep only the first row encountered for each unique County name
+df_unique_counties1 <- education2022 %>%
+  distinct(`Geographic Area Name`, .keep_all = TRUE)
+```
+
 
 ## Changes for education 2023
 
@@ -220,17 +256,31 @@ education2023 <- education2023 %>%
   )
 ```
 
+```{r}
+
+#remove also percent of females and percent of males in this column (if you want), this code can be kept or deleted depending on our decision to keep Percentage Female, PErcentage Male.
+education2023 <- education2023 %>%
+  select(
+    -matches("Estimate!!Percent Male!!|Estimate!!Percent Female!!",
+             ignore.case = TRUE)
+  )
+```
+
+```{r}
+# Keep only the first row encountered for each unique County name
+df_unique_counties2023 <- education2023 %>%
+  distinct(`Geographic Area Name`, .keep_all = TRUE)
+```
 
 ```{r}
 #convert to numeric columns the ones that need it
-
-education2023 <- education2023 %>%
+df_unique_counties2023 <- df_unique_counties2023 %>%
   mutate(across(
     -c(Geography, `Geographic Area Name`),
     ~ suppressWarnings(as.numeric(.x))
   ))
-
 ```
+
 
 
 What is left to do for the Data cleaning part: 
@@ -242,21 +292,22 @@ What is left to do for the Data cleaning part:
 
 ```{r}
 Edu2121 <- 
-  education2020 |>
-  left_join(education2021, by = "Geographic Area Name")
+  df_unique_counties2020 |>
+  left_join(df_unique_counties2021, by = "Geographic Area Name")
 ```
 ```{r}
 edu2122 <- 
   Edu2121|>
-  left_join(education2022, "Geographic Area Name")
+  left_join(df_unique_counties1, "Geographic Area Name")
 ```
 ```{r}
 edutotal <-
   edu2122|>
-  left_join(education2023, "Geographic Area Name")
+  left_join(df_unique_counties2023, "Geographic Area Name")
 ```
+
 ```{r}
-edutotal<- edutotal|>
+edubycounty<- edutotal|>
   select(-contains("Geography", ignore.case = TRUE))|>
   
   separate(
@@ -266,14 +317,9 @@ edutotal<- edutotal|>
   )
 ```
 
-```{r}
-# Keep only the first row encountered for each unique County name
-df_unique_counties <- edutotal %>%
-  distinct(County, .keep_all = TRUE)
-```
 
 ```{r}
-EDU2 <- df_unique_counties |>
+EDU2 <- edubycounty |>
   select(-contains("POVERTY", ignore.case = TRUE))|>
   rename(Bacmore_2020 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.x`,
          Bacmore_2021 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.y`,
