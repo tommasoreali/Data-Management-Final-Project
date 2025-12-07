@@ -81,33 +81,10 @@ education2020 <- education2020[-1, ]
 
 
 ```{r}
-education2020 <- education2020 %>%
-  select(-contains("Margin of Error", ignore.case = TRUE))|>
-  select(-contains("Total", ignore.case = TRUE))|>
-  select(-contains("Estimate!!Male!!", ignore.case = TRUE))|>
-  select(-contains("Estimate!!Female!!", ignore.case = TRUE))|>
-  select(-contains("High school", ignore.case = TRUE)) |>
-  select(-contains("Graduate", ignore.case = TRUE))|>
-  select(-contains("18 to 24", ignore.case = TRUE))|>
-  select(-contains("34", ignore.case = TRUE))|>
-  select(-contains("9th", ignore.case = TRUE))|>
-  select(-contains("34", ignore.case = TRUE))|>
-  select(-contains("Associate's", ignore.case = TRUE))|>
-  select(-contains("34", ignore.case = TRUE))|>
-  select(-contains("Population 65 years and over", ignore.case = TRUE))|>
-  select(-contains("Population 45 to 64 years", ignore.case = TRUE))|>
-  select(-contains("Population 35 to 44 years", ignore.case = TRUE))|>
-  select(-contains("RACE", ignore.case = TRUE))|>
-  select(-contains("college", ignore.case = TRUE))
-```
-
-
-
-```{r}
 #easier code for directly deleting all the rows in a single code 
 education2020 <- education2020 %>%
   select(
-    -matches("Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!",
+    -matches("Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!|High school|Graduate|18 to 24|34|9th|Associate's|Population 65 years and over| Population 45 to 64 years|Population 35 to 44 years|RACE|college",
              ignore.case = TRUE)
   )
 ```
@@ -120,15 +97,6 @@ education2020 <- education2020 %>%
   )
 ```
 
-
-```{r}
-#remove also percent of females and percent of males in this column (if you want), this code can be kept or deleted depending on our decision to keep Percentage Female, PErcentage Male.
-education2020 <- education2020 %>%
-  select(
-    -matches("Estimate!!Percent Male!!|Estimate!!Percent Female!!",
-             ignore.case = TRUE)
-  )
-```
 
 ```{r}
 #convert to numeric columns the ones that need it
@@ -153,33 +121,8 @@ education2021 <- education2021[-1, ]
 
 ```{r}
 education2021 <- education2021 %>%
-  select(-contains("Margin of Error", ignore.case = TRUE))|>
-  select(-contains("Total", ignore.case = TRUE))|>
-  select(-contains("Estimate!!Male!!", ignore.case = TRUE))|>
-  select(-contains("Estimate!!Female!!", ignore.case = TRUE))|>
-  select(-contains("High school", ignore.case = TRUE)) |>
-  select(-contains("Graduate", ignore.case = TRUE))|>
-  select(-contains("18 to 24", ignore.case = TRUE))|>
-  select(-contains("34", ignore.case = TRUE))|>
-  select(-contains("9th", ignore.case = TRUE))|>
-  select(-contains("34", ignore.case = TRUE))|>
-  select(-contains("Associate's", ignore.case = TRUE))|>
-  select(-contains("34", ignore.case = TRUE))|>
-  select(-contains("Population 65 years and over", ignore.case = TRUE))|>
-  select(-contains("Population 45 to 64 years", ignore.case = TRUE))|>
-  select(-contains("Population 35 to 44 years", ignore.case = TRUE))|>
-  select(-contains("RACE", ignore.case = TRUE))|>
-  select(-contains("college", ignore.case = TRUE))
-
-```
-
-
-
-```{r}
-#easier code for directly deleting all the rows in a single code 
-education2021 <- education2021 %>%
   select(
-    -matches("Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!",
+    -matches("Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!|High school|Graduate|18 to 24|34|9th|Associate's|Population 65 years and over| Population 45 to 64 years|Population 35 to 44 years|RACE|college",
              ignore.case = TRUE)
   )
 ```
@@ -224,34 +167,9 @@ education2022 <- education2022[-1, ]
 
 
 ```{r}
-#remove useless columns
-education2022 <- education2022 %>%
-  select(-contains("Margin of Error", ignore.case = TRUE))|>
-  select(-contains("Total", ignore.case = TRUE))|>
-  select(-contains("Estimate!!Male!!", ignore.case = TRUE))|>
-  select(-contains("Estimate!!Female!!", ignore.case = TRUE))|>
-  select(-contains("High school", ignore.case = TRUE)) |>
-  select(-contains("Graduate", ignore.case = TRUE))|>
-  select(-contains("18 to 24", ignore.case = TRUE))|>
-  select(-contains("34", ignore.case = TRUE))|>
-  select(-contains("9th", ignore.case = TRUE))|>
-  select(-contains("34", ignore.case = TRUE))|>
-  select(-contains("Associate's", ignore.case = TRUE))|>
-  select(-contains("34", ignore.case = TRUE))|>
-  select(-contains("Population 65 years and over", ignore.case = TRUE))|>
-  select(-contains("Population 45 to 64 years", ignore.case = TRUE))|>
-  select(-contains("Population 35 to 44 years", ignore.case = TRUE))|>
-  select(-contains("RACE", ignore.case = TRUE))|>
-  select(-contains("college", ignore.case = TRUE))
-```
-
-
-
-```{r}
-#easier code for directly deleting all the rows in a single code 
-education2022 <- education2022 %>%
+education2022 <- education2022 |>
   select(
-    -matches("Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!",
+    -matches("Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!|High school|Graduate|18 to 24|34|9th|Associate's|Population 65 years and over| Population 45 to 64 years|Population 35 to 44 years|RACE|college",
              ignore.case = TRUE)
   )
 ```
@@ -264,15 +182,6 @@ education2022 <- education2022 %>%
   )
 ```
 
-
-```{r}
-#remove also percent of females and percent of males in this column (if you want), this code can be kept or deleted depending on our decision to keep Percentage Female, PErcentage Male.
-education2022 <- education2022 %>%
-  select(
-    -matches("Estimate!!Percent Male!!|Estimate!!Percent Female!!",
-             ignore.case = TRUE)
-  )
-```
 
 ```{r}
 #convert to numeric columns the ones that need it
@@ -294,35 +203,11 @@ colnames(education2023) <- new_names_education
 education2023 <- education2023[-1, ]
 ```
 
-
 ```{r}
-education2023 <- education2023 %>%
-  select(-contains("Margin of Error", ignore.case = TRUE))|>
-  select(-contains("Total", ignore.case = TRUE))|>
-  select(-contains("Estimate!!Male!!", ignore.case = TRUE))|>
-  select(-contains("Estimate!!Female!!", ignore.case = TRUE))|>
-  select(-contains("High school", ignore.case = TRUE)) |>
-  select(-contains("Graduate", ignore.case = TRUE))|>
-  select(-contains("18 to 24", ignore.case = TRUE))|>
-  select(-contains("34", ignore.case = TRUE))|>
-  select(-contains("9th", ignore.case = TRUE))|>
-  select(-contains("34", ignore.case = TRUE))|>
-  select(-contains("Associate's", ignore.case = TRUE))|>
-  select(-contains("34", ignore.case = TRUE))|>
-  select(-contains("Population 65 years and over", ignore.case = TRUE))|>
-  select(-contains("Population 45 to 64 years", ignore.case = TRUE))|>
-  select(-contains("Population 35 to 44 years", ignore.case = TRUE))|>
-  select(-contains("RACE", ignore.case = TRUE))|>
-  select(-contains("college", ignore.case = TRUE))
-```
-
-
-
-```{r}
-#easier code for directly deleting all the rows in a single code 
+# Delete all the columns and rows that are not needed
 education2023 <- education2023 %>%
   select(
-    -matches("Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!",
+    -matches("Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!|High school|Graduate|18 to 24|34|9th|Associate's|Population 65 years and over| Population 45 to 64 years|Population 35 to 44 years|RACE|college",
              ignore.case = TRUE)
   )
 ```
@@ -337,15 +222,6 @@ education2023 <- education2023 %>%
 
 
 ```{r}
-#remove also percent of females and percent of males in this column (if you want), this code can be kept or deleted depending on our decision to keep Percentage Female, PErcentage Male.
-education2023 <- education2023 %>%
-  select(
-    -matches("Estimate!!Percent Male!!|Estimate!!Percent Female!!",
-             ignore.case = TRUE)
-  )
-```
-
-```{r}
 #convert to numeric columns the ones that need it
 
 education2023 <- education2023 %>%
@@ -355,6 +231,7 @@ education2023 <- education2023 %>%
   ))
 
 ```
+
 
 What is left to do for the Data cleaning part: 
 - Separate the county and state in two separate columns
@@ -410,17 +287,36 @@ EDU2 <- df_unique_counties |>
 
 EDU2Long <- EDU2 |>
   pivot_longer(
-    
     cols = ends_with(c("2020", "2021", "2022", "2023")),
     names_to = c(".value", "Year"),
-    
-    # 3. Specify the delimiter separating the variable name and the year
     names_sep = "_",
-    
-    # 4. (Optional) Convert the new Year column to an integer type
-    values_transform = list(Year = as.integer)
-  )
+    values_transform = list(Year = as.integer))
 ```
+
+
+
+
+
+
+
+## table of dataset
+
+```{r}
+
+
+# Create a data frame for the table
+file_summary_table <- data.frame(
+  `Number of Rows` = nrow(EDU2),
+  `Number of Columns` = ncol(EDU2),
+  check.names = FALSE # Allows column names with spaces
+)
+
+# Print the result
+print(file_summary_table)
+
+```
+
+
 
 ## Description of data obtention and cleaning
 To get the education data from the census bureau: Select all of the counties as variables, pick the variable you want to pick (in this case pick the education attainment) and download the data for all the years you are interested in
