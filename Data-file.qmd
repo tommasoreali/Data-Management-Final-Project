@@ -4,16 +4,21 @@ author: "Sander Beerepoot and Tommaso Reali"
 format: html
 ---
 
-```{r}
+```{r, message=FALSE}
 library(here)
 library(ggplot2)
 library(dplyr)
 library(vroom)
+library(tidyr)
+library(tidyverse)
 ```
+
+## Download data
 
 ```{r}
 here::i_am("Data-Management-Final-Project.Rproj")
 ```
+
 Description of how to get the data sets
 
 To get the data of the CHR&R, download each file per year seperately
@@ -22,5 +27,749 @@ Link: "https://www.countyhealthrankings.org/health-data/methodology-and-sources/
 
 To get the education data from the census bureau: Select all of the counties as variables, pick the variable you want to pick (in this case pick the education attainment) and download the data for all the years you are interested in
 
-Link: "https://data.census.gov/table?q=S1501:+Educational+Attainment&g=010XX00US$0500000_040XX00US01$0500000"
+Link: "https://data.census.gov/table?q=S1501:+Educational+Attainment&g=010XX00US\$0500000_040XX00US01\$0500000"
+
+```{r, message=FALSE}
+health2020 <- vroom(here("Data", "2020health.csv"))
+health2021 <- vroom(here("Data", "2021health.csv"))
+health2022 <- vroom(here("Data", "2022health.csv"))
+health2023 <- vroom(here("Data", "2023health.csv"))
+education2020 <- vroom(here("Data", "ACSST5Y2020.S1501-Data.csv"))
+education2021 <- vroom(here("Data", "ACSST5Y2021.S1501-Data.csv"))
+education2022 <- vroom(here("Data", "ACSST5Y2022.S1501-Data.csv"))
+education2023 <- vroom(here("Data", "ACSST5Y2023.S1501-Data.csv"))
+```
+
+
+
+
+# Data Cleaning
+
+## Changes made to Health data
+
+### Changes for health2020
+
+```{r}
+# Replace wrong column names with first row:
+new_names <- as.character(health2020[1, ])
+colnames(health2020) <- new_names
+health2020 <- health2020[-1, ]
+
+```
+
+```{r}
+# Remove all the columns which are not useful (use the same technique for the other years datasets)
+
+cols_health_2020 <- c(
+  "FIPS",
+  "State",
+  "County",
+  "% Severe Housing Problems",
+  "Income Ratio",
+  "% Unemployed",
+  "Mental Health Provider Rate",
+  "Teen Birth Rate",
+  "% Excessive Drinking",
+  "% Smokers",
+  "% Single-Parent Households"
+)
+
+health2020 <- health2020 %>%
+  select(all_of(cols_health_2020))
+
+
+```
+
+```{r}
+# Look at NA values and clean if they are in State, county columns
+colSums(is.na(health2020))
+
+health2020 %>%
+  filter(is.na(County))
+
+# Replace NA values for county by "Average"
+health2020 <- health2020 %>%
+  mutate(
+    County = ifelse(is.na(County), "Average", County)
+  )
+
+```
+
+```{r}
+# Convert to numeric columns the ones that need it
+
+health2020 <- health2020 %>%
+  mutate(across(
+    -c(FIPS, State, County),
+    ~ as.numeric(gsub(",", ".", .x))
+  ))
+
+```
+
+## Changes for Health2021
+
+```{r}
+# Replace wrong column names with first row:
+new_names <- as.character(health2021[1, ])
+colnames(health2021) <- new_names
+health2021 <- health2021[-1, ]
+
+```
+
+```{r}
+# Remove all the columns which are not usefull 
+
+cols_health_2021 <- c(
+  "FIPS",
+  "State",
+  "County",
+  "% Severe Housing Problems",
+  "Income Ratio",
+  "% Unemployed",
+  "Mental Health Provider Rate",
+  "Teen Birth Rate",
+  "% Excessive Drinking",
+  "% Smokers",
+  "% Children in Single-Parent Households"
+)
+
+health2021 <- health2021 %>%
+  select(all_of(cols_health_2021))
+
+
+```
+
+```{r}
+# Look at NA values and clean if they are in State, county columns
+colSums(is.na(health2021))
+
+health2021 %>%
+  filter(is.na(County))
+
+# Replace NA values for county by "Average"
+health2021 <- health2021 %>%
+  mutate(
+    County = ifelse(is.na(County), "Average", County)
+  )
+
+```
+
+```{r}
+# Convert to numeric columns the ones that need it
+
+health2021 <- health2021 %>%
+  mutate(across(
+    -c(FIPS, State, County),
+    ~ as.numeric(gsub(",", ".", .x))
+  ))
+
+```
+
+## Changes for Health2022
+
+```{r}
+# Replace wrong column names with first row:
+new_names <- as.character(health2022[1, ])
+colnames(health2022) <- new_names
+health2022 <- health2022[-1, ]
+
+```
+
+```{r}
+# Remove all the columns which are not usefull 
+
+## Check if health2022 has the same variable names as 2021 and 2020
+
+cols_health_2020 %in% names(health2022)
+cols_health_2021 %in% names(health2022)
+
+# Create a vector for health2022 so we can select the columns we want
+
+cols_health_2022 <- c(
+  "FIPS",
+  "State",
+  "County",
+  "% Severe Housing Problems",
+  "Income Ratio",
+  "% Unemployed",
+  "Mental Health Provider Rate",
+  "Teen Birth Rate",
+  "% Excessive Drinking",
+  "% Smokers",
+  "% Children in Single-Parent Households"
+)
+
+health2022 <- health2022 %>%
+  select(all_of(cols_health_2022))
+
+
+```
+
+```{r}
+# Look at NA values and clean if they are in State, county columns
+colSums(is.na(health2022))
+
+health2022 %>%
+  filter(is.na(County))
+
+# Replace NA values for county by "Average"
+health2022 <- health2022 %>%
+  mutate(
+    County = ifelse(is.na(County), "Average", County)
+  )
+
+```
+
+```{r}
+# Convert to numeric columns the ones that need it
+
+health2022 <- health2022 %>%
+  mutate(across(
+    -c(FIPS, State, County),
+    ~ as.numeric(gsub(",", ".", .x))
+  ))
+```
+
+## Changes for Health2023
+
+```{r}
+# Replace wrong column names with first row:
+new_names <- as.character(health2023[1, ])
+colnames(health2023) <- new_names
+health2023 <- health2023[-1, ]
+
+```
+
+```{r}
+# Remove all the columns which are not usefull 
+
+## Check if health2022 has the same variable names as 2021 and 2020
+
+cols_health_2020 %in% names(health2023)
+cols_health_2021 %in% names(health2023)
+cols_health_2022 %in% names(health2023)
+
+# Create a vector for health2022 so we can select the columns we want
+
+cols_health_2023 <- c(
+  "FIPS",
+  "State",
+  "County",
+  "% Severe Housing Problems",
+  "Income Ratio",
+  "% Unemployed",
+  "Mental Health Provider Rate",
+  "Teen Birth Rate",
+  "% Excessive Drinking",
+  "% Adults Reporting Currently Smoking",
+  "% Children in Single-Parent Households"
+)
+
+health2023 <- health2023 %>%
+  select(all_of(cols_health_2023))
+
+
+```
+
+```{r}
+# Look at NA values and clean if they are in State, county columns
+colSums(is.na(health2023))
+
+health2023 %>%
+  filter(is.na(County))
+
+# Replace NA values for county by "Average"
+health2023 <- health2023 %>%
+  mutate(
+    County = ifelse(is.na(County), "Average", County)
+  )
+
+```
+
+```{r}
+# Convert to numeric columns the ones that need it
+
+health2023 <- health2023 %>%
+  mutate(across(
+    -c(FIPS, State, County),
+    ~ as.numeric(gsub(",", ".", .x))
+  ))
+
+```
+
+## Merging the health datasets together
+
+```{r}
+#First match the names for Adult moking and single children in household
+
+health2023 <- health2023 %>%
+  rename(`% Smokers` = `% Adults Reporting Currently Smoking`)
+
+health2020 <- health2020 %>%
+  rename(`% Children in Single-Parent Households` = `% Single-Parent Households`)
+```
+
+```{r}
+Hea2021 <- 
+  health2020 |>
+  left_join(health2021, by = c("County", "State"))
+```
+
+```{r}
+Hea2122 <- 
+  Hea2021|>
+  left_join(health2022, by = c("County", "State"))
+```
+
+```{r}
+Healthtotal <-
+  Hea2122|>
+  left_join(health2023, by = c("County", "State"))
+```
+
+```{r}
+
+Healthtotal <- Healthtotal |>
+  select(-contains("FIPS", ignore.case = TRUE)) |>
+  rename(
+    HousingP_2020   = `% Severe Housing Problems.x`,
+    HousingP_2021   = `% Severe Housing Problems.y`,
+    HousingP_2022   = `% Severe Housing Problems.x.x`,
+    HousingP_2023   = `% Severe Housing Problems.y.y`,
+    
+    IncomeRatio_2020 = `Income Ratio.x`,
+    IncomeRatio_2021 = `Income Ratio.y`,
+    IncomeRatio_2022 = `Income Ratio.x.x`,
+    IncomeRatio_2023 = `Income Ratio.y.y`,
+    
+    Unemployed_2020 = `% Unemployed.x`,
+    Unemployed_2021 = `% Unemployed.y`,
+    Unemployed_2022 = `% Unemployed.x.x`,
+    Unemployed_2023 = `% Unemployed.y.y`,
+    
+    Mentalhealth_2020 = `Mental Health Provider Rate.x`,
+    Mentalhealth_2021 = `Mental Health Provider Rate.y`,
+    Mentalhealth_2022 = `Mental Health Provider Rate.x.x`,
+    Mentalhealth_2023 = `Mental Health Provider Rate.y.y`,
+    TeenBirth_2020 = `Teen Birth Rate.x`,
+    TeenBirth_2021 = `Teen Birth Rate.y`,
+    TeenBirth_2022 = `Teen Birth Rate.x.x`,
+    TeenBirth_2023 = `Teen Birth Rate.y.y`,
+    ExcessiveDrink_2020 = `% Excessive Drinking.x`,
+    ExcessiveDrink_2021 = `% Excessive Drinking.y`,
+    ExcessiveDrink_2022 = `% Excessive Drinking.x.x`,
+    ExcessiveDrink_2023 = `% Excessive Drinking.y.y`,
+    Smokers_2020 = `% Smokers.x`,
+    Smokers_2021 = `% Smokers.y`,
+    Smokers_2022 = `% Smokers.x.x`,
+    Smokers_2023 = `% Smokers.y.y`,
+    SingleParent_2020 = `% Children in Single-Parent Households.x`,
+    SingleParent_2021 = `% Children in Single-Parent Households.y`,
+    SingleParent_2022 = `% Children in Single-Parent Households.x.x`,
+    SingleParent_2023 = `% Children in Single-Parent Households.y.y`
+  )
+
+```
+
+```{r}
+
+Healthtotal <- Healthtotal |>
+  pivot_longer(
+    cols = ends_with(c("2020", "2021", "2022", "2023")),
+    names_to = c(".value", "Year"),
+    names_sep = "_",
+    values_transform = list(Year = as.integer)
+  )
+```
+
+## Changes made for Education data
+
+### Changes for education2020
+
+```{r}
+# Replace wrong column names with first row:
+new_names_education <- as.character(education2020[1, ])
+colnames(education2020) <- new_names_education
+education2020 <- education2020[-1, ]
+```
+
+```{r}
+# Easier code for directly deleting all the rows in a single code 
+education2020 <- education2020 %>%
+  select(
+    -matches("Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!|High school|Graduate|18 to 24|34|9th|Associate's|Population 65 years and over| Population 45 to 64 years|Population 35 to 44 years|RACE|college",
+             ignore.case = TRUE)
+  )
+```
+
+```{r}
+# Remove columns that are ONLY "(X)" (ignoring NAs)
+education2020 <- education2020 %>%
+  select(
+    where(~ !all(.x == "(X)" | is.na(.x)))
+  )
+```
+
+```{r}
+# Remove also percent of females and percent of males in this column, this code can be kept or deleted depending on our decision to keep Percentage Female, Percentage Male.
+education2020 <- education2020 %>%
+  select(
+    -matches("Estimate!!Percent Male!!|Estimate!!Percent Female!!",
+             ignore.case = TRUE)
+  )
+```
+
+```{r}
+# Keep only the first row encountered for each unique County name
+df_unique_counties2020 <- education2020 %>%
+  distinct(`Geographic Area Name`, .keep_all = TRUE)
+```
+
+```{r}
+# Convert to numeric columns the ones that need it
+
+df_unique_counties2020 <- df_unique_counties2020%>%
+  mutate(across(
+    -c(Geography, `Geographic Area Name`),
+    ~ suppressWarnings(as.numeric(.x))
+  ))
+
+```
+
+### Changes for education2021
+
+```{r}
+# Replace wrong column names with first row:
+new_names_education <- as.character(education2021[1, ])
+colnames(education2021) <- new_names_education
+education2021 <- education2021[-1, ]
+```
+
+```{r}
+education2021 <- education2021 %>%
+  select(
+    -matches("Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!|High school|Graduate|18 to 24|34|9th|Associate's|Population 65 years and over| Population 45 to 64 years|Population 35 to 44 years|RACE|college",
+             ignore.case = TRUE)
+  )
+```
+
+```{r}
+# Remove columns that are ONLY "(X)" (ignoring NAs)
+education2021 <- education2021 %>%
+  select(
+    where(~ !all(.x == "(X)" | is.na(.x)))
+  )
+```
+
+```{r}
+# Remove also percent of females and percent of males in this column (if you want), this code can be kept or deleted depending on our decision to keep Percentage Female, PErcentage Male.
+education2021 <- education2021 %>%
+  select(
+    -matches("Estimate!!Percent Male!!|Estimate!!Percent Female!!",
+             ignore.case = TRUE)
+  )
+```
+
+```{r}
+# Convert to numeric columns the ones that need it
+
+education2021 <- education2021 %>%
+  mutate(across(
+    -c(Geography, `Geographic Area Name`),
+    ~ suppressWarnings(as.numeric(.x))
+  ))
+
+```
+
+```{r}
+# Keep only the first row encountered for each unique County name
+df_unique_counties2021 <- education2021 %>%
+  distinct(`Geographic Area Name`, .keep_all = TRUE)
+```
+
+### Changes for education2022
+
+```{r}
+# Replace wrong column names with first row:
+new_names_education <- as.character(education2022[1, ])
+colnames(education2022) <- new_names_education
+education2022 <- education2022[-1, ]
+```
+
+```{r}
+education2022 <- education2022 |>
+  select(
+    -matches("Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!|High school|Graduate|18 to 24|34|9th|Associate's|Population 65 years and over| Population 45 to 64 years|Population 35 to 44 years|RACE|college",
+             ignore.case = TRUE)
+  )
+```
+
+```{r}
+# Remove columns that are ONLY "(X)" (ignoring NAs)
+education2022 <- education2022 %>%
+  select(
+    where(~ !all(.x == "(X)" | is.na(.x)))
+  )
+```
+
+```{r}
+# Remove also percent of females and percent of males in this column (if you want), this code can be kept or deleted depending on our decision to keep Percentage Female, PErcentage Male.
+education2022 <- education2022 %>%
+  select(
+    -matches("Estimate!!Percent Male!!|Estimate!!Percent Female!!",
+             ignore.case = TRUE)
+  )
+```
+
+```{r}
+# Convert to numeric columns the ones that need it
+
+education2022 <- education2022 %>%
+  mutate(across(
+    -c(Geography, `Geographic Area Name`),
+    ~ suppressWarnings(as.numeric(.x))
+  ))
+
+```
+
+```{r}
+# Keep only the first row encountered for each unique County name
+df_unique_counties1 <- education2022 %>%
+  distinct(`Geographic Area Name`, .keep_all = TRUE)
+```
+
+### Changes for education2023
+
+```{r}
+# Replace wrong column names with first row:
+new_names_education <- as.character(education2023[1, ])
+colnames(education2023) <- new_names_education
+education2023 <- education2023[-1, ]
+```
+
+```{r}
+# Delete all the columns and rows that are not needed
+education2023 <- education2023 %>%
+  select(
+    -matches("Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!|High school|Graduate|18 to 24|34|9th|Associate's|Population 65 years and over| Population 45 to 64 years|Population 35 to 44 years|RACE|college",
+             ignore.case = TRUE)
+  )
+```
+
+```{r}
+# Remove columns that are ONLY "(X)" (ignoring NAs)
+education2023 <- education2023 %>%
+  select(
+    where(~ !all(.x == "(X)" | is.na(.x)))
+  )
+```
+
+```{r}
+# Remove also percent of females and percent of males in this column, this code can be kept or deleted depending on our decision to keep Percentage Female, PErcentage Male.
+education2023 <- education2023 %>%
+  select(
+    -matches("Estimate!!Percent Male!!|Estimate!!Percent Female!!",
+             ignore.case = TRUE)
+  )
+```
+
+```{r}
+# Keep only the first row encountered for each unique County name
+df_unique_counties2023 <- education2023 %>%
+  distinct(`Geographic Area Name`, .keep_all = TRUE)
+```
+
+```{r}
+# Convert to numeric columns the ones that need it
+df_unique_counties2023 <- df_unique_counties2023 %>%
+  mutate(across(
+    -c(Geography, `Geographic Area Name`),
+    ~ suppressWarnings(as.numeric(.x))
+  ))
+```
+
+## Merging in one dataset
+
+```{r}
+Edu2121 <- 
+  df_unique_counties2020 |>
+  left_join(df_unique_counties2021, by = "Geographic Area Name")
+```
+```{r}
+edu2122 <- 
+  Edu2121|>
+  left_join(df_unique_counties1, "Geographic Area Name")
+```
+```{r}
+edutotal <-
+  edu2122|>
+  left_join(df_unique_counties2023, "Geographic Area Name")
+```
+
+```{r}
+edubycounty<- edutotal|>
+  select(-contains("Geography", ignore.case = TRUE))|>
+  
+  separate(
+    col = `Geographic Area Name`,  # The column to split
+    into = c("County", "State"), # The names of the two new columns
+    sep = ", " # The character string used to split the column
+  )
+```
+
+```{r}
+EDU2 <- edubycounty |>
+  select(-contains("POVERTY", ignore.case = TRUE))|>
+  rename(Bacmore_2020 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.x`,
+         Bacmore_2021 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.y`,
+         Bacmore_2022 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.x.x`,
+         Bacmore_2023 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.y.y`,
+         )|>
+  select(-contains("Estimate", ignore.case = TRUE))
+```
+
+```{r}
+
+EDU2Long <- EDU2 |>
+  pivot_longer(
+    cols = ends_with(c("2020", "2021", "2022", "2023")),
+    names_to = c(".value", "Year"),
+    names_sep = "_",
+    values_transform = list(Year = as.integer))
+```
+
+## Description of data obtention and cleaning
+
+### Education:
+
+To get the education data from the census bureau: Select all of the counties as variables, pick the variable you want to pick (in this case pick the education attainment) and download the data for all the years you are interested in. When downloading in R, there is one dataset per year.In order to clean the data, get rid of all the variables and specifications only to keep educational attainment for bachelors and more for people aged 25 and over. The specify the nature of the variables, county and state are characters, and the rest are numerical. finally when all datasets per year are cleaned, merge with the column (state, county), this ensures that every state is the correct key, as there are counties that have the same name in separate states. When the sets are merged, separate state and county in separate columns, pivot the data to be in long format (4 observations per county per variable (there are 4 years being analysed)), and rename the variable as needed (in our case Bacmore). 
+
+### Health:
+
+The raw data for health was at first downloaded from the CHR&R website for all the years we are interested in for this study (2020-2023) as 4 different csv files (one for each year). After downloading the data in Rstudio using vroom(), the the raw columns names were replaced with the true column names which were situated in the first row. Furthermore, all the columns which were not useful were removed in order to keep only the variables used in this study, namely: % Severe Housing Problems, Income Ratio, % Unemployed, Mental Health Provider Rate, Teen Birth Rate, % Excessive Drinking, % Smokers, % Children in Single-Parent Households. Moreover, the missing values for county names were replaced by "Average" as for each county there was one observation per year calculating its average in the raw dataset. The nature of the variables was also changed: county and state are characters, and the rest are numerical. Finally, after having cleaned the 4 years datasets, they were merged together with the column (state, county), ensuring every state and county are the correct key. After the merge the dataset was pivoted to be in long format (with each observation a unique combination of State, county and year), and the columns were renamed as needed.
+
+## Description of variables
+
+variables of Interest
+
+- Adult smoking (in percentage of total of population of adults): This variable describes the reported rate of current daily smokers in the population of the county.
+
+- Excessive drinking: This variable describes the self-reported rate of excessive drinkers of the population in the county.
+
+- Teen births: This variable describes the amount of teen births per 1000 females aged 15-19.
+
+Main variable
+
+- Education level (percent of 25 > year olds that have a Bachelors degree minimum): This variable describes the percentage of 25 year olds or older that have a diploma for a Bachelors degree or higher. 
+
+Control variables to complete model: 
+
+- Unemployment: This variable describes the unemployment rate in the county. Unemployed people are 16 years old or older and are actively looking for work. 
+
+- Income Inequality: This variable describes the income inequality levels, computed as the ratio of income at the 80th percentile over the income at the 20th percentile. 
+
+- Severe Housing Problems: this variable describes the percentage of households that have at least one of the 4 reported housing problems: high housing costs, overcrowding, lack of kitchen or plumbing facilities.
+
+- Children in single parent households: This variable describes the percentage of children that grow up in single parent households currently.
+
+- Mental health providers: This variable describes the rate of mental health providers per 100000 inhabitants. 
+
+
+## Research question description (500 words):
+
+The topic we are going to analyse focuses on studying different health habits based on the educational attainment in an observed area, in this case, a county. The variables that will be looked into are adult smoking, excessive drinking, and teen births per 1000 15-19 year old women. We have chosen these variables because these are in someway based on choices that individuals make, rather than an unlucky occurrence in someones life. This means that, for example, getting sick can be the result of bad choices, however someone can not decide to become sick from one day to the other. On the contrary, choosing to smoke, choosing to excessively drink or delivering a baby during teen years are more closely related to choices and thus the environment. This is why we believe it is important to look into the determinants of these habits. One of the possible determinants is educational attainment because it not only influences individuals in their own lives, it also influences individuals in a community. Educational Attainment is computed as the proportion of people in a county that have obtained a Bachelors degree at least. The goal will be to analyse the aggregate decisions of individuals on health habits based on the aggregated educational attainment in a county and compare between more and less educated counties to see whether there are disparities based on educational attainment. 
+Maralani V. (2014) advances that education on its own does not lead to better health, rather, the bundle of educational inequality and environment plays a much larger role in predicting whether someone will smoke. 
+This research will thus try and adapt these findings further on smoking and adapting it to other health habits. 
+The estimation will be completed with different control variables, which we believe can isolate the impact of educational attainment. these are: - Children in single parent households
+- mental health providers
+- Severe Housing Problems
+- Income inequality
+- Unemployment
+The vast amount of counties in this dataset, spread through the 51 states of the USA, allow for a large sample size, and thus the development of different conclusions, whether some choices are regionally based, due to a certain education level, or completely random.  
+
+
+## Description of the sources: 
+
+The education data set comes from the United States Census Bureau. It serves as the main national statistics agency in the US. It is a national data organization that serves the mission to be the US's leading provider of data about the US citizens and the country's economy. The bureau collects a varying range of data on businesses, education, and housing. The datasets which we have chosen from the US census bureau are the datasets relating to the educational attainment, 5-year ACS estimates, for the years 2020-2023. These datasets provides data on education across the counties of the US, dividing in different groups based on age, ethnicity, and poverty rate if needed. 
+
+
+The Health dataset used in this study is constructed of data coming entirely from the CHR&R (County Health Rankings and Roadmaps) program. This initiative was created by the University of Wisconsin Population Health institute with support from the Robert Wood Johnson Foundation. It consists in providing annual data on health factors within and across almost the entirety of counties from the United States. The CHR&R provides data, evidence, guidance and examples to build awareness about the multiple factors influencing health conditions and disparities across the country. Furthermore, CHR&R puts an emphasis on the range of health-influencing measures that offer crucial context about community specific health conditions. In fact, Along with the data the program provides tools and evidence-based strategies, which can be used by the communities to move to action and solve the important health and societal issues concerning their people. As an example, The "2025 Annual data release" includes over 80 health-related measures, and focuses on the impact of certain societal factors present in the United States on community conditions.
+
+# Tables per dataset
+
+## Table of education data set
+
+```{r}
+data_name <- "Education Data"
+
+row_count <- nrow(EDU2Long)
+column_count <- ncol(EDU2Long)
+
+summary_table <- data.frame(
+  `Data File Name` = data_name,
+  `Number of Rows` = row_count,
+  `Number of Columns` = column_count,
+  check.names = FALSE
+)
+print(summary_table)
+```
+
+## Table of health data set
+
+```{r}
+data_name <- "Health Data"
+
+row_count <- nrow(Healthtotal)
+column_count <- ncol(Healthtotal)
+
+summary_table <- data.frame(
+  `Data File Name` = data_name,
+  `Number of Rows` = row_count,
+  `Number of Columns` = column_count,
+  check.names = FALSE
+)
+print(summary_table)
+```
+
+# Tables for Main Variables
+
+## Table for Education variable
+
+Since there are 3144 counties, the data will be aggregated. 
+
+```{r, message=FALSE}
+EDU2Long|>
+  ggplot(aes(y = Bacmore, x = Year)) +
+  geom_violin()
+```
+While not the most accurate, these violin plots show the density of educational attainment aggregated in the US. The graphs show that every year, the average bachelors obtention increases slightly, going from about 17% to 20% between 2020 and 2023. 
+
+## Table for health main target variables (% Smokers, % Excessive drinkers, Teen birth rates)
+
+```{r, message=FALSE}
+Healthtotal|>
+  ggplot(aes(y = TeenBirth, x = Year)) +
+  geom_violin()
+```
+
+These violin plots show the aggregated US average of Teen birth rates as the amount of teen births per 1000 females aged 15-19. It is observed that the density of the violin plots gets more and more concentrated towards the bottom as the years pass by. As a matter of fact, the average of aggregated teen birth lowers from about 25% in 2020 to 19% in 2023.
+
+```{r, message=FALSE}
+Healthtotal|>
+  ggplot(aes(y = Smokers, x = Year)) +
+  geom_violin()
+```
+
+These violin plots show the aggregated US average of adult smokers as a percentage of the population. It can be seen that each year the average of percentage of smokers gradually increases and the density of the violin plots gets slimmer. In fact, in 2020 the average percentage of aggregated smokers in the US is about just above 15%. It grows up until nearly 20% in 2021, and decreases to about 18% in 2023.
+
+```{r, message=FALSE}
+
+Healthtotal|>
+  ggplot(aes(y = ExcessiveDrink, x = Year)) +
+  geom_violin()
+```
+
+These violin plots showing the aggregated US average of Excessive drinking as a percentage of the population highlight a thicker upper tail as the years pass by, meaning there is a higher count of people excessively drinking. However the average of the percentage of excessive drinkers doesn't seem to change from from 2020 to 2023.
+
+
 
