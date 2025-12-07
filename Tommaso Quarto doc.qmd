@@ -10,6 +10,7 @@ library(here)
 library(ggplot2)
 library(dplyr)
 library(vroom)
+library(tidyr)
 ```
 
 ##Dowload data
@@ -757,4 +758,8 @@ Control variables to complete model:
 
 Also need to describe the research question (500 words)
 
-Description of the sources
+## Description of the sources
+
+Health data: 
+
+The Health dataset used in this study is constructed of data coming entirely from the CHR&R (County Health Rankings and Roadmaps) source. This program consists in providing annual data on health factors across almost the entirety of counties from the United States. The CHR&R provides data, evidence, guidance and examples to build awareness about the multiple factor influencing health conditions and disparities across the country. Furthermore, CHR&R puts an emphasis on the range of health-influencing measures offering crucial context about community specific health conditions and improvements. As an example, The "2025 Annual data release" includes over 80 health-related measures, and focuses on the impact of certain societal factors present in the United States on community conditions.
