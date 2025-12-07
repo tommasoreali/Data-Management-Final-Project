@@ -758,8 +758,11 @@ Control variables to complete model:
 
 Also need to describe the research question (500 words)
 
+
+## Description of the data joining and cleaning
+
+The raw data for health was at first downloaded from the CHR&R website for all the years we are interested in for this study (2020-2023) as 4 different csv files (one for each year). After downloading the data in Rstudio using vroom(), the the columns were replace with the right column names 
+
 ## Description of the sources
 
-Health data: 
-
-The Health dataset used in this study is constructed of data coming entirely from the CHR&R (County Health Rankings and Roadmaps) source. This program consists in providing annual data on health factors across almost the entirety of counties from the United States. The CHR&R provides data, evidence, guidance and examples to build awareness about the multiple factor influencing health conditions and disparities across the country. Furthermore, CHR&R puts an emphasis on the range of health-influencing measures offering crucial context about community specific health conditions and improvements. As an example, The "2025 Annual data release" includes over 80 health-related measures, and focuses on the impact of certain societal factors present in the United States on community conditions.
+The Health dataset used in this study is constructed of data coming entirely from the CHR&R (County Health Rankings and Roadmaps) program. This initiative was created by the University of Wisconsin Population Health institute with support from the Robert Wood Johnson Foundation. It consists in providing annual data on health factors within and across almost the entirety of counties from the United States. The CHR&R provides data, evidence, guidance and examples to build awareness about the multiple factors influencing health conditions and disparities across the country. Furthermore, CHR&R puts an emphasis on the range of health-influencing measures that offer crucial context about community specific health conditions. In fact, Along with the data the program provides tools and evidence-based strategies, which can be used by the communities to move to action and solve the important health and societal issues concerning their people. As an example, The "2025 Annual data release" includes over 80 health-related measures, and focuses on the impact of certain societal factors present in the United States on community conditions.
