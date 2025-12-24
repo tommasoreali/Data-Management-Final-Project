@@ -5,6 +5,9 @@ format: html
 editor: visual
 ---
 
+Project repository: [GitHub repo](https://github.com/tommasoreali/Data-Management-Final-Project.git)
+
+
 ```{r, message=FALSE}
 library(here)
 library(ggplot2)
@@ -42,21 +45,118 @@ education2023 <- vroom(here("Data", "ACSST5Y2023.S1501-Data.csv"))
 ```
 
 
-
-
 # Data Cleaning
+
+# Full data Cleaning with LOOP
+
+```{r}
+read_csv_safely <- function(path) {
+  first_two <- vroom_lines(path, n_max = 2)
+
+  line1_letters <- str_count(first_two[1], "[A-Za-z]")
+  line2_letters <- str_count(first_two[2], "[A-Za-z]")
+
+  skip_n <- if (line1_letters < line2_letters) 1 else 0
+
+  vroom(
+    file = path,
+    delim = ";",
+    skip = skip_n,
+    col_names = TRUE,
+    show_col_types = FALSE,
+    progress = FALSE,
+    altrep = TRUE
+  )
+}
+
+```
+
+```{r}
+library(dplyr)
+library(readr)
+
+clean_health <- function(df, year) {
+
+  cols_keep <- c(
+    "FIPS",
+    "State",
+    "County",
+    "% Severe Housing Problems",
+    "Income Ratio",
+    "% Unemployed",
+    "Mental Health Provider Rate",
+    "Teen Birth Rate",
+    "% Excessive Drinking",
+    "% Smokers",
+    "% Children in Single-Parent Households"
+  )
+
+  df |>
+    select(any_of(cols_keep)) |>
+    mutate(
+      County = if_else(is.na(County), "Average", County),
+      year = year
+    ) |>
+    mutate(across(
+      -c(FIPS, State, County, year),
+      ~ readr::parse_number(as.character(.x), locale = locale(decimal_mark = ".", grouping_mark = ","))
+    ))
+}
+```
+
+```{r}
+library(here)
+library(purrr)
+library(tibble)
+library(tidyr)
+
+health_files <- list.files(
+  path = here("Data"),
+  pattern = "^health20(20|21|22|23)\\.csv$|^20(20|21|22|23)health\\.csv$",
+  full.names = TRUE
+)
+
+health_total <- tibble(path = health_files) |>
+  mutate(
+    year = str_extract(basename(path), "20\\d{2}") |> as.integer(),
+    raw = map(path, read_csv_safely),
+    clean = map2(raw, year, clean_health)
+  ) |>
+  select(clean) |>
+  unnest(clean)
+
+```
+
 
 ## Changes made to Health data
 
 ### Changes for health2020
 
+
 ```{r}
-# Replace wrong column names with first row:
-new_names <- as.character(health2020[1, ])
-colnames(health2020) <- new_names
-health2020 <- health2020[-1, ]
+read_csv_safely <- function(path) {
+  first_two <- vroom_lines(path, n_max = 2)
+
+  line1_letters <- str_count(first_two[1], "[A-Za-z]")
+  line2_letters <- str_count(first_two[2], "[A-Za-z]")
+
+  skip_n <- if (line1_letters < line2_letters) 1 else 0
+
+  vroom(
+    file = path,
+    delim = ";",
+    skip = skip_n,
+    col_names = TRUE,
+    show_col_types = FALSE,
+    progress = FALSE,
+    altrep = TRUE
+  )
+}
+
+health2020 <- read_csv_safely(here::here("Data", "2020health.csv"))
 
 ```
+
 
 ```{r}
 # Remove all the columns which are not useful (use the same technique for the other years datasets)
@@ -301,7 +401,7 @@ health2023 <- health2023 %>%
 ## Merging the health datasets together
 
 ```{r}
-#First match the names for Adult moking and single children in household
+#First match the names for Adult smoking and single children in household
 
 health2023 <- health2023 %>%
   rename(`% Smokers` = `% Adults Reporting Currently Smoking`)
