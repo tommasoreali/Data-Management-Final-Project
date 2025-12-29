@@ -18,6 +18,10 @@ library(tidyverse)
 ```{r}
 here::i_am("Data-Management-Final-Project.Rproj")
 ```
+Link to Github: 
+
+https://github.com/tommasoreali/Data-Management-Final-Project.git
+
 
 Description of how to get the data sets
 
@@ -39,7 +43,6 @@ education2021 <- vroom(here("Data", "ACSST5Y2021.S1501-Data.csv"))
 education2022 <- vroom(here("Data", "ACSST5Y2022.S1501-Data.csv"))
 education2023 <- vroom(here("Data", "ACSST5Y2023.S1501-Data.csv"))
 ```
-
 
 
 
@@ -499,7 +502,7 @@ education2022 <- education2022[-1, ]
 ```{r}
 education2022 <- education2022 |>
   select(
-    -matches("Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!|High school|Graduate|18 to 24|34|9th|Associate's|Population 65 years and over| Population 45 to 64 years|Population 35 to 44 years|RACE|college",
+    -matches("Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!|High school|Graduate|18 to 24|34|9th|Associate's|Population 65 years and over| Population 45 to 64 years|Population 35 to 44 years|RACE|college|Estimate!!Percent Male!!|Estimate!!Percent Female!!",
              ignore.case = TRUE)
   )
 ```
@@ -512,14 +515,6 @@ education2022 <- education2022 %>%
   )
 ```
 
-```{r}
-# Remove also percent of females and percent of males in this column (if you want), this code can be kept or deleted depending on our decision to keep Percentage Female, PErcentage Male.
-education2022 <- education2022 %>%
-  select(
-    -matches("Estimate!!Percent Male!!|Estimate!!Percent Female!!",
-             ignore.case = TRUE)
-  )
-```
 
 ```{r}
 # Convert to numeric columns the ones that need it
@@ -727,8 +722,8 @@ summary_table <- data.frame(
   `Number of Rows` = row_count,
   `Number of Columns` = column_count,
   check.names = FALSE
-)
-print(summary_table)
+) |>
+  knitr::kable()
 ```
 
 # Tables for Main Variables

@@ -117,12 +117,6 @@ health_total <- tibble::tibble(path = health_files) |>
   tidyr::unnest(clean)
 
 ```
-
-```{r}
-health_total <- health_total |>
-  mutate(County = str_c(County, " County"))
-```
-
 All yearly files are processed automatically using a loop that applies the same reading and cleaning steps to each dataset. The year is extracted from the filename, the data is imported and cleaned consistently across files, and the resulting datasets are combined into a single long-format dataset. This approach avoids redundant code, guarantees consistency across years, and ensures full reproducibility of the data preparation process.
 
 To ensure consistent numeric parsing across yearly datasets (using European decimal formatting whithin the raw data), all health files are first read as character data to prevent automatic misinterpretation by the reader. Numeric variables are then explicitly converted using locale-aware parsing, allowing the datasets to be safely processed within a single loop
@@ -364,19 +358,3 @@ health_total|>
 ```
 
 These violin plots showing the aggregated US average of Excessive drinking as a percentage of the population highlight a thicker upper tail as the years pass by, meaning there is a higher count of people excessively drinking. However the average of the percentage of excessive drinkers doesn't seem to change from from 2020 to 2023.
-
-
-
-# Ce qu'il faut faire en plus dans notre research
-
-## Avant de pouvoir merge les datasets il faut renommer les noms des colonnes du coounty du dataset health
-
-### Regression, il fait reflechir a quel type, je vais deja essayer de faire un merge de edu_total et de health_total, puis ensuite on verra
-
-
-```{r}
-data_total <- 
-  left_join(edu_total, health_total, by = c("County", "State", "year"))
-  
-```
-
