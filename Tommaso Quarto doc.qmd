@@ -22,11 +22,6 @@ library(readr)
 
 ```
 
-
-```{r}
-here::i_am("Data-Management-Final-Project.Rproj")
-```
-
 Description of how to get the data sets
 
 To get the data of the CHR&R, download each file per year seperately
@@ -128,6 +123,10 @@ All yearly files are processed automatically using a loop that applies the same 
 To ensure consistent numeric parsing across yearly datasets (using European decimal formatting whithin the raw data), all health files are first read as character data to prevent automatic misinterpretation by the reader. Numeric variables are then explicitly converted using locale-aware parsing, allowing the datasets to be safely processed within a single loop
 
 ### Download data
+
+```{r}
+here::i_am("Data-Management-Final-Project.Rproj")
+```
 
 ```{r, message=FALSE}
 health2020 <- vroom(here("Data", "2020health.csv"))
