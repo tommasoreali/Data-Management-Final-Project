@@ -55,19 +55,26 @@ education2023 <- vroom(here("Data", "ACSST5Y2023.S1501-Data.csv"))
 # Full data Cleaning with LOOP
 
 ```{r}
+# Reader: force ALL columns to character (so no wrong numeric parsing)
 read_health_file <- function(path) {
+  line1 <- vroom::vroom_lines(path, n_max = 1)
+  skip_n <- if (stringr::str_detect(line1, stringr::regex("FIPS;State;County", ignore_case = TRUE))) 0 else 1
+
   vroom::vroom(
     file = path,
     delim = ";",
+    skip = skip_n,
     col_names = TRUE,
+    col_types = vroom::cols(.default = "c"),  
     show_col_types = FALSE,
     progress = FALSE
   )
 }
+
 ```
 
 ```{r}
-#verifying it reads unemployment correctly
+#verifying it reads decimals correctly (test on % UNemployed variable)
 file_2021 <- list.files(here("Data"), pattern = "2021", full.names = TRUE)[1]
 file_2021
 health2021_raw <- read_health_file(file_2021)
@@ -75,19 +82,24 @@ health2021_raw <- read_health_file(file_2021)
 health2021_raw |> select(State, County, `% Unemployed`) |> head(20)
 summary(health2021_raw$`% Unemployed`)
 
-#It dosn't read unemployment correctly
 names(health2021_raw)[str_detect(names(health2021_raw), regex("unemp", ignore_case = TRUE))]
 
 ```
 
 
 ```{r}
+# Cleaner: now parse numbers correctly (with decimal)
+
 clean_health <- function(df, year) {
 
+  df <- df |>
+    dplyr::rename(
+      `% Smokers` = dplyr::any_of("% Adults Reporting Currently Smoking"),
+      `% Children in Single-Parent Households` = dplyr::any_of("% Single-Parent Households")
+    )
+
   cols_keep <- c(
-    "FIPS",
-    "State",
-    "County",
+    "FIPS","State","County",
     "% Severe Housing Problems",
     "Income Ratio",
     "% Unemployed",
@@ -98,47 +110,41 @@ clean_health <- function(df, year) {
     "% Children in Single-Parent Households"
   )
 
+  eu <- readr::locale(decimal_mark = ",", grouping_mark = ".")
+
   df |>
-    select(any_of(cols_keep)) |>
-    mutate(
-      County = if_else(is.na(County), "Average", County),
+    dplyr::select(dplyr::any_of(cols_keep)) |>
+    dplyr::mutate(
+      County = dplyr::if_else(is.na(County) | County == "", "Average", County),
       year = year
     ) |>
-mutate(across(
-  -c(FIPS, State, County, year),
-  ~ readr::parse_number(
-      as.character(.x),
-      locale = readr::locale(decimal_mark = ",", grouping_mark = ".")
-    )
-))
+    dplyr::mutate(dplyr::across(
+      -c(FIPS, State, County, year),
+      ~ readr::parse_number(.x, locale = eu)
+    ))
 }
-
 
 ```
 
 ```{r}
-library(here)
-library(purrr)
-library(tibble)
-library(tidyr)
+#Loop:
 
 health_files <- list.files(
-  path = here("Data"),
-  pattern = "^health20(20|21|22|23)\\.csv$|^20(20|21|22|23)health\\.csv$",
+  path = here::here("Data"),
+  pattern = "2020health\\.csv$|2021health\\.csv$|2022health\\.csv$|2023health\\.csv$",
   full.names = TRUE
 )
 
-health_total <- tibble(path = health_files) |>
-  mutate(
-    year = str_extract(basename(path), "20\\d{2}") |> as.integer(),
-    raw = map(path, read_csv_safely),
-    clean = map2(raw, year, clean_health)
+health_total <- tibble::tibble(path = health_files) |>
+  dplyr::mutate(
+    year = stringr::str_extract(basename(path), "20\\d{2}") |> as.integer(),
+    raw = purrr::map(path, read_health_file),
+    clean = purrr::map2(raw, year, clean_health)
   ) |>
-  select(clean) |>
-  unnest(clean)
+  dplyr::select(clean) |>
+  tidyr::unnest(clean)
 
 ```
-
 
 ## Changes made to Health data
 
