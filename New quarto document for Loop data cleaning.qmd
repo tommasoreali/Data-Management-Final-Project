@@ -65,19 +65,19 @@ clean_health <- function(df, year) {
   df <- df |>
     dplyr::rename(
       `% Smokers` = dplyr::any_of("% Adults Reporting Currently Smoking"),
-      `% Children in Single-Parent Households` = dplyr::any_of("% Single-Parent Households")
+      `Children in Single-Parent Households` = dplyr::any_of("% Single-Parent Households")
     )
 
   cols_keep <- c(
     "FIPS","State","County",
     "% Severe Housing Problems",
     "Income Ratio",
-    "% Unemployed",
+    "Unemployed",
     "Mental Health Provider Rate",
     "Teen Birth Rate",
-    "% Excessive Drinking",
+    "Excessive Drinking",
     "% Smokers",
-    "% Children in Single-Parent Households"
+    "Children in Single-Parent Households"
   )
 
   eu <- readr::locale(decimal_mark = ",", grouping_mark = ".")
@@ -120,7 +120,9 @@ health_total <- tibble::tibble(path = health_files) |>
 
 ```{r}
 health_total <- health_total |>
-  mutate(County = str_c(County, " County"))
+  mutate(County = str_c(County, " County")) |>
+  rename(Smokers = `% Smokers`)
+  
 ```
 
 All yearly files are processed automatically using a loop that applies the same reading and cleaning steps to each dataset. The year is extracted from the filename, the data is imported and cleaned consistently across files, and the resulting datasets are combined into a single long-format dataset. This approach avoids redundant code, guarantees consistency across years, and ensures full reproducibility of the data preparation process.
@@ -350,7 +352,7 @@ These violin plots show the aggregated US average of Teen birth rates as the amo
 
 ```{r, message=FALSE}
 health_total|>
-  ggplot(aes(y = `% Smokers`, x = year, group = year)) +
+  ggplot(aes(y = Smokers, x = year, group = year)) +
   geom_violin()
 ```
 
@@ -359,7 +361,7 @@ These violin plots show the aggregated US average of adult smokers as a percenta
 ```{r, message=FALSE}
 
 health_total|>
-  ggplot(aes(y = `% Excessive Drinking`, x = year, group = year)) +
+  ggplot(aes(y = Excessive Drinking, x = year, group = year)) +
   geom_violin()
 ```
 
@@ -378,5 +380,12 @@ These violin plots showing the aggregated US average of Excessive drinking as a 
 data_total <- 
   left_join(edu_total, health_total, by = c("County", "State", "year"))
   
+```
+
+
+### Premiers tests pour la dataanalysis
+
+```{r}
+test_regression <- lm()
 ```
 
