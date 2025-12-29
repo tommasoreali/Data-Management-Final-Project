@@ -75,7 +75,7 @@ clean_health <- function(df, year) {
     "Unemployed",
     "Mental Health Provider Rate",
     "Teen Birth Rate",
-    "Excessive Drinking",
+    "% Excessive Drinking",
     "% Smokers",
     "Children in Single-Parent Households"
   )
@@ -121,7 +121,7 @@ health_total <- tibble::tibble(path = health_files) |>
 ```{r}
 health_total <- health_total |>
   mutate(County = str_c(County, " County")) |>
-  rename(Smokers = `% Smokers`)
+  rename(Smokers = `% Smokers`, Housing_Problems = `% Severe Housing Problems`, Income_Ratio = `Income Ratio`, Mental_help = `Mental Health Provider Rate`, Teen_births = `Teen Birth Rate`, Child_alone = `Children in Single-Parent Households`, Excessive_drinking = `% Excessive Drinking`)
   
 ```
 
@@ -361,7 +361,7 @@ These violin plots show the aggregated US average of adult smokers as a percenta
 ```{r, message=FALSE}
 
 health_total|>
-  ggplot(aes(y = Excessive Drinking, x = year, group = year)) +
+  ggplot(aes(y = Excessive_drinking, x = year, group = year)) +
   geom_violin()
 ```
 
@@ -386,6 +386,6 @@ data_total <-
 ### Premiers tests pour la dataanalysis
 
 ```{r}
-test_regression <- lm()
+test_regression <- lm(Smokers ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone, data = data_total)
 ```
 
