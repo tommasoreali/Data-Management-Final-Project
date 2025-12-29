@@ -122,30 +122,12 @@ All yearly files are processed automatically using a loop that applies the same 
 
 To ensure consistent numeric parsing across yearly datasets (using European decimal formatting whithin the raw data), all health files are first read as character data to prevent automatic misinterpretation by the reader. Numeric variables are then explicitly converted using locale-aware parsing, allowing the datasets to be safely processed within a single loop
 
-### Download data
-
-```{r}
-here::i_am("Data-Management-Final-Project.Rproj")
-```
-
-```{r, message=FALSE}
-health2020 <- vroom(here("Data", "2020health.csv"))
-health2021 <- vroom(here("Data", "2021health.csv"))
-health2022 <- vroom(here("Data", "2022health.csv"))
-health2023 <- vroom(here("Data", "2023health.csv"))
-education2020 <- vroom(here("Data", "ACSST5Y2020.S1501-Data.csv"))
-education2021 <- vroom(here("Data", "ACSST5Y2021.S1501-Data.csv"))
-education2022 <- vroom(here("Data", "ACSST5Y2022.S1501-Data.csv"))
-education2023 <- vroom(here("Data", "ACSST5Y2023.S1501-Data.csv"))
-```
-
-
 # Changes made for Education data
 
 ## Full data Cleaning with LOOP
 
 ```{r}
-
+# Read step
 read_edu_file <- function(path) {
   first <- vroom_lines(path, n_max = 1)
   delim <- if (str_detect(first, ";")) ";" else ","
@@ -167,20 +149,19 @@ read_edu_file <- function(path) {
 ```
 
 ```{r}
-
+#Clean step
 clean_edu <- function(df, year) {
-
-  bac_col <- names(df)[
-    str_detect(names(df), regex("Bachelor.?s degree or higher", ignore_case = TRUE)) &
-      str_detect(names(df), regex("Percent", ignore_case = TRUE))
-  ][1]
-
   out <- df |>
-    select(`Geographic Area Name`, all_of(bac_col)) |>
-    rename(Bacmore = all_of(bac_col)) |>
+    select(
+      `Geographic Area Name`,
+      `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher`
+    ) |>
+    rename(
+      Bacmore = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher`
+    ) |>
     distinct(`Geographic Area Name`, .keep_all = TRUE) |>
     separate(
-      col = `Geographic Area Name`,
+      `Geographic Area Name`,
       into = c("County", "State"),
       sep = ",\\s*",
       extra = "merge",
@@ -192,7 +173,8 @@ clean_edu <- function(df, year) {
         Bacmore,
         locale = readr::locale(decimal_mark = ".", grouping_mark = ",")
       )
-    )
+    ) |>
+    select(County, State, year, Bacmore)
 
   out
 }
@@ -200,6 +182,7 @@ clean_edu <- function(df, year) {
 ```
 
 ```{r}
+#Loop Step
 
 edu_files <- list.files(
   path = here("Data"),
@@ -219,260 +202,23 @@ edu_total <- tibble(path = edu_files) |>
 
 ```
 
-
-### Changes for education2020
-
-```{r}
-# Replace wrong column names with first row:
-new_names_education <- as.character(education2020[1, ])
-colnames(education2020) <- new_names_education
-education2020 <- education2020[-1, ]
-```
+### Download data
 
 ```{r}
-# Easier code for directly deleting all the rows in a single code 
-education2020 <- education2020 %>%
-  select(
-    -matches("Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!|High school|Graduate|18 to 24|34|9th|Associate's|Population 65 years and over| Population 45 to 64 years|Population 35 to 44 years|RACE|college",
-             ignore.case = TRUE)
-  )
+here::i_am("Data-Management-Final-Project.Rproj")
 ```
 
-```{r}
-# Remove columns that are ONLY "(X)" (ignoring NAs)
-education2020 <- education2020 %>%
-  select(
-    where(~ !all(.x == "(X)" | is.na(.x)))
-  )
+```{r, message=FALSE}
+health2020 <- vroom(here("Data", "2020health.csv"))
+health2021 <- vroom(here("Data", "2021health.csv"))
+health2022 <- vroom(here("Data", "2022health.csv"))
+health2023 <- vroom(here("Data", "2023health.csv"))
+education2020 <- vroom(here("Data", "ACSST5Y2020.S1501-Data.csv"))
+education2021 <- vroom(here("Data", "ACSST5Y2021.S1501-Data.csv"))
+education2022 <- vroom(here("Data", "ACSST5Y2022.S1501-Data.csv"))
+education2023 <- vroom(here("Data", "ACSST5Y2023.S1501-Data.csv"))
 ```
 
-```{r}
-# Remove also percent of females and percent of males in this column, this code can be kept or deleted depending on our decision to keep Percentage Female, Percentage Male.
-education2020 <- education2020 %>%
-  select(
-    -matches("Estimate!!Percent Male!!|Estimate!!Percent Female!!",
-             ignore.case = TRUE)
-  )
-```
-
-```{r}
-# Keep only the first row encountered for each unique County name
-df_unique_counties2020 <- education2020 %>%
-  distinct(`Geographic Area Name`, .keep_all = TRUE)
-```
-
-```{r}
-# Convert to numeric columns the ones that need it
-
-df_unique_counties2020 <- df_unique_counties2020%>%
-  mutate(across(
-    -c(Geography, `Geographic Area Name`),
-    ~ suppressWarnings(as.numeric(.x))
-  ))
-
-```
-
-### Changes for education2021
-
-```{r}
-# Replace wrong column names with first row:
-new_names_education <- as.character(education2021[1, ])
-colnames(education2021) <- new_names_education
-education2021 <- education2021[-1, ]
-```
-
-```{r}
-education2021 <- education2021 %>%
-  select(
-    -matches("Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!|High school|Graduate|18 to 24|34|9th|Associate's|Population 65 years and over| Population 45 to 64 years|Population 35 to 44 years|RACE|college",
-             ignore.case = TRUE)
-  )
-```
-
-```{r}
-# Remove columns that are ONLY "(X)" (ignoring NAs)
-education2021 <- education2021 %>%
-  select(
-    where(~ !all(.x == "(X)" | is.na(.x)))
-  )
-```
-
-```{r}
-# Remove also percent of females and percent of males in this column (if you want), this code can be kept or deleted depending on our decision to keep Percentage Female, PErcentage Male.
-education2021 <- education2021 %>%
-  select(
-    -matches("Estimate!!Percent Male!!|Estimate!!Percent Female!!",
-             ignore.case = TRUE)
-  )
-```
-
-```{r}
-# Convert to numeric columns the ones that need it
-
-education2021 <- education2021 %>%
-  mutate(across(
-    -c(Geography, `Geographic Area Name`),
-    ~ suppressWarnings(as.numeric(.x))
-  ))
-
-```
-
-```{r}
-# Keep only the first row encountered for each unique County name
-df_unique_counties2021 <- education2021 %>%
-  distinct(`Geographic Area Name`, .keep_all = TRUE)
-```
-
-### Changes for education2022
-
-```{r}
-# Replace wrong column names with first row:
-new_names_education <- as.character(education2022[1, ])
-colnames(education2022) <- new_names_education
-education2022 <- education2022[-1, ]
-```
-
-```{r}
-education2022 <- education2022 |>
-  select(
-    -matches("Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!|High school|Graduate|18 to 24|34|9th|Associate's|Population 65 years and over| Population 45 to 64 years|Population 35 to 44 years|RACE|college",
-             ignore.case = TRUE)
-  )
-```
-
-```{r}
-# Remove columns that are ONLY "(X)" (ignoring NAs)
-education2022 <- education2022 %>%
-  select(
-    where(~ !all(.x == "(X)" | is.na(.x)))
-  )
-```
-
-```{r}
-# Remove also percent of females and percent of males in this column (if you want), this code can be kept or deleted depending on our decision to keep Percentage Female, PErcentage Male.
-education2022 <- education2022 %>%
-  select(
-    -matches("Estimate!!Percent Male!!|Estimate!!Percent Female!!",
-             ignore.case = TRUE)
-  )
-```
-
-```{r}
-# Convert to numeric columns the ones that need it
-
-education2022 <- education2022 %>%
-  mutate(across(
-    -c(Geography, `Geographic Area Name`),
-    ~ suppressWarnings(as.numeric(.x))
-  ))
-
-```
-
-```{r}
-# Keep only the first row encountered for each unique County name
-df_unique_counties1 <- education2022 %>%
-  distinct(`Geographic Area Name`, .keep_all = TRUE)
-```
-
-### Changes for education2023
-
-```{r}
-# Replace wrong column names with first row:
-new_names_education <- as.character(education2023[1, ])
-colnames(education2023) <- new_names_education
-education2023 <- education2023[-1, ]
-```
-
-```{r}
-# Delete all the columns and rows that are not needed
-education2023 <- education2023 %>%
-  select(
-    -matches("Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!|High school|Graduate|18 to 24|34|9th|Associate's|Population 65 years and over| Population 45 to 64 years|Population 35 to 44 years|RACE|college",
-             ignore.case = TRUE)
-  )
-```
-
-```{r}
-# Remove columns that are ONLY "(X)" (ignoring NAs)
-education2023 <- education2023 %>%
-  select(
-    where(~ !all(.x == "(X)" | is.na(.x)))
-  )
-```
-
-```{r}
-# Remove also percent of females and percent of males in this column, this code can be kept or deleted depending on our decision to keep Percentage Female, PErcentage Male.
-education2023 <- education2023 %>%
-  select(
-    -matches("Estimate!!Percent Male!!|Estimate!!Percent Female!!",
-             ignore.case = TRUE)
-  )
-```
-
-```{r}
-# Keep only the first row encountered for each unique County name
-df_unique_counties2023 <- education2023 %>%
-  distinct(`Geographic Area Name`, .keep_all = TRUE)
-```
-
-```{r}
-# Convert to numeric columns the ones that need it
-df_unique_counties2023 <- df_unique_counties2023 %>%
-  mutate(across(
-    -c(Geography, `Geographic Area Name`),
-    ~ suppressWarnings(as.numeric(.x))
-  ))
-```
-
-### Merging in one dataset
-
-```{r}
-Edu2121 <- 
-  df_unique_counties2020 |>
-  left_join(df_unique_counties2021, by = "Geographic Area Name")
-```
-```{r}
-edu2122 <- 
-  Edu2121|>
-  left_join(df_unique_counties1, "Geographic Area Name")
-```
-```{r}
-edutotal <-
-  edu2122|>
-  left_join(df_unique_counties2023, "Geographic Area Name")
-```
-
-```{r}
-edubycounty<- edutotal|>
-  select(-contains("Geography", ignore.case = TRUE))|>
-  
-  separate(
-    col = `Geographic Area Name`,  # The column to split
-    into = c("County", "State"), # The names of the two new columns
-    sep = ", " # The character string used to split the column
-  )
-```
-
-```{r}
-EDU2 <- edubycounty |>
-  select(-contains("POVERTY", ignore.case = TRUE))|>
-  rename(Bacmore_2020 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.x`,
-         Bacmore_2021 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.y`,
-         Bacmore_2022 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.x.x`,
-         Bacmore_2023 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.y.y`,
-         )|>
-  select(-contains("Estimate", ignore.case = TRUE))
-```
-
-```{r}
-
-EDU2Long <- EDU2 |>
-  pivot_longer(
-    cols = ends_with(c("2020", "2021", "2022", "2023")),
-    names_to = c(".value", "Year"),
-    names_sep = "_",
-    values_transform = list(Year = as.integer))
-```
 
 # Description of data obtention and cleaning
 
