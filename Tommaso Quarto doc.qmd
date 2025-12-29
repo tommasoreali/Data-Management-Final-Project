@@ -9,12 +9,17 @@ Project repository: [GitHub repo](https://github.com/tommasoreali/Data-Managemen
 
 
 ```{r, message=FALSE}
-library(here)
 library(ggplot2)
-library(dplyr)
-library(vroom)
-library(tidyr)
 library(tidyverse)
+library(here)
+library(vroom)
+library(stringr)
+library(dplyr)
+library(purrr)
+library(tibble)
+library(tidyr)
+library(readr)
+
 ```
 
 ## Download data
@@ -50,26 +55,31 @@ education2023 <- vroom(here("Data", "ACSST5Y2023.S1501-Data.csv"))
 # Full data Cleaning with LOOP
 
 ```{r}
-read_csv_safely <- function(path) {
-  first_two <- vroom_lines(path, n_max = 2)
-
-  line1_letters <- str_count(first_two[1], "[A-Za-z]")
-  line2_letters <- str_count(first_two[2], "[A-Za-z]")
-
-  skip_n <- if (line1_letters < line2_letters) 1 else 0
-
-  vroom(
+read_health_file <- function(path) {
+  vroom::vroom(
     file = path,
     delim = ";",
-    skip = skip_n,
     col_names = TRUE,
     show_col_types = FALSE,
-    progress = FALSE,
-    altrep = TRUE
+    progress = FALSE
   )
 }
+```
+
+```{r}
+#verifying it reads unemployment correctly
+file_2021 <- list.files(here("Data"), pattern = "2021", full.names = TRUE)[1]
+file_2021
+health2021_raw <- read_health_file(file_2021)
+
+health2021_raw |> select(State, County, `% Unemployed`) |> head(20)
+summary(health2021_raw$`% Unemployed`)
+
+#It dosn't read unemployment correctly
+names(health2021_raw)[str_detect(names(health2021_raw), regex("unemp", ignore_case = TRUE))]
 
 ```
+
 
 ```{r}
 clean_health <- function(df, year) {
