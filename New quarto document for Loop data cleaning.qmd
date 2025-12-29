@@ -1,6 +1,5 @@
 ---
-title: "Data Project"
-author: "Tommaso Reali"
+title: "New Quarto document for loop"
 format: html
 editor: visual
 ---
@@ -607,6 +606,4 @@ health_total|>
 ```
 
 These violin plots showing the aggregated US average of Excessive drinking as a percentage of the population highlight a thicker upper tail as the years pass by, meaning there is a higher count of people excessively drinking. However the average of the percentage of excessive drinkers doesn't seem to change from from 2020 to 2023.
-
-
 
