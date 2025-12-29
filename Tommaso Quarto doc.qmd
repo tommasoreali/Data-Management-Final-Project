@@ -72,9 +72,6 @@ read_csv_safely <- function(path) {
 ```
 
 ```{r}
-library(dplyr)
-library(readr)
-
 clean_health <- function(df, year) {
 
   cols_keep <- c(
@@ -97,11 +94,16 @@ clean_health <- function(df, year) {
       County = if_else(is.na(County), "Average", County),
       year = year
     ) |>
-    mutate(across(
-      -c(FIPS, State, County, year),
-      ~ readr::parse_number(as.character(.x), locale = locale(decimal_mark = ".", grouping_mark = ","))
-    ))
+mutate(across(
+  -c(FIPS, State, County, year),
+  ~ readr::parse_number(
+      as.character(.x),
+      locale = readr::locale(decimal_mark = ",", grouping_mark = ".")
+    )
+))
 }
+
+
 ```
 
 ```{r}
