@@ -214,6 +214,14 @@ edu_total |>
   arrange(State, County, year )
 ```
 
+## Merging datasets
+
+```{r}
+data_total <- edu_total |>
+  left_join(health_total, by = c("County", "State", "year"))
+```
+
+
 
 # Download data
 
@@ -387,5 +395,10 @@ data_total <-
 
 ```{r}
 test_regression <- lm(Smokers ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone, data = data_total)
+```
+
+
+```{r}
+regression_births <- lm(Teen_births ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone, data = data_total)
 ```
 
