@@ -394,15 +394,15 @@ data_total <-
 ### Premiers tests pour la dataanalysis
 
 ```{r}
-test_regression <- lm(Smokers ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone, data = data_total)
+regression_smokers <- lm(Smokers ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
 ```
 
 
 ```{r}
-regression_births <- lm(Teen_births ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone, data = data_total)
+regression_births <- lm(Teen_births ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
 ```
 
 ```{r}
-regression_drinking <- lm(Excessive_drinking ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone, data = data_total)
+regression_drinking <- lm(Excessive_drinking ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
 ```
 
