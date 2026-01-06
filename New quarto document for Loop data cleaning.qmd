@@ -580,7 +580,7 @@ ggplot(corr_long, aes(x = Var1, y = Var2, fill = Corr)) +
 
 ```
 
-# Deviations from state means
+# within-state deviation analysis
 
 ```{r}
 
