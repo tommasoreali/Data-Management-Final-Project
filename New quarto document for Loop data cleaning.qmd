@@ -204,7 +204,6 @@ edu_total <- tibble(path = edu_files) |>
   select(clean) |>
   unnest(clean) |>
   select(County, State, year, Bacmore)
-
 ```
 
 ```{r}
@@ -404,6 +403,8 @@ data_total <-
 ```
 
 ### Premiers tests pour la dataanalysis
+
+For interesting data analysis results, the regressions 
 
 ```{r}
 regression_smokers <- lm(Smokers ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
