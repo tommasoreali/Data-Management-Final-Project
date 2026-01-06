@@ -72,7 +72,7 @@ clean_health <- function(df, year) {
     "FIPS","State","County",
     "% Severe Housing Problems",
     "Income Ratio",
-    "Unemployed",
+    "% Unemployed",
     "Mental Health Provider Rate",
     "Teen Birth Rate",
     "% Excessive Drinking",
@@ -121,7 +121,7 @@ health_total <- tibble::tibble(path = health_files) |>
 ```{r}
 health_total <- health_total |>
   mutate(County = str_c(County, " County")) |>
-  rename(Smokers = `% Smokers`, Housing_Problems = `% Severe Housing Problems`, Income_Ratio = `Income Ratio`, Mental_help = `Mental Health Provider Rate`, Teen_births = `Teen Birth Rate`, Child_alone = `Children in Single-Parent Households`, Excessive_drinking = `% Excessive Drinking`)
+  rename(Smokers = `% Smokers`, Unemployed = `% Unemployed`,Housing_Problems = `% Severe Housing Problems`, Income_Ratio = `Income Ratio`, Mental_help = `Mental Health Provider Rate`, Teen_births = `Teen Birth Rate`, Child_alone = `Children in Single-Parent Households`, Excessive_drinking = `% Excessive Drinking`)
   
 ```
 
@@ -394,15 +394,15 @@ data_total <-
 ### Premiers tests pour la dataanalysis
 
 ```{r}
-test_regression <- lm(Smokers ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone, data = data_total)
+regression_smokers <- lm(Smokers ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
 ```
 
 
 ```{r}
-regression_births <- lm(Teen_births ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone, data = data_total)
+regression_births <- lm(Teen_births ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
 ```
 
 ```{r}
-regression_drinking <- lm(Excessive_drinking ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone, data = data_total) 
+regression_drinking <- lm(Excessive_drinking ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
 ```
 
