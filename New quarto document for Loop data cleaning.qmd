@@ -321,7 +321,7 @@ knitr::kable(health_summary_table, caption = "Summary of Health dataset")
 
 # Tables for Main Variables
 
-## Table for Education variable
+## Violin plot for Education variable
 
 Since there are 3144 counties, the data will be aggregated.
 
@@ -333,7 +333,7 @@ edu_total|>
 
 While not the most accurate, these violin plots show the density of educational attainment aggregated in the US. The graphs show that every year, the average bachelors obtention increases slightly, going from about 17% to 20% between 2020 and 2023.
 
-## Table for health main target variables (% Smokers, % Excessive drinkers, Teen birth rates)
+## Violin plot for health main target variables (% Smokers, % Excessive drinkers, Teen birth rates)
 
 ```{r, message=FALSE}
 health_total|>
@@ -359,6 +359,53 @@ health_total|>
 ```
 
 These violin plots showing the aggregated US average of Excessive drinking as a percentage of the population highlight a thicker upper tail as the years pass by, meaning there is a higher count of people excessively drinking. However the average of the percentage of excessive drinkers doesn't seem to change from from 2020 to 2023.
+
+## Violin plots for health outcomes grouped by education quartile
+
+```{r}
+
+# add the quartiles to the dataframe
+data_grad <- data_total |>
+  mutate(
+    edu_q = ntile(Bacmore, 4),
+    edu_q = factor(edu_q,
+                   levels = 1:4,
+                   labels = c("Q1", "Q2", "Q3", "Q4"))
+  )
+
+# Long format for violin plots
+violin_df <- data_grad |>
+  select(edu_q, Teen_births, Smokers, Excessive_drinking) |>
+  pivot_longer(
+    cols = c(Teen_births, Smokers, Excessive_drinking),
+    names_to = "Outcome",
+    values_to = "Value"
+  ) |>
+  mutate(
+    Outcome = recode(
+      Outcome,
+      Teen_births = "Teen births",
+      Smokers = "Smokers (%)",
+      Excessive_drinking = "Excessive drinking (%)"
+    )
+  )
+
+# Violin plot
+ggplot(violin_df, aes(x = edu_q, y = Value)) +
+  geom_violin(fill = "beige", color = "black") +
+  geom_boxplot(width = 0.12, outlier.shape = NA, alpha = 0.4) +
+  facet_wrap(~Outcome, scales = "free_y") +
+  labs(
+    x = "Education quartile (Bacmore)",
+    y = "Value"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid.minor = element_blank(),
+    strip.text = element_text(face = "bold")
+  )
+```
+
 
 # Section A: Descriptive statistics + Education gradients
 
@@ -394,15 +441,6 @@ knitr::kable(desc_table, caption = "Descriptive statistics of main variables")
 ```
 
 ```{r}
-
-data_grad <- data_total |>
-  mutate(
-    edu_q = ntile(Bacmore, 4),
-    edu_q = factor(edu_q,
-                   levels = 1:4,
-                   labels = c("Q1", "Q2", "Q3", "Q4"))
-  )
-
 
 ## 2) Table: outcomes by education quartile (overall)
 
