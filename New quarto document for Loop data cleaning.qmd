@@ -204,7 +204,6 @@ edu_total <- tibble(path = edu_files) |>
   select(clean) |>
   unnest(clean) |>
   select(County, State, year, Bacmore)
-
 ```
 
 ```{r}
@@ -595,6 +594,26 @@ data_total <-
 ```
 
 ### Premiers tests pour la dataanalysis
+
+For interesting data analysis results, the regressions are run in different steps, first independent on dependent variable, then adding socioeconomic variables, then add the other variables. This way we can determine the general impact of each variable and how the effect of the independent variable takes from the other variables. 
+
+```{r}
+lm(Smokers ~ Bacmore, data = data_total)
+lm(Teen_births ~ Bacmore, data = data_total)
+lm(Excessive_drinking ~ Bacmore, data = data_total)
+```
+Now we add socioeconomic factors
+
+```{r}
+ lm(Smokers ~ Bacmore + Income_Ratio + Unemployed, data = data_total)
+lm(Teen_births ~ Bacmore + Income_Ratio + Unemployed, data = data_total)
+lm(Excessive_drinking ~ Bacmore + Income_Ratio + Unemployed, data = data_total)
+
+
+
+```
+
+
 
 ```{r}
 regression_smokers <- lm(Smokers ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
