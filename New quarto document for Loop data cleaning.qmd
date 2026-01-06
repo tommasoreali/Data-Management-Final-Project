@@ -191,7 +191,7 @@ clean_edu <- function(df, year) {
 
 edu_files <- list.files(
   path = here("Data"),
-  pattern = "Education2020\\.csv$|Education2021\\.csv$|Education2022\\.csv$|Education2023\\.csv$",
+  pattern = "Education2020\\.csv$|education2021\\.csv$|education2022\\.csv$|education2023\\.csv$",
   full.names = TRUE
 )
 
@@ -387,6 +387,73 @@ desc_stats <- data_total |>
 
 desc_table <- as.data.frame(t(desc_stats))
 colnames(desc_table) <- c("Mean", "SD", "Min", "Max")
+
+knitr::kable(desc_table, caption = "Descriptive statistics of main variables")
+
+```
+
+```{r}
+
+data_grad <- data_total |>
+  mutate(
+    edu_q = ntile(Bacmore, 4),
+    edu_q = factor(edu_q,
+                   levels = 1:4,
+                   labels = c("Q1", "Q2", "Q3", "Q4"))
+  )
+
+
+## 2) Table: outcomes by education quartile (overall)
+
+edu_table <- data_grad |>
+  group_by(edu_q) |>
+  summarise(
+    n = n(),
+    Teen_births = mean(Teen_births, na.rm = TRUE),
+    Smokers = mean(Smokers, na.rm = TRUE),
+    Excessive_drinking = mean(Excessive_drinking, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+knitr::kable(
+  edu_table,
+  digits = 2,
+  caption = "Average outcomes by education quartile (Bacmore)"
+)
+
+## 3) Plot A: outcomes vs education quartile (overall)
+
+edu_long <- edu_table |>
+  select(edu_q, Teen_births, Smokers, Excessive_drinking) |>
+  tidyr::pivot_longer(-edu_q, names_to = "Outcome", values_to = "Mean")
+
+ggplot(edu_long, aes(x = edu_q, y = Mean, group = Outcome)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~Outcome, scales = "free_y") +
+  labs(x = "Education quartile (Bacmore)", y = "Average value")
+
+## 4) Plot B: trends over time by education quartile (recommended)
+
+edu_trend <- data_grad |>
+  group_by(year, edu_q) |>
+  summarise(
+    Teen_births = mean(Teen_births, na.rm = TRUE),
+    Smokers = mean(Smokers, na.rm = TRUE),
+    Excessive_drinking = mean(Excessive_drinking, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  tidyr::pivot_longer(
+    cols = c(Teen_births, Smokers, Excessive_drinking),
+    names_to = "Outcome",
+    values_to = "Mean"
+  )
+
+ggplot(edu_trend, aes(x = year, y = Mean, group = edu_q, linetype = edu_q)) +
+  geom_line() +
+  facet_wrap(~Outcome, scales = "free_y") +
+  labs(x = "Year", y = "Average value", linetype = "Education quartile")
+
 ```
 
 
