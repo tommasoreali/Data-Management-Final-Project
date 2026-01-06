@@ -360,7 +360,7 @@ health_total|>
 
 These violin plots showing the aggregated US average of Excessive drinking as a percentage of the population highlight a thicker upper tail as the years pass by, meaning there is a higher count of people excessively drinking. However the average of the percentage of excessive drinkers doesn't seem to change from from 2020 to 2023.
 
-# Descriptive statistics
+# Section A: Descriptive statistics + Education gradients
 
 ```{r}
 
@@ -434,7 +434,10 @@ ggplot(edu_long, aes(x = edu_q, y = Mean, group = Outcome)) +
   facet_wrap(~Outcome, scales = "free_y") +
   labs(x = "Education quartile (Bacmore)", y = "Average value")
 
-## 4) Plot B: trends over time by education quartile (recommended)
+```
+
+```{r}
+## 4) Plot B: trends over time by education quartile
 
 edu_trend <- data_grad |>
   group_by(year, edu_q) |>
@@ -444,16 +447,99 @@ edu_trend <- data_grad |>
     Excessive_drinking = mean(Excessive_drinking, na.rm = TRUE),
     .groups = "drop"
   ) |>
-  tidyr::pivot_longer(
+  pivot_longer(
     cols = c(Teen_births, Smokers, Excessive_drinking),
     names_to = "Outcome",
     values_to = "Mean"
   )
 
-ggplot(edu_trend, aes(x = year, y = Mean, group = edu_q, linetype = edu_q)) +
-  geom_line() +
+ggplot(edu_trend, aes(x = year, y = Mean, color = edu_q, group = edu_q)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
   facet_wrap(~Outcome, scales = "free_y") +
-  labs(x = "Year", y = "Average value", linetype = "Education quartile")
+  labs(
+    x = "Year",
+    y = "Average value",
+    color = "Education quartile"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "right",
+    panel.grid.minor = element_blank(),
+    strip.text = element_text(face = "bold")
+  )
+
+```
+
+
+# Section B: Scatterplots + correlation heatmap
+
+```{r}
+
+# Scatterplots: Bacmore vs Teen births, Smokers and Excessive drinking
+
+scatter_df <- data_total |>
+  select(Bacmore, Teen_births, Smokers, Excessive_drinking) |>
+  pivot_longer(
+    cols = c(Teen_births, Smokers, Excessive_drinking),
+    names_to = "Outcome",
+    values_to = "Value"
+  ) |>
+  mutate(
+    Outcome = recode(
+      Outcome,
+      Teen_births = "Teen births",
+      Smokers = "Smokers (%)",
+      Excessive_drinking = "Excessive drinking (%)"
+    )
+  )
+
+ggplot(scatter_df, aes(x = Bacmore, y = Value)) +
+  geom_point(alpha = 0.15) +
+  geom_smooth(method = "lm", se = TRUE) +
+  facet_wrap(~Outcome, scales = "free_y") +
+  labs(
+    x = "Share with Bachelor's degree or more (Bacmore)",
+    y = "Outcome value"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid.minor = element_blank(),
+    strip.text = element_text(face = "bold")
+  )
+```
+
+```{r}
+
+# Correlation heatmap (main variables)
+
+corr_df <- data_total |>
+  select(
+    Teen_births,
+    Smokers,
+    Excessive_drinking,
+    Bacmore,
+    Housing_Problems,
+    Income_Ratio,
+    Mental_help,
+    Child_alone
+  ) |>
+  drop_na()  
+
+corr_mat <- cor(corr_df, use = "complete.obs")
+
+corr_long <- as.data.frame(as.table(corr_mat)) |>
+  rename(Var1 = Var1, Var2 = Var2, Corr = Freq)
+
+ggplot(corr_long, aes(x = Var1, y = Var2, fill = Corr)) +
+  geom_tile() +
+  coord_equal() +
+  labs(x = NULL, y = NULL, fill = "Corr.") +
+  theme_minimal(base_size = 11) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid = element_blank()
+  )
 
 ```
 
