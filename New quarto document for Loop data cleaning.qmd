@@ -403,6 +403,6 @@ regression_births <- lm(Teen_births ~ Bacmore + Housing_Problems + Income_Ratio 
 ```
 
 ```{r}
-regression_drinking <- lm(Excessive_drinking ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone, data = data_total)
+regression_drinking <- lm(Excessive_drinking ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone, data = data_total) 
 ```
 
