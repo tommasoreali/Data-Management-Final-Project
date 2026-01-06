@@ -352,7 +352,7 @@ While not the most accurate, these violin plots show the density of educational 
 
 ```{r, message=FALSE}
 health_total|>
-  ggplot(aes(y = `Teen Birth Rate`, x = year,, group = year)) +
+  ggplot(aes(y = Teen_births, x = year,, group = year)) +
   geom_violin()
 ```
 
