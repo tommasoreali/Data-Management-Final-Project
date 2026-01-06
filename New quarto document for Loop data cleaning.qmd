@@ -580,6 +580,59 @@ ggplot(corr_long, aes(x = Var1, y = Var2, fill = Corr)) +
 
 ```
 
+# Deviations from state means
+
+```{r}
+
+# Education quartiles
+data_grad <- data_total |>
+  mutate(
+    edu_q = ntile(Bacmore, 4),
+    edu_q = factor(edu_q, levels = 1:4, labels = c("Q1", "Q2", "Q3", "Q4"))
+  )
+
+# Compute within-state deviations
+within_state <- data_grad |>
+  group_by(State, year) |>
+  mutate(
+    Teen_births_dev = Teen_births - mean(Teen_births, na.rm = TRUE),
+    Smokers_dev = Smokers - mean(Smokers, na.rm = TRUE),
+    Excessive_drinking_dev = Excessive_drinking - mean(Excessive_drinking, na.rm = TRUE)
+  ) |>
+  ungroup() |>
+  select(edu_q, Teen_births_dev, Smokers_dev, Excessive_drinking_dev) |>
+  pivot_longer(
+    cols = ends_with("_dev"),
+    names_to = "Outcome",
+    values_to = "Deviation"
+  ) |>
+  mutate(
+    Outcome = recode(
+      Outcome,
+      Teen_births_dev = "Teen births",
+      Smokers_dev = "Smokers (%)",
+      Excessive_drinking_dev = "Excessive drinking (%)"
+    )
+  )
+
+# Plot: deviations by education quartile
+ggplot(within_state, aes(x = edu_q, y = Deviation)) +
+  geom_violin(fill = "grey80", color = "grey30") +
+  geom_boxplot(width = 0.12, outlier.shape = NA) +
+  facet_wrap(~Outcome, scales = "free_y") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
+  labs(
+    x = "Education quartile (within state)",
+    y = "Deviation from state mean"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid.minor = element_blank(),
+    strip.text = element_text(face = "bold")
+  )
+
+```
+
 
 # Ce qu'il faut faire en plus dans notre research
 
