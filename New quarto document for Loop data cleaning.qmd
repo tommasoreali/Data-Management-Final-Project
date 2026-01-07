@@ -472,6 +472,8 @@ ggplot(edu_long, aes(x = edu_q, y = Mean, group = Outcome)) +
   labs(x = "Education quartile (Bacmore)", y = "Average value")
 
 ```
+These grophs represent the average level of excessive drinking, smoking and teen births per education quartile. The trends, while they do not show causal effects, already show interesting patterns from which conclusions can be taken. It can be seen that educationa and excessive drinking are positively correlated, whilst smoking and teen births are negatively correlated with education. 
+
 
 ```{r}
 ## 4) Plot B: trends over time by education quartile
@@ -507,11 +509,13 @@ ggplot(edu_trend, aes(x = year, y = Mean, color = edu_q, group = edu_q)) +
   )
 
 ```
-
+These graphs are relatively similar to the previous ones, however, a time factor is added to that we can now analyse the evolution of the health habits per quartile over the 4 years we study. For excessive drinking, we can see that all quartiles on average follow the same pattern, except for the 1st quartile. a sharp increase in 2021, which may be due to covid, then slight decreases. For the first quartile, we can see that it even slightly increases after 2021. The more educated a county is, the higher the rate of excessive drinkers on average. 
+For the smokers part, we can distinguish the same pattern as fro excssive drinking, meaning a sharp increase in 2021, followed by a slight decreases in 2022 and 2023. Different from excessive drinking, we can see here that higher smoking rates are ususally associated with lower education levels. 
+Finally, regarding teen births, there is a general trend showing a decrease between 2020 and 2022, with a slight increase in 2023. The higher teen birth rates are associated with lower education levels. 
 
 # Section B: Scatterplots + correlation heatmap
 
-```{r}
+```{r, message=FALSE}
 
 # Scatterplots: Bacmore vs Teen births, Smokers and Excessive drinking
 
@@ -545,6 +549,9 @@ ggplot(scatter_df, aes(x = Bacmore, y = Value)) +
     strip.text = element_text(face = "bold")
   )
 ```
+These scatterplots add to what was previously stated, there is a positive correlation between education and drinking, and negative correlation between smokers and education and teen births and education. 
+
+
 
 ```{r}
 
@@ -663,21 +670,17 @@ Now we add socioeconomic factors
  lm(Smokers ~ Bacmore + Income_Ratio + Unemployed, data = data_total)
 lm(Teen_births ~ Bacmore + Income_Ratio + Unemployed, data = data_total)
 lm(Excessive_drinking ~ Bacmore + Income_Ratio + Unemployed, data = data_total)
-
-
-
 ```
 
 
 
 ```{r}
-regression_smokers <- lm(Smokers ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
+lm(Smokers ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
+
+lm(Teen_births ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
+
+lm(Excessive_drinking ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
 ```
 
-```{r}
-regression_births <- lm(Teen_births ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
-```
 
-```{r}
-regression_drinking <- lm(Excessive_drinking ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
-```
+
