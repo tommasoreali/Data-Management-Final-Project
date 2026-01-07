@@ -633,7 +633,9 @@ ggplot(within_state, aes(x = edu_q, y = Deviation)) +
 
 ```
 
-
+This within state deviation analysis shown in the above violin plots, explains how the studied health variables differ from their state mean for each of the 4 quartiles. Each Violin plot shows the distribution of counties deviation from its mean state, which belong to that specific quartile (the data has been grouped by state and year). We set "Deviation from state mean" = county's value - state mean value. When y=0 the county's value is equal to its state mean value, when y>0 the county's value is worse than its mean value, when y<0 the county's value is better than its mean value. This analysis is helpful as we are comparing counties inside the same State. 
+When we focus on the health variable "Excessive drinking", it can be seen that as the education quartile increases, excessive drinking deviation from mean state has larger positive values. This entails, that within the same state, counties with higher education levels tend to show higher excessive drinking rates compared to their state average. When focusing on the other two health variables: Smokers % and Teen births the opposite pattern occurs, namely counties with higher education level are associated with lower smoking rates and lower teen birth counts compared to their state mean value. 
+The analysis of the 3 above violin plots follows the trends analysed and shown in the previous graphs in Section A and B
 # Ce qu'il faut faire en plus dans notre research
 
 ## Avant de pouvoir merge les datasets il faut renommer les noms des colonnes du coounty du dataset health
