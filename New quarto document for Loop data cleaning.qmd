@@ -63,7 +63,7 @@ clean_health <- function(df, year) {
   df <- df |>
     dplyr::rename(
       `% Smokers` = dplyr::any_of("% Adults Reporting Currently Smoking"),
-      `Children in Single-Parent Households` = dplyr::any_of("% Single-Parent Households")
+      `% Children in Single-Parent Households` = dplyr::any_of("% Single-Parent Households")
     )
 
   cols_keep <- c(
@@ -75,7 +75,7 @@ clean_health <- function(df, year) {
     "Teen Birth Rate",
     "% Excessive Drinking",
     "% Smokers",
-    "Children in Single-Parent Households"
+    "% Children in Single-Parent Households"
   )
 
   eu <- readr::locale(decimal_mark = ",", grouping_mark = ".")
@@ -119,13 +119,13 @@ health_total <- tibble::tibble(path = health_files) |>
 ```{r}
 health_total <- health_total |>
   mutate(County = str_c(County, " County")) |>
-  rename(Smokers = `% Smokers`, Unemployed = `% Unemployed`,Housing_Problems = `% Severe Housing Problems`, Income_Ratio = `Income Ratio`, Mental_help = `Mental Health Provider Rate`, Teen_births = `Teen Birth Rate`, Child_alone = `Children in Single-Parent Households`, Excessive_drinking = `% Excessive Drinking`)
+  rename(Smokers = `% Smokers`, Unemployed = `% Unemployed`,Housing_Problems = `% Severe Housing Problems`, Income_Ratio = `Income Ratio`, Mental_help = `Mental Health Provider Rate`, Teen_births = `Teen Birth Rate`, Child_alone = `% Children in Single-Parent Households`, Excessive_drinking = `% Excessive Drinking`)
   
 ```
 
 All yearly files are processed automatically using a loop that applies the same reading and cleaning steps to each dataset. The year is extracted from the filename, the data is imported and cleaned consistently across files, and the resulting datasets are combined into a single long-format dataset. This approach avoids redundant code, guarantees consistency across years, and ensures full reproducibility of the data preparation process.
 
-To ensure consistent numeric parsing across yearly datasets (using European decimal formatting whithin the raw data), all health files are first read as character data to prevent automatic misinterpretation by the reader. Numeric variables are then explicitly converted using locale-aware parsing, allowing the datasets to be safely processed within a single loop
+To ensure consistent numeric parsing across yearly datasets (using European decimal formatting whithin the raw data), all health files are first read as character data to prevent automatic misinterpretation by the reader. Numeric variables are then explicitly converted using locale-aware parsing, allowing the datasets to be safely processed within a single loop.
 
 # Changes made for Education data
 
@@ -283,6 +283,32 @@ The Health dataset used in this study is constructed of data coming entirely fro
 
 # Tables per dataset
 
+## General Table with information on all the datafiles 
+
+```{r}
+
+datasets <- list(
+  edu    = edu_total,
+  health = health_total,
+  full   = data_total
+)
+
+basic_info <- imap_dfr(datasets, ~{
+  df <- .x
+  tibble(
+    file = .y,
+    row_number = nrow(df),
+    col_number = ncol(df),
+    missing_number = sum(is.na(df)),
+    rows_with_missing_values = sum(rowSums(is.na(df)) > 0)
+  )
+})
+
+knitr::kable(basic_info, digits = 0, caption = "Basic information about the data files"
+)
+
+```
+
 ## Table of education data set
 
 ```{r, message=FALSE}
@@ -318,7 +344,7 @@ knitr::kable(health_summary_table, caption = "Summary of Health dataset")
 
 ```
 
-# Tables for Main Variables
+# Violin plots for Main Variables
 
 ## Violin plot for Education variable
 
@@ -359,54 +385,8 @@ health_total|>
 
 These violin plots showing the aggregated US average of Excessive drinking as a percentage of the population highlight a thicker upper tail as the years pass by, meaning there is a higher count of people excessively drinking. However the average of the percentage of excessive drinkers doesn't seem to change from from 2020 to 2023.
 
-## Violin plots for health outcomes grouped by education quartile
 
-```{r}
-
-# add the quartiles to the dataframe
-data_grad <- data_total |>
-  mutate(
-    edu_q = ntile(Bacmore, 4),
-    edu_q = factor(edu_q,
-                   levels = 1:4,
-                   labels = c("Q1", "Q2", "Q3", "Q4"))
-  )
-
-# Long format for violin plots
-violin_df <- data_grad |>
-  select(edu_q, Teen_births, Smokers, Excessive_drinking) |>
-  pivot_longer(
-    cols = c(Teen_births, Smokers, Excessive_drinking),
-    names_to = "Outcome",
-    values_to = "Value"
-  ) |>
-  mutate(
-    Outcome = recode(
-      Outcome,
-      Teen_births = "Teen births",
-      Smokers = "Smokers (%)",
-      Excessive_drinking = "Excessive drinking (%)"
-    )
-  )
-
-# Violin plot
-ggplot(violin_df, aes(x = edu_q, y = Value)) +
-  geom_violin(fill = "beige", color = "black") +
-  geom_boxplot(width = 0.12, outlier.shape = NA, alpha = 0.4) +
-  facet_wrap(~Outcome, scales = "free_y") +
-  labs(
-    x = "Education quartile (Bacmore)",
-    y = "Value"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    panel.grid.minor = element_blank(),
-    strip.text = element_text(face = "bold")
-  )
-```
-
-
-# Section A: Descriptive statistics + Education gradients
+# Descriptive statistics and Education gradients
 
 ```{r}
 
@@ -421,23 +401,26 @@ desc_stats <- data_total |>
         Housing_Problems,
         Income_Ratio,
         Mental_help,
-        Child_alone
+        Child_alone,
+        Unemployed
       ),
       ~c(
         Mean = mean(.x, na.rm = TRUE),
         SD   = sd(.x, na.rm = TRUE),
         Min  = min(.x, na.rm = TRUE),
-        Max  = max(.x, na.rm = TRUE)
+        Max  = max(.x, na.rm = TRUE),
+        Median = median(.x, na.rm = TRUE)
       )
     )
   )
 
 desc_table <- as.data.frame(t(desc_stats))
-colnames(desc_table) <- c("Mean", "SD", "Min", "Max")
+colnames(desc_table) <- c("Mean", "SD", "Min", "Max", "Median")
 
 knitr::kable(desc_table, caption = "Descriptive statistics of main variables")
 
 ```
+
 
 ```{r}
 
@@ -472,8 +455,7 @@ ggplot(edu_long, aes(x = edu_q, y = Mean, group = Outcome)) +
   labs(x = "Education quartile (Bacmore)", y = "Average value")
 
 ```
-These grophs represent the average level of excessive drinking, smoking and teen births per education quartile. The trends, while they do not show causal effects, already show interesting patterns from which conclusions can be taken. It can be seen that educationa and excessive drinking are positively correlated, whilst smoking and teen births are negatively correlated with education. 
-
+These grophs represent the average level of excessive drinking, smoking and teen births per education quartile. The trends, while they do not show causal effects, already show interesting patterns from which conclusions can be taken. It can be seen that education and excessive drinking are positively correlated, whilst smoking and teen births are negatively correlated with education. 
 
 ```{r}
 ## 4) Plot B: trends over time by education quartile
@@ -513,11 +495,9 @@ These graphs are relatively similar to the previous ones, however, a time factor
 For the smokers part, we can distinguish the same pattern as fro excssive drinking, meaning a sharp increase in 2021, followed by a slight decreases in 2022 and 2023. Different from excessive drinking, we can see here that higher smoking rates are ususally associated with lower education levels. 
 Finally, regarding teen births, there is a general trend showing a decrease between 2020 and 2022, with a slight increase in 2023. The higher teen birth rates are associated with lower education levels. 
 
-# Section B: Scatterplots + correlation heatmap
+# Scatterplots
 
 ```{r, message=FALSE}
-
-# Scatterplots: Bacmore vs Teen births, Smokers and Excessive drinking
 
 scatter_df <- data_total |>
   select(Bacmore, Teen_births, Smokers, Excessive_drinking) |>
@@ -549,9 +529,10 @@ ggplot(scatter_df, aes(x = Bacmore, y = Value)) +
     strip.text = element_text(face = "bold")
   )
 ```
-These scatterplots add to what was previously stated, there is a positive correlation between education and drinking, and negative correlation between smokers and education and teen births and education. 
+These scatterplots add to what was previously stated. In fact, there is a positive correlation between education and drinking. Furthermore, there is also the negative correlation between smokers and education and between teen births and education.
 
 
+# Correlation heatmap
 
 ```{r}
 
@@ -565,6 +546,7 @@ corr_df <- data_total |>
     Bacmore,
     Housing_Problems,
     Income_Ratio,
+    Unemployed,
     Mental_help,
     Child_alone
   ) |>
@@ -586,6 +568,8 @@ ggplot(corr_long, aes(x = Var1, y = Var2, fill = Corr)) +
   )
 
 ```
+
+The above correlation matrix includes all the variables used in this analysis. It can be seen that health outcomes such as Teen birth rates and percentage of Smokers are strongly positively correlated with socioeconomic indicators like income inequality, unemployment and the share of children living in single-parent households. On the other hand, the percentage of excessive drinkers is strongly negatively correlated with Income ratio, percentage of Unemployed and the share of children living in single-parent households. The highlighted correlations suggest the shown health outcomes are probably embedded within broad socioeconomic contexts. Furthermore, several of the socioeconomic indicators are closely related to educational attainment. Therefore, not including the socioeconomic indicators as control variables within the regressions would imply a risk of confounding in single bivariate analysis(or in simple terms "Omitted Variable Bias"). These specific controls are logically chosen for this regression analysis, to assess if education level effect on health outcomes persists once these related factors are taken into account.
 
 # within-state deviation analysis
 
@@ -624,10 +608,10 @@ within_state <- data_grad |>
 
 # Plot: deviations by education quartile
 ggplot(within_state, aes(x = edu_q, y = Deviation)) +
-  geom_violin(fill = "grey80", color = "grey30") +
+  geom_violin(fill = "beige", color = "grey30") +
   geom_boxplot(width = 0.12, outlier.shape = NA) +
   facet_wrap(~Outcome, scales = "free_y") +
-  geom_hline(yintercept = 0, linetype = "dashed", color = "grey40") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
   labs(
     x = "Education quartile (within state)",
     y = "Deviation from state mean"
@@ -640,9 +624,10 @@ ggplot(within_state, aes(x = edu_q, y = Deviation)) +
 
 ```
 
-This within state deviation analysis shown in the above violin plots, explains how the studied health variables differ from their state mean for each of the 4 quartiles. Each Violin plot shows the distribution of counties deviation from its mean state, which belong to that specific quartile (the data has been grouped by state and year). We set "Deviation from state mean" = county's value - state mean value. When y=0 the county's value is equal to its state mean value, when y>0 the county's value is worse than its mean value, when y<0 the county's value is better than its mean value. This analysis is helpful as we are comparing counties inside the same State. 
-When we focus on the health variable "Excessive drinking", it can be seen that as the education quartile increases, excessive drinking deviation from mean state has larger positive values. This entails, that within the same state, counties with higher education levels tend to show higher excessive drinking rates compared to their state average. When focusing on the other two health variables: Smokers % and Teen births the opposite pattern occurs, namely counties with higher education level are associated with lower smoking rates and lower teen birth counts compared to their state mean value. 
-The analysis of the 3 above violin plots follows the trends analysed and shown in the previous graphs in Section A and B
+This within state deviation analysis shown in the above violin plots illustrates how the studied health outcomes (at county level) differ from their state mean for each of the 4 quartiles. Each Violin plot represents the distribution of counties deviations from the mean state for a health outcome, conditional on belonging to a specific quartile (the data has been grouped by state and year). We set "Deviation from state mean" = county's value - state mean value. A deviation of 0 means a county's outcome is equal to its state average. When the deviation is positive (negative) it indicates a worse (better) outcome relative to its state average value. This analysis is helpful as we are comparing counties inside the same State, and we therefore control for state-level policies, institutions and factors. 
+When focusing on the health variable "Excessive drinking", as the education quartile increases "Excessive drinking" deviation from mean state has larger positive values. This entails, that within the same state, counties with higher education levels tend to show higher excessive drinking rates compared to their state average. When focusing on the other two health variables: Smokers % and Teen births the opposite pattern occurs, namely counties with higher education level are associated with lower smoking rates and lower teen birth counts compared to their state mean value. 
+The analysis of the 3 above violin plots follows the trends analysed and shown in the previous graphs sucj as the Scatterplots and the education gradients. 
+
 # Ce qu'il faut faire en plus dans notre research
 
 ## Avant de pouvoir merge les datasets il faut renommer les noms des colonnes du coounty du dataset health
