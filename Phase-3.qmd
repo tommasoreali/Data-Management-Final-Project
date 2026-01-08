@@ -26,15 +26,15 @@ Description of how to get the data sets
 
 To get the data of the CHR&R, download each file per year seperately
 
-Link: "https://www.countyhealthrankings.org/health-data/methodology-and-sources/data-documentation/national-data-documentation-2010-2023"
+Link: [Health Data](https://www.countyhealthrankings.org/health-data/methodology-and-sources/data-documentation/national-data-documentation-2010-2023)
 
 To get the education data from the census bureau: Select all of the counties as variables, pick the variable you want to pick (in this case pick the education attainment) and download the data for all the years you are interested in
 
-Link: "https://data.census.gov/table?q=S1501:+Educational+Attainment&g=010XX00US\$0500000_040XX00US01\$0500000"
+Link: [Education Data](https://data.census.gov/table?q=S1501:+Educational+Attainment&g=010XX00US\$0500000_040XX00US01\$0500000)
 
 # Changes made to Health data
 
-## Full data Cleaning with LOOP
+## Full data cleaning with loop
 
 ```{r, echo=FALSE}
 # Read step:
@@ -131,7 +131,7 @@ To ensure consistent numeric parsing across yearly datasets (using European deci
 
 # Changes made for Education data
 
-## Full data Cleaning with LOOP
+## Full data cleaning with loop
 
 ```{r, echo=FALSE}
 # Read step
@@ -208,14 +208,9 @@ edu_total <- tibble(path = edu_files) |>
   select(County, State, year, Bacmore)
 ```
 
-```{r, echo=FALSE}
-edu_total |>
-  arrange(State, County, year )
-```
-
 ## Merging datasets
 
-```{r}
+```{r, echo=FALSE}
 data_total <- edu_total |>
   left_join(health_total, by = c("County", "State", "year"))
 ```
@@ -236,7 +231,6 @@ education2021 <- vroom(here("Data", "Education2021.csv"))
 education2022 <- vroom(here("Data", "Education2022.csv"))
 education2023 <- vroom(here("Data", "Education2023.csv"))
 ```
-
 
 # Description of variables
 
@@ -433,7 +427,6 @@ ggplot(within_state, aes(x = edu_q, y = Deviation)) +
 
 This within state deviation analysis shown in the above violin plots illustrates how the studied health outcomes (at county level) differ from their state mean for each of the 4 quartiles. Each Violin plot represents the distribution of counties deviations from the mean state for a health outcome, conditional on belonging to a specific quartile (the data has been grouped by state and year). We set "Deviation from state mean" = county's value - state mean value. A deviation of 0 means a county's outcome is equal to its state average. When the deviation is positive (negative) it indicates a worse (better) outcome relative to its state average value. This analysis is helpful as we are comparing counties inside the same State, and we therefore control for state-level policies, institutions and factors. When focusing on the health variable "Excessive drinking", as the education quartile increases "Excessive drinking" deviation from mean state has larger positive values. This entails, that within the same state, counties with higher education levels tend to show higher excessive drinking rates compared to their state average. When focusing on the other two health variables: Smokers % and Teen births the opposite pattern occurs, namely counties with higher education level are associated with lower smoking rates and lower teen birth counts compared to their state mean value. The analysis of the 3 above violin plots follows the trends analysed and shown in the previous graphs such as the scatterplots and the education gradients.
 
-
 ```{r, echo=FALSE}
 ## 4) Plot B: trends over time by education quartile
 
@@ -547,9 +540,6 @@ ggplot(corr_long, aes(x = Var1, y = Var2, fill = Corr)) +
 
 The above correlation matrix includes all the variables used in this analysis. It can be seen that health outcomes such as Teen birth rates and percentage of Smokers are strongly positively correlated with socioeconomic indicators like income inequality, unemployment and the share of children living in single-parent households. On the other hand, the percentage of excessive drinkers is strongly negatively correlated with Income ratio, percentage of Unemployed and the share of children living in single-parent households. The highlighted correlations suggest the shown health outcomes are probably embedded within broad socioeconomic contexts. (Furthermore, several of the socioeconomic indicators are closely related to educational attainment. Therefore, not including the socioeconomic indicators as control variables within the regressions would imply a risk of confounding in single bivariate analysis(or in simple terms "Omitted Variable Bias"). These specific controls are logically chosen for this regression analysis, to assess if education level effect on health outcomes persists once these related factors are taken into account.)
 
-
-
-
 ```{r, echo=FALSE}
 data_total <- 
   left_join(edu_total, health_total, by = c("County", "State", "year"))
@@ -570,8 +560,8 @@ summary(simple_teens)
 simple_drinking <- lm(Excessive_drinking ~ Bacmore, data = data_total)
 summary(simple_drinking)
 ```
-These regressions are not interesting for causal estimation, however they are interesting to determine the general impact of education on our three dependent variables. It can be determined that education increases excessive drinking habits whilst when education increases, smoking and the amount of children born from teenage mothers decrease. 
-All coefficients are statistically significant 
+
+These regressions are not interesting for causal estimation, however they are interesting to determine the general impact of education on our three dependent variables. It can be determined that education increases excessive drinking habits whilst when education increases, smoking and the amount of children born from teenage mothers decrease. All coefficients are statistically significant
 
 #### Regressions with all variables but without fixed effects
 
