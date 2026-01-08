@@ -2,13 +2,16 @@
 title: "PHASE-3"
 format: html
 editor: visual
+execute: 
+  warning: false
+  echo: false
 filters: 
 - wordcount
 ---
 
 Project repository: [GitHub repo](https://github.com/tommasoreali/Data-Management-Final-Project.git)
 
-```{r, message=FALSE, echo=FALSE}
+```{r}
 library(ggplot2)
 library(tidyverse)
 library(here)
@@ -36,7 +39,7 @@ Link: [Education Data](https://data.census.gov/table?q=S1501:+Educational+Attain
 
 ## Full data cleaning with loop
 
-```{r, echo=FALSE}
+```{r}
 # Read step:
 read_health_file <- function(path) {
   line1 <- vroom::vroom_lines(path, n_max = 1)
@@ -57,7 +60,7 @@ read_health_file <- function(path) {
 
 Each yearly health file is imported using a custom reader that first checks whether the dataset contains an extra metadata row before the actual header and skips it if necessary. All files are read using a semicolon as delimiter, and all columns are deliberately imported as character strings. This prevents automatic type inference from incorrectly parsing European-style decimals (e.g. “3,0”) and ensures that the raw data is preserved exactly as it appears in the source files.
 
-```{r, echo=FALSE}
+```{r}
 # Clean step:
 
 clean_health <- function(df, year) {
@@ -98,7 +101,7 @@ clean_health <- function(df, year) {
 
 The cleaning function standardizes column names that vary across years, keeps only the variables relevant for the analysis, replaces missing county names with a common label, and adds a year identifier. All non-identifier variables are then converted from character strings to numeric values using locale-aware parsing, which correctly interprets European decimal notation and preserves numerical precision.
 
-```{r, message=FALSE, echo=FALSE}
+```{r}
 #Loop step:
 
 health_files <- list.files(
@@ -118,7 +121,7 @@ health_total <- tibble::tibble(path = health_files) |>
 
 ```
 
-```{r, echo=FALSE}
+```{r}
 health_total <- health_total |>
   mutate(County = str_c(County, " County")) |>
   rename(Smokers = `% Smokers`, Unemployed = `% Unemployed`,Housing_Problems = `% Severe Housing Problems`, Income_Ratio = `Income Ratio`, Mental_help = `Mental Health Provider Rate`, Teen_births = `Teen Birth Rate`, Child_alone = `% Children in Single-Parent Households`, Excessive_drinking = `% Excessive Drinking`)
@@ -133,7 +136,7 @@ To ensure consistent numeric parsing across yearly datasets (using European deci
 
 ## Full data cleaning with loop
 
-```{r, echo=FALSE}
+```{r}
 # Read step
 read_edu_file <- function(path) {
   first <- vroom_lines(path, n_max = 1)
@@ -155,7 +158,7 @@ read_edu_file <- function(path) {
 
 ```
 
-```{r, echo=FALSE}
+```{r}
 #Clean step
 clean_edu <- function(df, year) {
   out <- df |>
@@ -188,7 +191,7 @@ clean_edu <- function(df, year) {
 
 ```
 
-```{r,echo=FALSE}
+```{r}
 #Loop Step
 
 edu_files <- list.files(
@@ -208,16 +211,12 @@ edu_total <- tibble(path = edu_files) |>
   select(County, State, year, Bacmore)
 ```
 
-## Merging datasets
-
-```{r, echo=FALSE}
+```{r}
 data_total <- edu_total |>
   left_join(health_total, by = c("County", "State", "year"))
 ```
 
-# Download data
-
-```{r,echo=FALSE}
+```{r}
 here::i_am("Data-Management-Final-Project.Rproj")
 ```
 
@@ -258,7 +257,7 @@ Control variables to complete model:
 
 -   Mental health providers: This variable describes the rate of mental health providers per 100000 inhabitants.
 
-# Research question description (500 words):
+# Research question description:
 
 The topic we are going to analyse focuses on studying different health habits based on the educational attainment in an observed area, in this case, a county. The variables that will be looked into are adult smoking, excessive drinking, and teen births per 1000 15-19 year old women. We have chosen these variables because these are in someway based on choices that individuals make, rather than an unlucky occurrence in someones life. This means that, for example, getting sick can be the result of bad choices, however someone can not decide to become sick from one day to the other. On the contrary, choosing to smoke, choosing to excessively drink or delivering a baby during teen years are more closely related to choices and thus the environment. This is why we believe it is important to look into the determinants of these habits. One of the possible determinants is educational attainment because it not only influences individuals in their own lives, it also influences individuals in a community. Educational Attainment is computed as the proportion of people in a county that have obtained a Bachelors degree at least. The goal will be to analyse the aggregate decisions of individuals on health habits based on the aggregated educational attainment in a county and compare between more and less educated counties to see whether there are disparities based on educational attainment. Maralani V. (2014) advances that education on its own does not lead to better health, rather, the bundle of educational inequality and environment plays a much larger role in predicting whether someone will smoke. This research will thus try and adapt these findings further on smoking and adapting it to other health habits. The estimation will be completed with different control variables, which we believe can isolate the impact of educational attainment. these are: - Children in single parent households - mental health providers - Severe Housing Problems - Income inequality - Unemployment The vast amount of counties in this dataset, spread through the 51 states of the USA, allow for a large sample size, and thus the development of different conclusions, whether some choices are regionally based, due to a certain education level, or completely random.
 
@@ -268,11 +267,11 @@ The education data set comes from the United States Census Bureau. It serves as 
 
 The Health dataset used in this study is constructed of data coming entirely from the CHR&R (County Health Rankings and Roadmaps) program. This initiative was created by the University of Wisconsin Population Health institute with support from the Robert Wood Johnson Foundation. It consists in providing annual data on health factors within and across almost the entirety of counties from the United States. The CHR&R provides data, evidence, guidance and examples to build awareness about the multiple factors influencing health conditions and disparities across the country. Furthermore, CHR&R puts an emphasis on the range of health-influencing measures that offer crucial context about community specific health conditions. In fact, Along with the data the program provides tools and evidence-based strategies, which can be used by the communities to move to action and solve the important health and societal issues concerning their people. As an example, The "2025 Annual data release" includes over 80 health-related measures, and focuses on the impact of certain societal factors present in the United States on community conditions.
 
-# Tables per dataset
 
-## General Table with information on all the datafiles
 
-```{r,echo=FALSE}
+# General Table with information on all the datafiles
+
+```{r}
 
 datasets <- list(
   edu    = edu_total,
@@ -302,7 +301,7 @@ knitr::kable(basic_info, digits = 0, caption = "Basic information about the data
 
 Since there are 3144 counties, the data will be aggregated.
 
-```{r, message=FALSE, echo=FALSE}
+```{r}
 edu_total|>
   ggplot(aes(y = Bacmore, x = year)) +
   geom_violin()
@@ -312,7 +311,7 @@ While not the most accurate, these violin plots show the density of educational 
 
 ## Violin plot for health main target variables (% Smokers, % Excessive drinkers, Teen birth rates)
 
-```{r, message=FALSE, echo=FALSE}
+```{r}
 health_total|>
   ggplot(aes(y = Teen_births, x = year,, group = year)) +
   geom_violin()
@@ -320,7 +319,7 @@ health_total|>
 
 These violin plots show the aggregated US average of Teen birth rates as the amount of teen births per 1000 females aged 15-19. It is observed that the density of the violin plots gets more and more concentrated towards the bottom as the years pass by. As a matter of fact, the average of aggregated teen birth lowers from about 25% in 2020 to 19% in 2023.
 
-```{r, message=FALSE, echo=FALSE}
+```{r}
 health_total|>
   ggplot(aes(y = Smokers, x = year, group = year)) +
   geom_violin()
@@ -328,7 +327,7 @@ health_total|>
 
 These violin plots show the aggregated US average of adult smokers as a percentage of the population. It can be seen that each year the average of percentage of smokers gradually increases and the density of the violin plots gets slimmer. In fact, in 2020 the average percentage of aggregated smokers in the US is about just above 15%. It grows up until nearly 20% in 2021, and decreases to about 18% in 2023.
 
-```{r, message=FALSE, echo=FALSE}
+```{r}
 
 health_total|>
   ggplot(aes(y = Excessive_drinking, x = year, group = year)) +
@@ -339,7 +338,7 @@ These violin plots showing the aggregated US average of Excessive drinking as a 
 
 # Descriptive statistics and Education gradients
 
-```{r, echo=FALSE}
+```{r}
 
 desc_stats <- data_total |>
   summarise(
@@ -372,9 +371,9 @@ knitr::kable(desc_table, caption = "Descriptive statistics of main variables")
 
 ```
 
-# within-state deviation analysis
+# Within-state deviation analysis
 
-```{r, echo=FALSE}
+```{r}
 
 # Education quartiles
 data_grad <- data_total |>
@@ -427,7 +426,7 @@ ggplot(within_state, aes(x = edu_q, y = Deviation)) +
 
 This within state deviation analysis shown in the above violin plots illustrates how the studied health outcomes (at county level) differ from their state mean for each of the 4 quartiles. Each Violin plot represents the distribution of counties deviations from the mean state for a health outcome, conditional on belonging to a specific quartile (the data has been grouped by state and year). We set "Deviation from state mean" = county's value - state mean value. A deviation of 0 means a county's outcome is equal to its state average. When the deviation is positive (negative) it indicates a worse (better) outcome relative to its state average value. This analysis is helpful as we are comparing counties inside the same State, and we therefore control for state-level policies, institutions and factors. When focusing on the health variable "Excessive drinking", as the education quartile increases "Excessive drinking" deviation from mean state has larger positive values. This entails, that within the same state, counties with higher education levels tend to show higher excessive drinking rates compared to their state average. When focusing on the other two health variables: Smokers % and Teen births the opposite pattern occurs, namely counties with higher education level are associated with lower smoking rates and lower teen birth counts compared to their state mean value. The analysis of the 3 above violin plots follows the trends analysed and shown in the previous graphs such as the scatterplots and the education gradients.
 
-```{r, echo=FALSE}
+```{r}
 ## 4) Plot B: trends over time by education quartile
 
 edu_trend <- data_grad |>
@@ -466,7 +465,7 @@ These graphs are relatively similar to the previous ones, however, a time factor
 
 # Scatterplots
 
-```{r, message=FALSE, echo=FALSE}
+```{r}
 
 scatter_df <- data_total |>
   select(Bacmore, Teen_births, Smokers, Excessive_drinking) |>
@@ -503,7 +502,7 @@ These scatterplots add to what was previously stated. In fact, there is a positi
 
 # Correlation heatmap
 
-```{r, echo=FALSE}
+```{r}
 
 # Correlation heatmap (main variables)
 
@@ -540,19 +539,19 @@ ggplot(corr_long, aes(x = Var1, y = Var2, fill = Corr)) +
 
 The above correlation matrix includes all the variables used in this analysis. It can be seen that health outcomes such as Teen birth rates and percentage of Smokers are strongly positively correlated with socioeconomic indicators like income inequality, unemployment and the share of children living in single-parent households. On the other hand, the percentage of excessive drinkers is strongly negatively correlated with Income ratio, percentage of Unemployed and the share of children living in single-parent households. The highlighted correlations suggest the shown health outcomes are probably embedded within broad socioeconomic contexts. (Furthermore, several of the socioeconomic indicators are closely related to educational attainment. Therefore, not including the socioeconomic indicators as control variables within the regressions would imply a risk of confounding in single bivariate analysis(or in simple terms "Omitted Variable Bias"). These specific controls are logically chosen for this regression analysis, to assess if education level effect on health outcomes persists once these related factors are taken into account.)
 
-```{r, echo=FALSE}
+```{r}
 data_total <- 
   left_join(edu_total, health_total, by = c("County", "State", "year"))
   
 ```
 
-### Data Analysis
+# Data Analysis
 
 For interesting data analysis results, the regressions are run in different steps, first independent on dependent variable, then adding socioeconomic variables, then add the other variables. This way we can determine the general impact of each variable and how the effect of the independent variable takes from the other variables.
 
-#### Regressions with only explanatory variable
+## Regressions with only explanatory variable
 
-```{r, echo=FALSE}
+```{r}
 simple_smokers <- lm(Smokers ~ Bacmore, data = data_total)
 summary(simple_smokers)
 simple_teens <- lm(Teen_births ~ Bacmore, data = data_total)
@@ -563,9 +562,9 @@ summary(simple_drinking)
 
 These regressions are not interesting for causal estimation, however they are interesting to determine the general impact of education on our three dependent variables. It can be determined that education increases excessive drinking habits whilst when education increases, smoking and the amount of children born from teenage mothers decrease. All coefficients are statistically significant
 
-#### Regressions with all variables but without fixed effects
+## Regressions with all variables but without fixed effects
 
-```{r, echo=FALSE}
+```{r}
 regression_smoking <- lm(Smokers ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
 summary(regression_smoking)
 
