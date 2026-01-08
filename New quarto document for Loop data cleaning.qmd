@@ -8,7 +8,7 @@ filters:
 
 Project repository: [GitHub repo](https://github.com/tommasoreali/Data-Management-Final-Project.git)
 
-```{r, message=FALSE}
+```{r, message=FALSE, echo=FALSE}
 library(ggplot2)
 library(tidyverse)
 library(here)
@@ -36,7 +36,7 @@ Link: "https://data.census.gov/table?q=S1501:+Educational+Attainment&g=010XX00US
 
 ## Full data Cleaning with LOOP
 
-```{r}
+```{r, echo=FALSE}
 # Read step:
 read_health_file <- function(path) {
   line1 <- vroom::vroom_lines(path, n_max = 1)
@@ -57,7 +57,7 @@ read_health_file <- function(path) {
 
 Each yearly health file is imported using a custom reader that first checks whether the dataset contains an extra metadata row before the actual header and skips it if necessary. All files are read using a semicolon as delimiter, and all columns are deliberately imported as character strings. This prevents automatic type inference from incorrectly parsing European-style decimals (e.g. “3,0”) and ensures that the raw data is preserved exactly as it appears in the source files.
 
-```{r}
+```{r, echo=FALSE}
 # Clean step:
 
 clean_health <- function(df, year) {
@@ -98,7 +98,7 @@ clean_health <- function(df, year) {
 
 The cleaning function standardizes column names that vary across years, keeps only the variables relevant for the analysis, replaces missing county names with a common label, and adds a year identifier. All non-identifier variables are then converted from character strings to numeric values using locale-aware parsing, which correctly interprets European decimal notation and preserves numerical precision.
 
-```{r, message=FALSE}
+```{r, message=FALSE, echo=FALSE}
 #Loop step:
 
 health_files <- list.files(
@@ -118,7 +118,7 @@ health_total <- tibble::tibble(path = health_files) |>
 
 ```
 
-```{r}
+```{r, echo=FALSE}
 health_total <- health_total |>
   mutate(County = str_c(County, " County")) |>
   rename(Smokers = `% Smokers`, Unemployed = `% Unemployed`,Housing_Problems = `% Severe Housing Problems`, Income_Ratio = `Income Ratio`, Mental_help = `Mental Health Provider Rate`, Teen_births = `Teen Birth Rate`, Child_alone = `% Children in Single-Parent Households`, Excessive_drinking = `% Excessive Drinking`)
@@ -133,7 +133,7 @@ To ensure consistent numeric parsing across yearly datasets (using European deci
 
 ## Full data Cleaning with LOOP
 
-```{r}
+```{r, echo=FALSE}
 # Read step
 read_edu_file <- function(path) {
   first <- vroom_lines(path, n_max = 1)
@@ -155,7 +155,7 @@ read_edu_file <- function(path) {
 
 ```
 
-```{r}
+```{r, echo=FALSE}
 #Clean step
 clean_edu <- function(df, year) {
   out <- df |>
@@ -188,7 +188,7 @@ clean_edu <- function(df, year) {
 
 ```
 
-```{r}
+```{r,echo=FALSE}
 #Loop Step
 
 edu_files <- list.files(
@@ -208,7 +208,7 @@ edu_total <- tibble(path = edu_files) |>
   select(County, State, year, Bacmore)
 ```
 
-```{r}
+```{r, echo=FALSE}
 edu_total |>
   arrange(State, County, year )
 ```
@@ -222,11 +222,11 @@ data_total <- edu_total |>
 
 # Download data
 
-```{r}
+```{r,echo=FALSE}
 here::i_am("Data-Management-Final-Project.Rproj")
 ```
 
-```{r, message=FALSE}
+```{r, message=FALSE, echo=FALSE}
 health2020 <- vroom(here("Data", "2020health.csv"))
 health2021 <- vroom(here("Data", "2021health.csv"))
 health2022 <- vroom(here("Data", "2022health.csv"))
@@ -237,15 +237,6 @@ education2022 <- vroom(here("Data", "Education2022.csv"))
 education2023 <- vroom(here("Data", "Education2023.csv"))
 ```
 
-# Description of data obtention and cleaning
-
-## Education:
-
-To get the education data from the census bureau: Select all of the counties as variables, pick the variable you want to pick (in this case pick the education attainment) and download the data for all the years you are interested in. When downloading in R, there is one dataset per year.In order to clean the data, get rid of all the variables and specifications only to keep educational attainment for bachelors and more for people aged 25 and over. The specify the nature of the variables, county and state are characters, and the rest are numerical. finally when all datasets per year are cleaned, merge with the column (state, county), this ensures that every state is the correct key, as there are counties that have the same name in separate states. When the sets are merged, separate state and county in separate columns, pivot the data to be in long format (4 observations per county per variable (there are 4 years being analysed)), and rename the variable as needed (in our case Bacmore).
-
-## Health:
-
-The raw data for health was at first downloaded from the CHR&R website for all the years we are interested in for this study (2020-2023) as 4 different csv files (one for each year). After downloading the data in Rstudio using vroom(), the the raw columns names were replaced with the true column names which were situated in the first row. Furthermore, all the columns which were not useful were removed in order to keep only the variables used in this study, namely: % Severe Housing Problems, Income Ratio, % Unemployed, Mental Health Provider Rate, Teen Birth Rate, % Excessive Drinking, % Smokers, % Children in Single-Parent Households. Moreover, the missing values for county names were replaced by "Average" as for each county there was one observation per year calculating its average in the raw dataset. The nature of the variables was also changed: county and state are characters, and the rest are numerical. Finally, after having cleaned the 4 years datasets, they were merged together with the column (state, county), ensuring every state and county are the correct key. After the merge the dataset was pivoted to be in long format (with each observation a unique combination of State, county and year), and the columns were renamed as needed.
 
 # Description of variables
 
@@ -287,7 +278,7 @@ The Health dataset used in this study is constructed of data coming entirely fro
 
 ## General Table with information on all the datafiles
 
-```{r}
+```{r,echo=FALSE}
 
 datasets <- list(
   edu    = edu_total,
@@ -311,48 +302,13 @@ knitr::kable(basic_info, digits = 0, caption = "Basic information about the data
 
 ```
 
-## Table of education data set
-
-```{r, message=FALSE}
-data_name <- "Education Data"
-row_count <- nrow(edu_total)
-column_count <- ncol(edu_total)
-
-summary_table <- data.frame(
-  `Data File Name` = data_name,
-  `Number of Rows` = row_count,
-  `Number of Columns` = column_count,
-  check.names = FALSE
-)
-
-knitr::kable(summary_table, caption = "Summary of Education dataset")
-```
-
-## Table of health data set
-
-```{r, message=FALSE}
-data_name <- "Health Data"
-row_count <- nrow(health_total)
-column_count <- ncol(health_total)
-
-health_summary_table <- data.frame(
-  `Data File Name` = data_name,
-  `Number of Rows` = row_count,
-  `Number of Columns` = column_count,
-  check.names = FALSE
-)
-
-knitr::kable(health_summary_table, caption = "Summary of Health dataset")
-
-```
-
 # Violin plots for Main Variables
 
 ## Violin plot for Education variable
 
 Since there are 3144 counties, the data will be aggregated.
 
-```{r, message=FALSE}
+```{r, message=FALSE, echo=FALSE}
 edu_total|>
   ggplot(aes(y = Bacmore, x = year)) +
   geom_violin()
@@ -362,7 +318,7 @@ While not the most accurate, these violin plots show the density of educational 
 
 ## Violin plot for health main target variables (% Smokers, % Excessive drinkers, Teen birth rates)
 
-```{r, message=FALSE}
+```{r, message=FALSE, echo=FALSE}
 health_total|>
   ggplot(aes(y = Teen_births, x = year,, group = year)) +
   geom_violin()
@@ -370,7 +326,7 @@ health_total|>
 
 These violin plots show the aggregated US average of Teen birth rates as the amount of teen births per 1000 females aged 15-19. It is observed that the density of the violin plots gets more and more concentrated towards the bottom as the years pass by. As a matter of fact, the average of aggregated teen birth lowers from about 25% in 2020 to 19% in 2023.
 
-```{r, message=FALSE}
+```{r, message=FALSE, echo=FALSE}
 health_total|>
   ggplot(aes(y = Smokers, x = year, group = year)) +
   geom_violin()
@@ -378,7 +334,7 @@ health_total|>
 
 These violin plots show the aggregated US average of adult smokers as a percentage of the population. It can be seen that each year the average of percentage of smokers gradually increases and the density of the violin plots gets slimmer. In fact, in 2020 the average percentage of aggregated smokers in the US is about just above 15%. It grows up until nearly 20% in 2021, and decreases to about 18% in 2023.
 
-```{r, message=FALSE}
+```{r, message=FALSE, echo=FALSE}
 
 health_total|>
   ggplot(aes(y = Excessive_drinking, x = year, group = year)) +
@@ -389,7 +345,7 @@ These violin plots showing the aggregated US average of Excessive drinking as a 
 
 # Descriptive statistics and Education gradients
 
-```{r}
+```{r, echo=FALSE}
 
 desc_stats <- data_total |>
   summarise(
@@ -424,7 +380,7 @@ knitr::kable(desc_table, caption = "Descriptive statistics of main variables")
 
 # within-state deviation analysis
 
-```{r}
+```{r, echo=FALSE}
 
 # Education quartiles
 data_grad <- data_total |>
@@ -477,43 +433,8 @@ ggplot(within_state, aes(x = edu_q, y = Deviation)) +
 
 This within state deviation analysis shown in the above violin plots illustrates how the studied health outcomes (at county level) differ from their state mean for each of the 4 quartiles. Each Violin plot represents the distribution of counties deviations from the mean state for a health outcome, conditional on belonging to a specific quartile (the data has been grouped by state and year). We set "Deviation from state mean" = county's value - state mean value. A deviation of 0 means a county's outcome is equal to its state average. When the deviation is positive (negative) it indicates a worse (better) outcome relative to its state average value. This analysis is helpful as we are comparing counties inside the same State, and we therefore control for state-level policies, institutions and factors. When focusing on the health variable "Excessive drinking", as the education quartile increases "Excessive drinking" deviation from mean state has larger positive values. This entails, that within the same state, counties with higher education levels tend to show higher excessive drinking rates compared to their state average. When focusing on the other two health variables: Smokers % and Teen births the opposite pattern occurs, namely counties with higher education level are associated with lower smoking rates and lower teen birth counts compared to their state mean value. The analysis of the 3 above violin plots follows the trends analysed and shown in the previous graphs such as the scatterplots and the education gradients.
 
-```{r}
 
-## 2) Table: outcomes by education quartile (overall)
-
-edu_table <- data_grad |>
-  group_by(edu_q) |>
-  summarise(
-    n = n(),
-    Teen_births = mean(Teen_births, na.rm = TRUE),
-    Smokers = mean(Smokers, na.rm = TRUE),
-    Excessive_drinking = mean(Excessive_drinking, na.rm = TRUE),
-    .groups = "drop"
-  )
-
-knitr::kable(
-  edu_table,
-  digits = 2,
-  caption = "Average outcomes by education quartile (Bacmore)"
-)
-
-## 3) Plot A: outcomes vs education quartile (overall)
-
-edu_long <- edu_table |>
-  select(edu_q, Teen_births, Smokers, Excessive_drinking) |>
-  tidyr::pivot_longer(-edu_q, names_to = "Outcome", values_to = "Mean")
-
-ggplot(edu_long, aes(x = edu_q, y = Mean, group = Outcome)) +
-  geom_line() +
-  geom_point() +
-  facet_wrap(~Outcome, scales = "free_y") +
-  labs(x = "Education quartile (Bacmore)", y = "Average value")
-
-```
-
-These graphs represent the average level of excessive drinking, smoking and teen births per education quartile. The trends, while they do not show causal effects, already show interesting patterns from which conclusions can be taken. It can be seen that education and excessive drinking are positively correlated, whilst smoking and teen births are negatively correlated with education.
-
-```{r}
+```{r, echo=FALSE}
 ## 4) Plot B: trends over time by education quartile
 
 edu_trend <- data_grad |>
@@ -552,7 +473,7 @@ These graphs are relatively similar to the previous ones, however, a time factor
 
 # Scatterplots
 
-```{r, message=FALSE}
+```{r, message=FALSE, echo=FALSE}
 
 scatter_df <- data_total |>
   select(Bacmore, Teen_births, Smokers, Excessive_drinking) |>
@@ -589,7 +510,7 @@ These scatterplots add to what was previously stated. In fact, there is a positi
 
 # Correlation heatmap
 
-```{r}
+```{r, echo=FALSE}
 
 # Correlation heatmap (main variables)
 
@@ -624,12 +545,12 @@ ggplot(corr_long, aes(x = Var1, y = Var2, fill = Corr)) +
 
 ```
 
-The above correlation matrix includes all the variables used in this analysis. It can be seen that health outcomes such as Teen birth rates and percentage of Smokers are strongly positively correlated with socioeconomic indicators like income inequality, unemployment and the share of children living in single-parent households. On the other hand, the percentage of excessive drinkers is strongly negatively correlated with Income ratio, percentage of Unemployed and the share of children living in single-parent households. The highlighted correlations suggest the shown health outcomes are probably embedded within broad socioeconomic contexts. Furthermore, several of the socioeconomic indicators are closely related to educational attainment. Therefore, not including the socioeconomic indicators as control variables within the regressions would imply a risk of confounding in single bivariate analysis(or in simple terms "Omitted Variable Bias"). These specific controls are logically chosen for this regression analysis, to assess if education level effect on health outcomes persists once these related factors are taken into account.
+The above correlation matrix includes all the variables used in this analysis. It can be seen that health outcomes such as Teen birth rates and percentage of Smokers are strongly positively correlated with socioeconomic indicators like income inequality, unemployment and the share of children living in single-parent households. On the other hand, the percentage of excessive drinkers is strongly negatively correlated with Income ratio, percentage of Unemployed and the share of children living in single-parent households. The highlighted correlations suggest the shown health outcomes are probably embedded within broad socioeconomic contexts. (Furthermore, several of the socioeconomic indicators are closely related to educational attainment. Therefore, not including the socioeconomic indicators as control variables within the regressions would imply a risk of confounding in single bivariate analysis(or in simple terms "Omitted Variable Bias"). These specific controls are logically chosen for this regression analysis, to assess if education level effect on health outcomes persists once these related factors are taken into account.)
 
 
 
 
-```{r}
+```{r, echo=FALSE}
 data_total <- 
   left_join(edu_total, health_total, by = c("County", "State", "year"))
   
@@ -641,7 +562,7 @@ For interesting data analysis results, the regressions are run in different step
 
 #### Regressions with only explanatory variable
 
-```{r}
+```{r, echo=FALSE}
 simple_smokers <- lm(Smokers ~ Bacmore, data = data_total)
 summary(simple_smokers)
 simple_teens <- lm(Teen_births ~ Bacmore, data = data_total)
@@ -649,23 +570,12 @@ summary(simple_teens)
 simple_drinking <- lm(Excessive_drinking ~ Bacmore, data = data_total)
 summary(simple_drinking)
 ```
+These regressions are not interesting for causal estimation, however they are interesting to determine the general impact of education on our three dependent variables. It can be determined that education increases excessive drinking habits whilst when education increases, smoking and the amount of children born from teenage mothers decrease. 
+All coefficients are statistically significant 
 
-What
+#### Regressions with all variables but without fixed effects
 
-#### Regressions with socioeconomic factors
-
-```{r}
-socio_smokers <- lm(Smokers ~ Bacmore + Income_Ratio + Unemployed, data = data_total)
-summary(socio_smokers)
-socio_teen <- lm(Teen_births ~ Bacmore + Income_Ratio + Unemployed, data = data_total)
-summary(socio_teen)
-socio_drinking <- lm(Excessive_drinking ~ Bacmore + Income_Ratio + Unemployed, data = data_total)
-summary(socio_drinking)
-```
-
-#### Regressions with all variables but wothout fixed effects
-
-```{r}
+```{r, echo=FALSE}
 regression_smoking <- lm(Smokers ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
 summary(regression_smoking)
 
