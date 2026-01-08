@@ -1,7 +1,9 @@
 ---
-title: "New Quarto document for loop"
+title: "PHASE-3"
 format: html
 editor: visual
+filters: 
+- wordcount
 ---
 
 Project repository: [GitHub repo](https://github.com/tommasoreali/Data-Management-Final-Project.git)
@@ -283,7 +285,7 @@ The Health dataset used in this study is constructed of data coming entirely fro
 
 # Tables per dataset
 
-## General Table with information on all the datafiles 
+## General Table with information on all the datafiles
 
 ```{r}
 
@@ -385,7 +387,6 @@ health_total|>
 
 These violin plots showing the aggregated US average of Excessive drinking as a percentage of the population highlight a thicker upper tail as the years pass by, meaning there is a higher count of people excessively drinking. However the average of the percentage of excessive drinkers doesn't seem to change from from 2020 to 2023.
 
-
 # Descriptive statistics and Education gradients
 
 ```{r}
@@ -420,156 +421,6 @@ colnames(desc_table) <- c("Mean", "SD", "Min", "Max", "Median")
 knitr::kable(desc_table, caption = "Descriptive statistics of main variables")
 
 ```
-
-
-```{r}
-
-## 2) Table: outcomes by education quartile (overall)
-
-edu_table <- data_grad |>
-  group_by(edu_q) |>
-  summarise(
-    n = n(),
-    Teen_births = mean(Teen_births, na.rm = TRUE),
-    Smokers = mean(Smokers, na.rm = TRUE),
-    Excessive_drinking = mean(Excessive_drinking, na.rm = TRUE),
-    .groups = "drop"
-  )
-
-knitr::kable(
-  edu_table,
-  digits = 2,
-  caption = "Average outcomes by education quartile (Bacmore)"
-)
-
-## 3) Plot A: outcomes vs education quartile (overall)
-
-edu_long <- edu_table |>
-  select(edu_q, Teen_births, Smokers, Excessive_drinking) |>
-  tidyr::pivot_longer(-edu_q, names_to = "Outcome", values_to = "Mean")
-
-ggplot(edu_long, aes(x = edu_q, y = Mean, group = Outcome)) +
-  geom_line() +
-  geom_point() +
-  facet_wrap(~Outcome, scales = "free_y") +
-  labs(x = "Education quartile (Bacmore)", y = "Average value")
-
-```
-These grophs represent the average level of excessive drinking, smoking and teen births per education quartile. The trends, while they do not show causal effects, already show interesting patterns from which conclusions can be taken. It can be seen that education and excessive drinking are positively correlated, whilst smoking and teen births are negatively correlated with education. 
-
-```{r}
-## 4) Plot B: trends over time by education quartile
-
-edu_trend <- data_grad |>
-  group_by(year, edu_q) |>
-  summarise(
-    Teen_births = mean(Teen_births, na.rm = TRUE),
-    Smokers = mean(Smokers, na.rm = TRUE),
-    Excessive_drinking = mean(Excessive_drinking, na.rm = TRUE),
-    .groups = "drop"
-  ) |>
-  pivot_longer(
-    cols = c(Teen_births, Smokers, Excessive_drinking),
-    names_to = "Outcome",
-    values_to = "Mean"
-  )
-
-ggplot(edu_trend, aes(x = year, y = Mean, color = edu_q, group = edu_q)) +
-  geom_line(linewidth = 1) +
-  geom_point(size = 2) +
-  facet_wrap(~Outcome, scales = "free_y") +
-  labs(
-    x = "Year",
-    y = "Average value",
-    color = "Education quartile"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    legend.position = "right",
-    panel.grid.minor = element_blank(),
-    strip.text = element_text(face = "bold")
-  )
-
-```
-These graphs are relatively similar to the previous ones, however, a time factor is added to that we can now analyse the evolution of the health habits per quartile over the 4 years we study. For excessive drinking, we can see that all quartiles on average follow the same pattern, except for the 1st quartile. a sharp increase in 2021, which may be due to covid, then slight decreases. For the first quartile, we can see that it even slightly increases after 2021. The more educated a county is, the higher the rate of excessive drinkers on average. 
-For the smokers part, we can distinguish the same pattern as fro excssive drinking, meaning a sharp increase in 2021, followed by a slight decreases in 2022 and 2023. Different from excessive drinking, we can see here that higher smoking rates are ususally associated with lower education levels. 
-Finally, regarding teen births, there is a general trend showing a decrease between 2020 and 2022, with a slight increase in 2023. The higher teen birth rates are associated with lower education levels. 
-
-# Scatterplots
-
-```{r, message=FALSE}
-
-scatter_df <- data_total |>
-  select(Bacmore, Teen_births, Smokers, Excessive_drinking) |>
-  pivot_longer(
-    cols = c(Teen_births, Smokers, Excessive_drinking),
-    names_to = "Outcome",
-    values_to = "Value"
-  ) |>
-  mutate(
-    Outcome = recode(
-      Outcome,
-      Teen_births = "Teen births",
-      Smokers = "Smokers (%)",
-      Excessive_drinking = "Excessive drinking (%)"
-    )
-  )
-
-ggplot(scatter_df, aes(x = Bacmore, y = Value)) +
-  geom_point(alpha = 0.15) +
-  geom_smooth(method = "lm", se = TRUE) +
-  facet_wrap(~Outcome, scales = "free_y") +
-  labs(
-    x = "Share with Bachelor's degree or more (Bacmore)",
-    y = "Outcome value"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    panel.grid.minor = element_blank(),
-    strip.text = element_text(face = "bold")
-  )
-```
-These scatterplots add to what was previously stated. In fact, there is a positive correlation between education and drinking. Furthermore, there is also the negative correlation between smokers and education and between teen births and education.
-
-
-# Correlation heatmap
-
-```{r}
-
-# Correlation heatmap (main variables)
-
-corr_df <- data_total |>
-  select(
-    Teen_births,
-    Smokers,
-    Excessive_drinking,
-    Bacmore,
-    Housing_Problems,
-    Income_Ratio,
-    Unemployed,
-    Mental_help,
-    Child_alone
-  ) |>
-  drop_na()  
-
-corr_mat <- cor(corr_df, use = "complete.obs")
-
-corr_long <- as.data.frame(as.table(corr_mat)) |>
-  rename(Var1 = Var1, Var2 = Var2, Corr = Freq)
-
-ggplot(corr_long, aes(x = Var1, y = Var2, fill = Corr)) +
-  geom_tile() +
-  coord_equal() +
-  labs(x = NULL, y = NULL, fill = "Corr.") +
-  theme_minimal(base_size = 11) +
-  theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),
-    panel.grid = element_blank()
-  )
-
-```
-
-The above correlation matrix includes all the variables used in this analysis. It can be seen that health outcomes such as Teen birth rates and percentage of Smokers are strongly positively correlated with socioeconomic indicators like income inequality, unemployment and the share of children living in single-parent households. On the other hand, the percentage of excessive drinkers is strongly negatively correlated with Income ratio, percentage of Unemployed and the share of children living in single-parent households. The highlighted correlations suggest the shown health outcomes are probably embedded within broad socioeconomic contexts. Furthermore, several of the socioeconomic indicators are closely related to educational attainment. Therefore, not including the socioeconomic indicators as control variables within the regressions would imply a risk of confounding in single bivariate analysis(or in simple terms "Omitted Variable Bias"). These specific controls are logically chosen for this regression analysis, to assess if education level effect on health outcomes persists once these related factors are taken into account.
 
 # within-state deviation analysis
 
@@ -624,15 +475,159 @@ ggplot(within_state, aes(x = edu_q, y = Deviation)) +
 
 ```
 
-This within state deviation analysis shown in the above violin plots illustrates how the studied health outcomes (at county level) differ from their state mean for each of the 4 quartiles. Each Violin plot represents the distribution of counties deviations from the mean state for a health outcome, conditional on belonging to a specific quartile (the data has been grouped by state and year). We set "Deviation from state mean" = county's value - state mean value. A deviation of 0 means a county's outcome is equal to its state average. When the deviation is positive (negative) it indicates a worse (better) outcome relative to its state average value. This analysis is helpful as we are comparing counties inside the same State, and we therefore control for state-level policies, institutions and factors. 
-When focusing on the health variable "Excessive drinking", as the education quartile increases "Excessive drinking" deviation from mean state has larger positive values. This entails, that within the same state, counties with higher education levels tend to show higher excessive drinking rates compared to their state average. When focusing on the other two health variables: Smokers % and Teen births the opposite pattern occurs, namely counties with higher education level are associated with lower smoking rates and lower teen birth counts compared to their state mean value. 
-The analysis of the 3 above violin plots follows the trends analysed and shown in the previous graphs sucj as the Scatterplots and the education gradients. 
+This within state deviation analysis shown in the above violin plots illustrates how the studied health outcomes (at county level) differ from their state mean for each of the 4 quartiles. Each Violin plot represents the distribution of counties deviations from the mean state for a health outcome, conditional on belonging to a specific quartile (the data has been grouped by state and year). We set "Deviation from state mean" = county's value - state mean value. A deviation of 0 means a county's outcome is equal to its state average. When the deviation is positive (negative) it indicates a worse (better) outcome relative to its state average value. This analysis is helpful as we are comparing counties inside the same State, and we therefore control for state-level policies, institutions and factors. When focusing on the health variable "Excessive drinking", as the education quartile increases "Excessive drinking" deviation from mean state has larger positive values. This entails, that within the same state, counties with higher education levels tend to show higher excessive drinking rates compared to their state average. When focusing on the other two health variables: Smokers % and Teen births the opposite pattern occurs, namely counties with higher education level are associated with lower smoking rates and lower teen birth counts compared to their state mean value. The analysis of the 3 above violin plots follows the trends analysed and shown in the previous graphs such as the scatterplots and the education gradients.
 
-# Ce qu'il faut faire en plus dans notre research
+```{r}
 
-## Avant de pouvoir merge les datasets il faut renommer les noms des colonnes du coounty du dataset health
+## 2) Table: outcomes by education quartile (overall)
 
-### Regression, il fait reflechir a quel type, je vais deja essayer de faire un merge de edu_total et de health_total, puis ensuite on verra
+edu_table <- data_grad |>
+  group_by(edu_q) |>
+  summarise(
+    n = n(),
+    Teen_births = mean(Teen_births, na.rm = TRUE),
+    Smokers = mean(Smokers, na.rm = TRUE),
+    Excessive_drinking = mean(Excessive_drinking, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+knitr::kable(
+  edu_table,
+  digits = 2,
+  caption = "Average outcomes by education quartile (Bacmore)"
+)
+
+## 3) Plot A: outcomes vs education quartile (overall)
+
+edu_long <- edu_table |>
+  select(edu_q, Teen_births, Smokers, Excessive_drinking) |>
+  tidyr::pivot_longer(-edu_q, names_to = "Outcome", values_to = "Mean")
+
+ggplot(edu_long, aes(x = edu_q, y = Mean, group = Outcome)) +
+  geom_line() +
+  geom_point() +
+  facet_wrap(~Outcome, scales = "free_y") +
+  labs(x = "Education quartile (Bacmore)", y = "Average value")
+
+```
+
+These graphs represent the average level of excessive drinking, smoking and teen births per education quartile. The trends, while they do not show causal effects, already show interesting patterns from which conclusions can be taken. It can be seen that education and excessive drinking are positively correlated, whilst smoking and teen births are negatively correlated with education.
+
+```{r}
+## 4) Plot B: trends over time by education quartile
+
+edu_trend <- data_grad |>
+  group_by(year, edu_q) |>
+  summarise(
+    Teen_births = mean(Teen_births, na.rm = TRUE),
+    Smokers = mean(Smokers, na.rm = TRUE),
+    Excessive_drinking = mean(Excessive_drinking, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  pivot_longer(
+    cols = c(Teen_births, Smokers, Excessive_drinking),
+    names_to = "Outcome",
+    values_to = "Mean"
+  )
+
+ggplot(edu_trend, aes(x = year, y = Mean, color = edu_q, group = edu_q)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 2) +
+  facet_wrap(~Outcome, scales = "free_y") +
+  labs(
+    x = "Year",
+    y = "Average value",
+    color = "Education quartile"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position = "right",
+    panel.grid.minor = element_blank(),
+    strip.text = element_text(face = "bold")
+  )
+
+```
+
+These graphs are relatively similar to the previous ones, however, a time factor is added to that we can now analyse the evolution of the health habits per quartile over the 4 years we study. For excessive drinking, we can see that all quartiles on average follow the same pattern, except for the 1st quartile. a sharp increase in 2021, which may be due to covid, then slight decreases. For the first quartile, we can see that it even slightly increases after 2021. The more educated a county is, the higher the rate of excessive drinkers on average. For the smokers part, we can distinguish the same pattern as fro excssive drinking, meaning a sharp increase in 2021, followed by a slight decreases in 2022 and 2023. Different from excessive drinking, we can see here that higher smoking rates are ususally associated with lower education levels. Finally, regarding teen births, there is a general trend showing a decrease between 2020 and 2022, with a slight increase in 2023. The higher teen birth rates are associated with lower education levels.
+
+# Scatterplots
+
+```{r, message=FALSE}
+
+scatter_df <- data_total |>
+  select(Bacmore, Teen_births, Smokers, Excessive_drinking) |>
+  pivot_longer(
+    cols = c(Teen_births, Smokers, Excessive_drinking),
+    names_to = "Outcome",
+    values_to = "Value"
+  ) |>
+  mutate(
+    Outcome = recode(
+      Outcome,
+      Teen_births = "Teen births",
+      Smokers = "Smokers (%)",
+      Excessive_drinking = "Excessive drinking (%)"
+    )
+  )
+
+ggplot(scatter_df, aes(x = Bacmore, y = Value)) +
+  geom_point(alpha = 0.15) +
+  geom_smooth(method = "lm", se = TRUE) +
+  facet_wrap(~Outcome, scales = "free_y") +
+  labs(
+    x = "Share with Bachelor's degree or more (Bacmore)",
+    y = "Outcome value"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    panel.grid.minor = element_blank(),
+    strip.text = element_text(face = "bold")
+  )
+```
+
+These scatterplots add to what was previously stated. In fact, there is a positive correlation between education and drinking. Furthermore, there is also the negative correlation between smokers and education and between teen births and education.
+
+# Correlation heatmap
+
+```{r}
+
+# Correlation heatmap (main variables)
+
+corr_df <- data_total |>
+  select(
+    Teen_births,
+    Smokers,
+    Excessive_drinking,
+    Bacmore,
+    Housing_Problems,
+    Income_Ratio,
+    Unemployed,
+    Mental_help,
+    Child_alone
+  ) |>
+  drop_na()  
+
+corr_mat <- cor(corr_df, use = "complete.obs")
+
+corr_long <- as.data.frame(as.table(corr_mat)) |>
+  rename(Var1 = Var1, Var2 = Var2, Corr = Freq)
+
+ggplot(corr_long, aes(x = Var1, y = Var2, fill = Corr)) +
+  geom_tile() +
+  coord_equal() +
+  labs(x = NULL, y = NULL, fill = "Corr.") +
+  theme_minimal(base_size = 11) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    panel.grid = element_blank()
+  )
+
+```
+
+The above correlation matrix includes all the variables used in this analysis. It can be seen that health outcomes such as Teen birth rates and percentage of Smokers are strongly positively correlated with socioeconomic indicators like income inequality, unemployment and the share of children living in single-parent households. On the other hand, the percentage of excessive drinkers is strongly negatively correlated with Income ratio, percentage of Unemployed and the share of children living in single-parent households. The highlighted correlations suggest the shown health outcomes are probably embedded within broad socioeconomic contexts. Furthermore, several of the socioeconomic indicators are closely related to educational attainment. Therefore, not including the socioeconomic indicators as control variables within the regressions would imply a risk of confounding in single bivariate analysis(or in simple terms "Omitted Variable Bias"). These specific controls are logically chosen for this regression analysis, to assess if education level effect on health outcomes persists once these related factors are taken into account.
+
+
+
 
 ```{r}
 data_total <- 
@@ -640,32 +635,45 @@ data_total <-
   
 ```
 
-### Premiers tests pour la dataanalysis
+### Data Analysis
 
-For interesting data analysis results, the regressions are run in different steps, first independent on dependent variable, then adding socioeconomic variables, then add the other variables. This way we can determine the general impact of each variable and how the effect of the independent variable takes from the other variables. 
+For interesting data analysis results, the regressions are run in different steps, first independent on dependent variable, then adding socioeconomic variables, then add the other variables. This way we can determine the general impact of each variable and how the effect of the independent variable takes from the other variables.
 
-```{r}
-lm(Smokers ~ Bacmore, data = data_total)
-lm(Teen_births ~ Bacmore, data = data_total)
-lm(Excessive_drinking ~ Bacmore, data = data_total)
-```
-Now we add socioeconomic factors
+#### Regressions with only explanatory variable
 
 ```{r}
- lm(Smokers ~ Bacmore + Income_Ratio + Unemployed, data = data_total)
-lm(Teen_births ~ Bacmore + Income_Ratio + Unemployed, data = data_total)
-lm(Excessive_drinking ~ Bacmore + Income_Ratio + Unemployed, data = data_total)
+simple_smokers <- lm(Smokers ~ Bacmore, data = data_total)
+summary(simple_smokers)
+simple_teens <- lm(Teen_births ~ Bacmore, data = data_total)
+summary(simple_teens)
+simple_drinking <- lm(Excessive_drinking ~ Bacmore, data = data_total)
+summary(simple_drinking)
 ```
 
+What
 
+#### Regressions with socioeconomic factors
 
 ```{r}
-lm(Smokers ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
-
-lm(Teen_births ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
-
-lm(Excessive_drinking ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
+socio_smokers <- lm(Smokers ~ Bacmore + Income_Ratio + Unemployed, data = data_total)
+summary(socio_smokers)
+socio_teen <- lm(Teen_births ~ Bacmore + Income_Ratio + Unemployed, data = data_total)
+summary(socio_teen)
+socio_drinking <- lm(Excessive_drinking ~ Bacmore + Income_Ratio + Unemployed, data = data_total)
+summary(socio_drinking)
 ```
 
+#### Regressions with all variables but wothout fixed effects
 
+```{r}
+regression_smoking <- lm(Smokers ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
+summary(regression_smoking)
 
+regression_births <- lm(Teen_births ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
+summary(regression_births)
+
+regression_drinking <- lm(Excessive_drinking ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
+summary(regression_drinking)
+```
+
+this document has {{wordcount}} words

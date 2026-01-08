@@ -4,24 +4,21 @@ author: "Sander Beerepoot and Tommaso Reali"
 format: html
 ---
 
+Project repository: [GitHub repo](https://github.com/tommasoreali/Data-Management-Final-Project.git)
+
 ```{r, message=FALSE}
-library(here)
 library(ggplot2)
-library(dplyr)
-library(vroom)
-library(tidyr)
 library(tidyverse)
+library(here)
+library(vroom)
+library(stringr)
+library(dplyr)
+library(purrr)
+library(tibble)
+library(tidyr)
+library(readr)
+
 ```
-
-## Download data
-
-```{r}
-here::i_am("Data-Management-Final-Project.Rproj")
-```
-Link to Github: 
-
-https://github.com/tommasoreali/Data-Management-Final-Project.git
-
 
 Description of how to get the data sets
 
@@ -33,604 +30,192 @@ To get the education data from the census bureau: Select all of the counties as 
 
 Link: "https://data.census.gov/table?q=S1501:+Educational+Attainment&g=010XX00US\$0500000_040XX00US01\$0500000"
 
+# Changes made to Health data
+
+## Full data Cleaning with LOOP
+
+```{r}
+# Read step:
+read_health_file <- function(path) {
+  line1 <- vroom::vroom_lines(path, n_max = 1)
+  skip_n <- if (stringr::str_detect(line1, stringr::regex("FIPS;State;County", ignore_case = TRUE))) 0 else 1
+
+  vroom::vroom(
+    file = path,
+    delim = ";",
+    skip = skip_n,
+    col_names = TRUE,
+    col_types = vroom::cols(.default = "c"),  
+    show_col_types = FALSE,
+    progress = FALSE
+  )
+}
+
+```
+
+Each yearly health file is imported using a custom reader that first checks whether the dataset contains an extra metadata row before the actual header and skips it if necessary. All files are read using a semicolon as delimiter, and all columns are deliberately imported as character strings. This prevents automatic type inference from incorrectly parsing European-style decimals (e.g. “3,0”) and ensures that the raw data is preserved exactly as it appears in the source files.
+
+```{r}
+# Clean step:
+
+clean_health <- function(df, year) {
+
+  df <- df |>
+    dplyr::rename(
+      `% Smokers` = dplyr::any_of("% Adults Reporting Currently Smoking"),
+      `% Children in Single-Parent Households` = dplyr::any_of("% Single-Parent Households")
+    )
+
+  cols_keep <- c(
+    "FIPS","State","County",
+    "% Severe Housing Problems",
+    "Income Ratio",
+    "% Unemployed",
+    "Mental Health Provider Rate",
+    "Teen Birth Rate",
+    "% Excessive Drinking",
+    "% Smokers",
+    "% Children in Single-Parent Households"
+  )
+
+  eu <- readr::locale(decimal_mark = ",", grouping_mark = ".")
+
+  df |>
+    dplyr::select(dplyr::any_of(cols_keep)) |>
+    dplyr::mutate(
+      County = dplyr::if_else(is.na(County) | County == "", "Average", County),
+      year = year
+    ) |>
+    dplyr::mutate(dplyr::across(
+      -c(FIPS, State, County, year),
+      ~ readr::parse_number(.x, locale = eu)
+    ))
+}
+
+```
+
+The cleaning function standardizes column names that vary across years, keeps only the variables relevant for the analysis, replaces missing county names with a common label, and adds a year identifier. All non-identifier variables are then converted from character strings to numeric values using locale-aware parsing, which correctly interprets European decimal notation and preserves numerical precision.
+
 ```{r, message=FALSE}
-health2020 <- vroom(here("Data", "2020health.csv"))
-health2021 <- vroom(here("Data", "2021health.csv"))
-health2022 <- vroom(here("Data", "2022health.csv"))
-health2023 <- vroom(here("Data", "2023health.csv"))
-education2020 <- vroom(here("Data", "ACSST5Y2020.S1501-Data.csv"))
-education2021 <- vroom(here("Data", "ACSST5Y2021.S1501-Data.csv"))
-education2022 <- vroom(here("Data", "ACSST5Y2022.S1501-Data.csv"))
-education2023 <- vroom(here("Data", "ACSST5Y2023.S1501-Data.csv"))
-```
+#Loop step:
 
-
-
-# Data Cleaning
-
-## Changes made to Health data
-
-### Changes for health2020
-
-```{r}
-# Replace wrong column names with first row:
-new_names <- as.character(health2020[1, ])
-colnames(health2020) <- new_names
-health2020 <- health2020[-1, ]
-
-```
-
-```{r}
-# Remove all the columns which are not useful (use the same technique for the other years datasets)
-
-cols_health_2020 <- c(
-  "FIPS",
-  "State",
-  "County",
-  "% Severe Housing Problems",
-  "Income Ratio",
-  "% Unemployed",
-  "Mental Health Provider Rate",
-  "Teen Birth Rate",
-  "% Excessive Drinking",
-  "% Smokers",
-  "% Single-Parent Households"
+health_files <- list.files(
+  path = here::here("Data"),
+  pattern = "2020health\\.csv$|2021health\\.csv$|2022health\\.csv$|2023health\\.csv$",
+  full.names = TRUE
 )
 
-health2020 <- health2020 %>%
-  select(all_of(cols_health_2020))
-
-
-```
-
-```{r}
-# Look at NA values and clean if they are in State, county columns
-colSums(is.na(health2020))
-
-health2020 %>%
-  filter(is.na(County))
-
-# Replace NA values for county by "Average"
-health2020 <- health2020 %>%
-  mutate(
-    County = ifelse(is.na(County), "Average", County)
-  )
+health_total <- tibble::tibble(path = health_files) |>
+  dplyr::mutate(
+    year = stringr::str_extract(basename(path), "20\\d{2}") |> as.integer(),
+    raw = purrr::map(path, read_health_file),
+    clean = purrr::map2(raw, year, clean_health)
+  ) |>
+  dplyr::select(clean) |>
+  tidyr::unnest(clean)
 
 ```
 
 ```{r}
-# Convert to numeric columns the ones that need it
-
-health2020 <- health2020 %>%
-  mutate(across(
-    -c(FIPS, State, County),
-    ~ as.numeric(gsub(",", ".", .x))
-  ))
-
-```
-
-## Changes for Health2021
-
-```{r}
-# Replace wrong column names with first row:
-new_names <- as.character(health2021[1, ])
-colnames(health2021) <- new_names
-health2021 <- health2021[-1, ]
-
-```
-
-```{r}
-# Remove all the columns which are not usefull 
-
-cols_health_2021 <- c(
-  "FIPS",
-  "State",
-  "County",
-  "% Severe Housing Problems",
-  "Income Ratio",
-  "% Unemployed",
-  "Mental Health Provider Rate",
-  "Teen Birth Rate",
-  "% Excessive Drinking",
-  "% Smokers",
-  "% Children in Single-Parent Households"
-)
-
-health2021 <- health2021 %>%
-  select(all_of(cols_health_2021))
-
-
-```
-
-```{r}
-# Look at NA values and clean if they are in State, county columns
-colSums(is.na(health2021))
-
-health2021 %>%
-  filter(is.na(County))
-
-# Replace NA values for county by "Average"
-health2021 <- health2021 %>%
-  mutate(
-    County = ifelse(is.na(County), "Average", County)
-  )
-
-```
-
-```{r}
-# Convert to numeric columns the ones that need it
-
-health2021 <- health2021 %>%
-  mutate(across(
-    -c(FIPS, State, County),
-    ~ as.numeric(gsub(",", ".", .x))
-  ))
-
-```
-
-## Changes for Health2022
-
-```{r}
-# Replace wrong column names with first row:
-new_names <- as.character(health2022[1, ])
-colnames(health2022) <- new_names
-health2022 <- health2022[-1, ]
-
-```
-
-```{r}
-# Remove all the columns which are not usefull 
-
-## Check if health2022 has the same variable names as 2021 and 2020
-
-cols_health_2020 %in% names(health2022)
-cols_health_2021 %in% names(health2022)
-
-# Create a vector for health2022 so we can select the columns we want
-
-cols_health_2022 <- c(
-  "FIPS",
-  "State",
-  "County",
-  "% Severe Housing Problems",
-  "Income Ratio",
-  "% Unemployed",
-  "Mental Health Provider Rate",
-  "Teen Birth Rate",
-  "% Excessive Drinking",
-  "% Smokers",
-  "% Children in Single-Parent Households"
-)
-
-health2022 <- health2022 %>%
-  select(all_of(cols_health_2022))
-
-
-```
-
-```{r}
-# Look at NA values and clean if they are in State, county columns
-colSums(is.na(health2022))
-
-health2022 %>%
-  filter(is.na(County))
-
-# Replace NA values for county by "Average"
-health2022 <- health2022 %>%
-  mutate(
-    County = ifelse(is.na(County), "Average", County)
-  )
-
-```
-
-```{r}
-# Convert to numeric columns the ones that need it
-
-health2022 <- health2022 %>%
-  mutate(across(
-    -c(FIPS, State, County),
-    ~ as.numeric(gsub(",", ".", .x))
-  ))
-```
-
-## Changes for Health2023
-
-```{r}
-# Replace wrong column names with first row:
-new_names <- as.character(health2023[1, ])
-colnames(health2023) <- new_names
-health2023 <- health2023[-1, ]
-
-```
-
-```{r}
-# Remove all the columns which are not usefull 
-
-## Check if health2022 has the same variable names as 2021 and 2020
-
-cols_health_2020 %in% names(health2023)
-cols_health_2021 %in% names(health2023)
-cols_health_2022 %in% names(health2023)
-
-# Create a vector for health2022 so we can select the columns we want
-
-cols_health_2023 <- c(
-  "FIPS",
-  "State",
-  "County",
-  "% Severe Housing Problems",
-  "Income Ratio",
-  "% Unemployed",
-  "Mental Health Provider Rate",
-  "Teen Birth Rate",
-  "% Excessive Drinking",
-  "% Adults Reporting Currently Smoking",
-  "% Children in Single-Parent Households"
-)
-
-health2023 <- health2023 %>%
-  select(all_of(cols_health_2023))
-
-
-```
-
-```{r}
-# Look at NA values and clean if they are in State, county columns
-colSums(is.na(health2023))
-
-health2023 %>%
-  filter(is.na(County))
-
-# Replace NA values for county by "Average"
-health2023 <- health2023 %>%
-  mutate(
-    County = ifelse(is.na(County), "Average", County)
-  )
-
-```
-
-```{r}
-# Convert to numeric columns the ones that need it
-
-health2023 <- health2023 %>%
-  mutate(across(
-    -c(FIPS, State, County),
-    ~ as.numeric(gsub(",", ".", .x))
-  ))
-
-```
-
-## Merging the health datasets together
-
-```{r}
-#First match the names for Adult moking and single children in household
-
-health2023 <- health2023 %>%
-  rename(`% Smokers` = `% Adults Reporting Currently Smoking`)
-
-health2020 <- health2020 %>%
-  rename(`% Children in Single-Parent Households` = `% Single-Parent Households`)
-```
-
-```{r}
-Hea2021 <- 
-  health2020 |>
-  left_join(health2021, by = c("County", "State"))
-```
-
-```{r}
-Hea2122 <- 
-  Hea2021|>
-  left_join(health2022, by = c("County", "State"))
-```
-
-```{r}
-Healthtotal <-
-  Hea2122|>
-  left_join(health2023, by = c("County", "State"))
-```
-
-```{r}
-
-Healthtotal <- Healthtotal |>
-  select(-contains("FIPS", ignore.case = TRUE)) |>
-  rename(
-    HousingP_2020   = `% Severe Housing Problems.x`,
-    HousingP_2021   = `% Severe Housing Problems.y`,
-    HousingP_2022   = `% Severe Housing Problems.x.x`,
-    HousingP_2023   = `% Severe Housing Problems.y.y`,
-    
-    IncomeRatio_2020 = `Income Ratio.x`,
-    IncomeRatio_2021 = `Income Ratio.y`,
-    IncomeRatio_2022 = `Income Ratio.x.x`,
-    IncomeRatio_2023 = `Income Ratio.y.y`,
-    
-    Unemployed_2020 = `% Unemployed.x`,
-    Unemployed_2021 = `% Unemployed.y`,
-    Unemployed_2022 = `% Unemployed.x.x`,
-    Unemployed_2023 = `% Unemployed.y.y`,
-    
-    Mentalhealth_2020 = `Mental Health Provider Rate.x`,
-    Mentalhealth_2021 = `Mental Health Provider Rate.y`,
-    Mentalhealth_2022 = `Mental Health Provider Rate.x.x`,
-    Mentalhealth_2023 = `Mental Health Provider Rate.y.y`,
-    TeenBirth_2020 = `Teen Birth Rate.x`,
-    TeenBirth_2021 = `Teen Birth Rate.y`,
-    TeenBirth_2022 = `Teen Birth Rate.x.x`,
-    TeenBirth_2023 = `Teen Birth Rate.y.y`,
-    ExcessiveDrink_2020 = `% Excessive Drinking.x`,
-    ExcessiveDrink_2021 = `% Excessive Drinking.y`,
-    ExcessiveDrink_2022 = `% Excessive Drinking.x.x`,
-    ExcessiveDrink_2023 = `% Excessive Drinking.y.y`,
-    Smokers_2020 = `% Smokers.x`,
-    Smokers_2021 = `% Smokers.y`,
-    Smokers_2022 = `% Smokers.x.x`,
-    Smokers_2023 = `% Smokers.y.y`,
-    SingleParent_2020 = `% Children in Single-Parent Households.x`,
-    SingleParent_2021 = `% Children in Single-Parent Households.y`,
-    SingleParent_2022 = `% Children in Single-Parent Households.x.x`,
-    SingleParent_2023 = `% Children in Single-Parent Households.y.y`
-  )
-
-```
-
-```{r}
-
-Healthtotal <- Healthtotal |>
-  pivot_longer(
-    cols = ends_with(c("2020", "2021", "2022", "2023")),
-    names_to = c(".value", "Year"),
-    names_sep = "_",
-    values_transform = list(Year = as.integer)
-  )
-```
-
-## Changes made for Education data
-
-### Changes for education2020
-
-```{r}
-# Replace wrong column names with first row:
-new_names_education <- as.character(education2020[1, ])
-colnames(education2020) <- new_names_education
-education2020 <- education2020[-1, ]
-```
-
-```{r}
-# Easier code for directly deleting all the rows in a single code 
-education2020 <- education2020 %>%
-  select(
-    -matches("Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!|High school|Graduate|18 to 24|34|9th|Associate's|Population 65 years and over| Population 45 to 64 years|Population 35 to 44 years|RACE|college",
-             ignore.case = TRUE)
-  )
-```
-
-```{r}
-# Remove columns that are ONLY "(X)" (ignoring NAs)
-education2020 <- education2020 %>%
-  select(
-    where(~ !all(.x == "(X)" | is.na(.x)))
-  )
-```
-
-```{r}
-# Remove also percent of females and percent of males in this column, this code can be kept or deleted depending on our decision to keep Percentage Female, Percentage Male.
-education2020 <- education2020 %>%
-  select(
-    -matches("Estimate!!Percent Male!!|Estimate!!Percent Female!!",
-             ignore.case = TRUE)
-  )
-```
-
-```{r}
-# Keep only the first row encountered for each unique County name
-df_unique_counties2020 <- education2020 %>%
-  distinct(`Geographic Area Name`, .keep_all = TRUE)
-```
-
-```{r}
-# Convert to numeric columns the ones that need it
-
-df_unique_counties2020 <- df_unique_counties2020%>%
-  mutate(across(
-    -c(Geography, `Geographic Area Name`),
-    ~ suppressWarnings(as.numeric(.x))
-  ))
-
-```
-
-### Changes for education2021
-
-```{r}
-# Replace wrong column names with first row:
-new_names_education <- as.character(education2021[1, ])
-colnames(education2021) <- new_names_education
-education2021 <- education2021[-1, ]
-```
-
-```{r}
-education2021 <- education2021 %>%
-  select(
-    -matches("Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!|High school|Graduate|18 to 24|34|9th|Associate's|Population 65 years and over| Population 45 to 64 years|Population 35 to 44 years|RACE|college",
-             ignore.case = TRUE)
-  )
-```
-
-```{r}
-# Remove columns that are ONLY "(X)" (ignoring NAs)
-education2021 <- education2021 %>%
-  select(
-    where(~ !all(.x == "(X)" | is.na(.x)))
-  )
-```
-
-```{r}
-# Remove also percent of females and percent of males in this column (if you want), this code can be kept or deleted depending on our decision to keep Percentage Female, PErcentage Male.
-education2021 <- education2021 %>%
-  select(
-    -matches("Estimate!!Percent Male!!|Estimate!!Percent Female!!",
-             ignore.case = TRUE)
-  )
-```
-
-```{r}
-# Convert to numeric columns the ones that need it
-
-education2021 <- education2021 %>%
-  mutate(across(
-    -c(Geography, `Geographic Area Name`),
-    ~ suppressWarnings(as.numeric(.x))
-  ))
-
-```
-
-```{r}
-# Keep only the first row encountered for each unique County name
-df_unique_counties2021 <- education2021 %>%
-  distinct(`Geographic Area Name`, .keep_all = TRUE)
-```
-
-### Changes for education2022
-
-```{r}
-# Replace wrong column names with first row:
-new_names_education <- as.character(education2022[1, ])
-colnames(education2022) <- new_names_education
-education2022 <- education2022[-1, ]
-```
-
-```{r}
-education2022 <- education2022 |>
-  select(
-    -matches("Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!|High school|Graduate|18 to 24|34|9th|Associate's|Population 65 years and over| Population 45 to 64 years|Population 35 to 44 years|RACE|college|Estimate!!Percent Male!!|Estimate!!Percent Female!!",
-             ignore.case = TRUE)
-  )
-```
-
-```{r}
-# Remove columns that are ONLY "(X)" (ignoring NAs)
-education2022 <- education2022 %>%
-  select(
-    where(~ !all(.x == "(X)" | is.na(.x)))
-  )
-```
-
-
-```{r}
-# Convert to numeric columns the ones that need it
-
-education2022 <- education2022 %>%
-  mutate(across(
-    -c(Geography, `Geographic Area Name`),
-    ~ suppressWarnings(as.numeric(.x))
-  ))
-
-```
-
-```{r}
-# Keep only the first row encountered for each unique County name
-df_unique_counties1 <- education2022 %>%
-  distinct(`Geographic Area Name`, .keep_all = TRUE)
-```
-
-### Changes for education2023
-
-```{r}
-# Replace wrong column names with first row:
-new_names_education <- as.character(education2023[1, ])
-colnames(education2023) <- new_names_education
-education2023 <- education2023[-1, ]
-```
-
-```{r}
-# Delete all the columns and rows that are not needed
-education2023 <- education2023 %>%
-  select(
-    -matches("Margin of Error|Total|Estimate!!Male!!|Estimate!!Female!!|High school|Graduate|18 to 24|34|9th|Associate's|Population 65 years and over| Population 45 to 64 years|Population 35 to 44 years|RACE|college",
-             ignore.case = TRUE)
-  )
-```
-
-```{r}
-# Remove columns that are ONLY "(X)" (ignoring NAs)
-education2023 <- education2023 %>%
-  select(
-    where(~ !all(.x == "(X)" | is.na(.x)))
-  )
-```
-
-```{r}
-# Remove also percent of females and percent of males in this column, this code can be kept or deleted depending on our decision to keep Percentage Female, PErcentage Male.
-education2023 <- education2023 %>%
-  select(
-    -matches("Estimate!!Percent Male!!|Estimate!!Percent Female!!",
-             ignore.case = TRUE)
-  )
-```
-
-```{r}
-# Keep only the first row encountered for each unique County name
-df_unique_counties2023 <- education2023 %>%
-  distinct(`Geographic Area Name`, .keep_all = TRUE)
-```
-
-```{r}
-# Convert to numeric columns the ones that need it
-df_unique_counties2023 <- df_unique_counties2023 %>%
-  mutate(across(
-    -c(Geography, `Geographic Area Name`),
-    ~ suppressWarnings(as.numeric(.x))
-  ))
-```
-
-## Merging in one dataset
-
-```{r}
-Edu2121 <- 
-  df_unique_counties2020 |>
-  left_join(df_unique_counties2021, by = "Geographic Area Name")
-```
-```{r}
-edu2122 <- 
-  Edu2121|>
-  left_join(df_unique_counties1, "Geographic Area Name")
-```
-```{r}
-edutotal <-
-  edu2122|>
-  left_join(df_unique_counties2023, "Geographic Area Name")
-```
-
-```{r}
-edubycounty<- edutotal|>
-  select(-contains("Geography", ignore.case = TRUE))|>
+health_total <- health_total |>
+  mutate(County = str_c(County, " County")) |>
+  rename(Smokers = `% Smokers`, Unemployed = `% Unemployed`,Housing_Problems = `% Severe Housing Problems`, Income_Ratio = `Income Ratio`, Mental_help = `Mental Health Provider Rate`, Teen_births = `Teen Birth Rate`, Child_alone = `% Children in Single-Parent Households`, Excessive_drinking = `% Excessive Drinking`)
   
-  separate(
-    col = `Geographic Area Name`,  # The column to split
-    into = c("County", "State"), # The names of the two new columns
-    sep = ", " # The character string used to split the column
+```
+
+All yearly files are processed automatically using a loop that applies the same reading and cleaning steps to each dataset. The year is extracted from the filename, the data is imported and cleaned consistently across files, and the resulting datasets are combined into a single long-format dataset. This approach avoids redundant code, guarantees consistency across years, and ensures full reproducibility of the data preparation process.
+
+To ensure consistent numeric parsing across yearly datasets (using European decimal formatting whithin the raw data), all health files are first read as character data to prevent automatic misinterpretation by the reader. Numeric variables are then explicitly converted using locale-aware parsing, allowing the datasets to be safely processed within a single loop.
+
+# Changes made for Education data
+
+## Full data Cleaning with LOOP
+
+```{r}
+# Read step
+read_edu_file <- function(path) {
+  first <- vroom_lines(path, n_max = 1)
+  delim <- if (str_detect(first, ";")) ";" else ","
+
+  header_tokens <- c("Geographic Area Name", "Geography", "Estimate")
+  skip_n <- if (any(str_detect(first, fixed(header_tokens)))) 0 else 1
+
+  vroom(
+    file = path,
+    delim = delim,
+    skip = skip_n,
+    col_names = TRUE,
+    col_types = vroom::cols(.default = "c"),
+    show_col_types = FALSE,
+    progress = FALSE
   )
+}
+
 ```
 
 ```{r}
-EDU2 <- edubycounty |>
-  select(-contains("POVERTY", ignore.case = TRUE))|>
-  rename(Bacmore_2020 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.x`,
-         Bacmore_2021 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.y`,
-         Bacmore_2022 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.x.x`,
-         Bacmore_2023 = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher.y.y`,
-         )|>
-  select(-contains("Estimate", ignore.case = TRUE))
+#Clean step
+clean_edu <- function(df, year) {
+  out <- df |>
+    select(
+      `Geographic Area Name`,
+      `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher`
+    ) |>
+    rename(
+      Bacmore = `Estimate!!Percent!!AGE BY EDUCATIONAL ATTAINMENT!!Population 25 years and over!!Bachelor's degree or higher`
+    ) |>
+    distinct(`Geographic Area Name`, .keep_all = TRUE) |>
+    separate(
+      `Geographic Area Name`,
+      into = c("County", "State"),
+      sep = ",\\s*",
+      extra = "merge",
+      fill = "right"
+    ) |>
+    mutate(
+      year = year,
+      Bacmore = readr::parse_number(
+        Bacmore,
+        locale = readr::locale(decimal_mark = ".", grouping_mark = ",")
+      )
+    ) |>
+    select(County, State, year, Bacmore)
+
+  out
+}
+
 ```
 
 ```{r}
+#Loop Step
 
-EDU2Long <- EDU2 |>
-  pivot_longer(
-    cols = ends_with(c("2020", "2021", "2022", "2023")),
-    names_to = c(".value", "Year"),
-    names_sep = "_",
-    values_transform = list(Year = as.integer))
+edu_files <- list.files(
+  path = here("Data"),
+  pattern = "Education2020\\.csv$|education2021\\.csv$|education2022\\.csv$|education2023\\.csv$",
+  full.names = TRUE
+)
+
+edu_total <- tibble(path = edu_files) |>
+  mutate(
+    year = str_extract(basename(path), "20\\d{2}") |> as.integer(),
+    raw  = map(path, read_edu_file),
+    clean = map2(raw, year, clean_edu)
+  ) |>
+  select(clean) |>
+  unnest(clean) |>
+  select(County, State, year, Bacmore)
+```
+
+```{r}
+edu_total |>
+  arrange(State, County, year )
+```
+
+## Merging datasets
+
+```{r}
+data_total <- edu_total |>
+  left_join(health_total, by = c("County", "State", "year"))
 ```
 
 ## Description of data obtention and cleaning
