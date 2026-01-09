@@ -139,7 +139,7 @@ The procedure to create and clean the final health and education dataset is exac
 
 Every yearly health/education file is imported using a specific function called: custom reader. This reader initially checks if the dataset contains an extra metadata row before the actual header, because some datasets may have a useless first line and column names starts on second row. If nothing is to be changed this step is skipped. All files are read using a semi column delimiter and all columns are intentionally imported as character strings to prevent automatic misinterpretation by the reader. This ensures the data remains exactly the same as it is initially in the source files.
 
-Then, the cleaning function is used. It first standardized column names which can vary across yearly datasets. Furthermore, it only keeps the variables of interest for the analysis and drops the rest, and adds a year identifier for each dataset. Additionally, all non identifier variables are converted from character strings to numeric values by preserving the numerical precision. 
+Furthermore, a second function is used, namely the cleaning function. It first standardized column names which can vary across yearly datasets. Additionally, it only keeps the variables of interest for the analysis and drops the rest, and adds a year identifier for each dataset. Lastly, all non identifier variables are converted from character strings to numeric values by preserving the numerical precision. 
 
 Finally, a loop is used to process all the yearly files and apply to all of them the same reading and cleaning function. Once the data has been imported and cleaned across all datasets, we merge them and form a single long format dataset (one for Education and one for Health). With this method we avoid redundant code and consistency across years is garanteed. 
 
@@ -306,9 +306,7 @@ Control variables to complete model:
 
 # Violin plots for Main Variables
 
-## Violin plot for Education variable
-
-Since there are 3144 counties, the data will be aggregated.
+Since there are 3144 counties, the data will be aggregated for the implementation of these violin plots.
 
 ```{r}
 edu_total|>
@@ -322,8 +320,6 @@ labs(
 ```
 
 While not the most accurate, these violin plots show the density of educational attainment aggregated in the US. The graphs show that every year, the average bachelors obtention increases slightly, going from about 17% to 20% between 2020 and 2023.
-
-## Violin plot for health main target variables (% Smokers, % Excessive drinkers, Teen birth rates)
 
 ```{r}
 health_total|>
@@ -447,6 +443,7 @@ ggplot(within_state, aes(x = edu_q, y = Deviation)) +
   facet_wrap(~Outcome, scales = "free_y") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
   labs(
+    title = "Within-state deviation analysis",
     x = "Education quartile (within state)",
     y = "Deviation from state mean"
   ) +
@@ -462,7 +459,6 @@ This within state deviation analysis shown in the above violin plots illustrates
 
 ## Education gradients
 ```{r}
-## 4) Plot B: trends over time by education quartile
 
 edu_trend <- data_grad |>
   group_by(year, edu_q) |>
@@ -483,6 +479,7 @@ ggplot(edu_trend, aes(x = year, y = Mean, color = edu_q, group = edu_q)) +
   geom_point(size = 2) +
   facet_wrap(~Outcome, scales = "free_y") +
   labs(
+    title = "Trends over time by education quartile",
     x = "Year",
     y = "Average value",
     color = "Education quartile"
@@ -572,7 +569,7 @@ ggplot(corr_long, aes(x = Var1, y = Var2, fill = Corr)) +
 
 ```
 
-The above correlation matrix includes all the variables used in this analysis. It can be seen that health outcomes such as Teen birth rates and percentage of Smokers are strongly positively correlated with socioeconomic indicators like income inequality, unemployment and the share of children living in single-parent households. On the other hand, the percentage of excessive drinkers is strongly negatively correlated with Income ratio, percentage of Unemployed and the share of children living in single-parent households. The highlighted correlations suggest the shown health outcomes are probably embedded within broad socioeconomic contexts. Furthermore, several of the socioeconomic indicators are closely related to educational attainment. Therefore, not including the socioeconomic indicators as control variables within the regressions would imply a risk of confounding in single bivariate analysis (or in simple terms "Omitted Variable Bias"). These specific controls are then chosen for this regression analysis, to assess if education level effect on health outcomes persists once these related factors are taken into account.)
+The above correlation matrix includes all the variables used in this analysis. It can be seen that health outcomes such as Teen birth rates and percentage of Smokers are strongly positively correlated with socioeconomic indicators like income inequality, unemployment and the share of children living in single-parent households. On the other hand, the percentage of excessive drinkers is strongly negatively correlated with Income ratio, percentage of Unemployed and the share of children living in single-parent households. The highlighted correlations suggest the shown health outcomes are probably embedded within broad socioeconomic contexts. Furthermore, several of the socioeconomic indicators are closely related to educational attainment. Therefore, not including the socioeconomic indicators as control variables within the regressions would imply a risk of "Omitted Variable Bias". These specific controls are then chosen for this regression analysis, to assess if education level effect on health outcomes persists once these related factors are taken into account.)
 
 
 
