@@ -20,15 +20,6 @@ library(readr)
 
 ```
 
-Description of how to get the data sets
-
-To get the data of the CHR&R, download each file per year seperately
-
-Link: "https://www.countyhealthrankings.org/health-data/methodology-and-sources/data-documentation/national-data-documentation-2010-2023"
-
-To get the education data from the census bureau: Select all of the counties as variables, pick the variable you want to pick (in this case pick the education attainment) and download the data for all the years you are interested in
-
-Link: "https://data.census.gov/table?q=S1501:+Educational+Attainment&g=010XX00US\$0500000_040XX00US01\$0500000"
 
 # Changes made to Health data
 
@@ -53,7 +44,6 @@ read_health_file <- function(path) {
 
 ```
 
-Each yearly health file is imported using a custom reader that first checks whether the dataset contains an extra metadata row before the actual header and skips it if necessary. All files are read using a semicolon as delimiter, and all columns are deliberately imported as character strings. This prevents automatic type inference from incorrectly parsing European-style decimals (e.g. “3,0”) and ensures that the raw data is preserved exactly as it appears in the source files.
 
 ```{r}
 # Clean step:
@@ -94,7 +84,6 @@ clean_health <- function(df, year) {
 
 ```
 
-The cleaning function standardizes column names that vary across years, keeps only the variables relevant for the analysis, replaces missing county names with a common label, and adds a year identifier. All non-identifier variables are then converted from character strings to numeric values using locale-aware parsing, which correctly interprets European decimal notation and preserves numerical precision.
 
 ```{r, message=FALSE}
 #Loop step:
@@ -122,10 +111,6 @@ health_total <- health_total |>
   rename(Smokers = `% Smokers`, Unemployed = `% Unemployed`,Housing_Problems = `% Severe Housing Problems`, Income_Ratio = `Income Ratio`, Mental_help = `Mental Health Provider Rate`, Teen_births = `Teen Birth Rate`, Child_alone = `% Children in Single-Parent Households`, Excessive_drinking = `% Excessive Drinking`)
   
 ```
-
-All yearly files are processed automatically using a loop that applies the same reading and cleaning steps to each dataset. The year is extracted from the filename, the data is imported and cleaned consistently across files, and the resulting datasets are combined into a single long-format dataset. This approach avoids redundant code, guarantees consistency across years, and ensures full reproducibility of the data preparation process.
-
-To ensure consistent numeric parsing across yearly datasets (using European decimal formatting whithin the raw data), all health files are first read as character data to prevent automatic misinterpretation by the reader. Numeric variables are then explicitly converted using locale-aware parsing, allowing the datasets to be safely processed within a single loop.
 
 # Changes made for Education data
 
@@ -220,13 +205,23 @@ data_total <- edu_total |>
 
 ## Description of data obtention and cleaning
 
-### Education:
+The raw data for health was at first downloaded from the CHR&R website for all the years we are interested in for this study (2020-2023) as 4 different csv files (one for each year). 
 
-To get the education data from the census bureau: Select all of the counties as variables, pick the variable you want to pick (in this case pick the education attainment) and download the data for all the years you are interested in. When downloading in R, there is one dataset per year. In order to clean the data, get rid of all the variables and specifications only to keep educational attainment for bachelors and more for people aged 25 and over. The specify the nature of the variables, county and state are characters, and the rest are numerical. finally when all datasets per year are cleaned, merge with the column (state, county), this ensures that every state is the correct key, as there are counties that have the same name in separate states. When the sets are merged, separate state and county in separate columns, pivot the data to be in long format (4 observations per county per variable (there are 4 years being analysed)), and rename the variable as needed (in our case Bacmore). 
+Link: [Health Data](https://www.countyhealthrankings.org/health-data/methodology-and-sources/data-documentation/national-data-documentation-2010-2023)
 
-### Health:
+Similarly, regarding raw data for education it was downloaded from the census bureau by selecting all of the counties as observations and choosing the education attainment as the interest variable. Then 4 different csv files were downloaded corresponding to years 2020-2023.
 
-The raw data for health was at first downloaded from the CHR&R website for all the years we are interested in for this study (2020-2023) as 4 different csv files (one for each year). After downloading the data in Rstudio using vroom(), the the raw columns names were replaced with the true column names which were situated in the first row. Furthermore, all the columns which were not useful were removed in order to keep only the variables used in this study, namely: % Severe Housing Problems, Income Ratio, % Unemployed, Mental Health Provider Rate, Teen Birth Rate, % Excessive Drinking, % Smokers, % Children in Single-Parent Households. Moreover, the missing values for county names were replaced by "Average" as for each county there was one observation per year calculating its average in the raw dataset. The nature of the variables was also changed: county and state are characters, and the rest are numerical. Finally, after having cleaned the 4 years datasets, they were merged together with the column (state, county), ensuring every state and county are the correct key. After the merge the dataset was pivoted to be in long format (with each observation a unique combination of State, county and year), and the columns were renamed as needed.
+Link: [Education Data](https://data.census.gov/table?q=S1501:+Educational+Attainment&g=010XX00US\$0500000_040XX00US01\$0500000)
+
+The procedure to create and clean the final health and education dataset is exactly the same for both of them:
+
+Every yearly health/education file is imported using a specific function called: custom reader. This reader initially checks if the dataset contains an extra metadata row before the actual header, because some datasets may have a useless first line and column names starts on second row. If nothing is to be changed this step is skipped. All files are read using a semi column delimiter and all columns are intentionally imported as character strings to prevent automatic misinterpretation by the reader. This ensures the data remains exactly the same as it is initially in the source files.
+
+Furthermore, a second function is used, namely the cleaning function. It first standardized column names which can vary across yearly datasets. Additionally, it only keeps the variables of interest for the analysis and drops the rest, and adds a year identifier for each dataset. Lastly, all non identifier variables are converted from character strings to numeric values by preserving the numerical precision. 
+
+Finally, a loop is used to process all the yearly files and apply to all of them the same reading and cleaning function. Once the data has been imported and cleaned across all datasets, we merge them and form a single long format dataset (one for Education and one for Health). With this method we avoid redundant code and consistency across years is garanteed. 
+
+After having done this procedure for the Health and the Education datasets, they can be merged together by using County, State and Year as keys to create the final dataset used in this study.
 
 ## Description of variables
 
