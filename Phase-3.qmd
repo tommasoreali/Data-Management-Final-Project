@@ -25,21 +25,15 @@ library(readr)
 
 ```
 
-Description of how to get the data sets
 
-To get the data of the CHR&R, download each file per year seperately
+# Research question
 
-Link: [Health Data](https://www.countyhealthrankings.org/health-data/methodology-and-sources/data-documentation/national-data-documentation-2010-2023)
+The topic we are going to analyse focuses on studying different health habits based on the educational attainment in an observed area, in this case, a county. The variables that will be looked into are adult smoking, excessive drinking, and teen births per 1000 15-19 year old women. We have chosen these variables because these are in someway based on choices that individuals make, rather than an unlucky occurrence in someones life. This means that, for example, getting sick can be the result of bad choices, however someone can not decide to become sick from one day to the other. On the contrary, choosing to smoke, choosing to excessively drink or delivering a baby during teen years are more closely related to choices and thus the environment. This is why we believe it is important to look into the determinants of these habits. One of the possible determinants is educational attainment because it not only influences individuals in their own lives, it also influences individuals in a community. Educational Attainment is computed as the proportion of people in a county that have obtained a Bachelors degree at least. The goal will be to analyse the aggregate decisions of individuals on health habits based on the aggregated educational attainment in a county and compare between more and less educated counties to see whether there are disparities based on educational attainment. Maralani V. (2014) advances that education on its own does not lead to better health, rather, the bundle of educational inequality and environment plays a much larger role in predicting whether someone will smoke. This research will thus try and adapt these findings further on smoking and adapting it to other health habits. The estimation will be completed with different control variables, which we believe can isolate the impact of educational attainment. these are: - Children in single parent households - mental health providers - Severe Housing Problems - Income inequality - Unemployment The vast amount of counties in this dataset, spread through the 51 states of the USA, allow for a large sample size, and thus the development of different conclusions, whether some choices are regionally based, due to a certain education level, or completely random.
 
-To get the education data from the census bureau: Select all of the counties as variables, pick the variable you want to pick (in this case pick the education attainment) and download the data for all the years you are interested in
-
-Link: [Education Data](https://data.census.gov/table?q=S1501:+Educational+Attainment&g=010XX00US\$0500000_040XX00US01\$0500000)
-
-# Changes made to Health data
-
-## Full data cleaning with loop
+# Datasets description
 
 ```{r}
+# Creation of the final Health Dataset:
 # Read step:
 read_health_file <- function(path) {
   line1 <- vroom::vroom_lines(path, n_max = 1)
@@ -58,9 +52,9 @@ read_health_file <- function(path) {
 
 ```
 
-Each yearly health file is imported using a custom reader that first checks whether the dataset contains an extra metadata row before the actual header and skips it if necessary. All files are read using a semicolon as delimiter, and all columns are deliberately imported as character strings. This prevents automatic type inference from incorrectly parsing European-style decimals (e.g. “3,0”) and ensures that the raw data is preserved exactly as it appears in the source files.
 
 ```{r}
+# Creation of the final Health Dataset:
 # Clean step:
 
 clean_health <- function(df, year) {
@@ -99,9 +93,9 @@ clean_health <- function(df, year) {
 
 ```
 
-The cleaning function standardizes column names that vary across years, keeps only the variables relevant for the analysis, replaces missing county names with a common label, and adds a year identifier. All non-identifier variables are then converted from character strings to numeric values using locale-aware parsing, which correctly interprets European decimal notation and preserves numerical precision.
 
 ```{r}
+# Creation of the final Health Dataset:
 #Loop step:
 
 health_files <- list.files(
@@ -128,15 +122,27 @@ health_total <- health_total |>
   
 ```
 
-All yearly files are processed automatically using a loop that applies the same reading and cleaning steps to each dataset. The year is extracted from the filename, the data is imported and cleaned consistently across files, and the resulting datasets are combined into a single long-format dataset. This approach avoids redundant code, guarantees consistency across years, and ensures full reproducibility of the data preparation process.
+The raw data for health was at first downloaded from the CHR&R website for all the years we are interested in for this study (2020-2023) as 4 different csv files (one for each year). 
 
-To ensure consistent numeric parsing across yearly datasets (using European decimal formatting whithin the raw data), all health files are first read as character data to prevent automatic misinterpretation by the reader. Numeric variables are then explicitly converted using locale-aware parsing, allowing the datasets to be safely processed within a single loop.
+Link: [Health Data](https://www.countyhealthrankings.org/health-data/methodology-and-sources/data-documentation/national-data-documentation-2010-2023)
 
-# Changes made for Education data
+Similarly, regarding raw data for education it was downloaded from the census bureau by selecting all of the counties as observations and choosing the education attainment as the interest variable. Then 4 different csv files were downloaded corresponding to years 2020-2023.
 
-## Full data cleaning with loop
+Link: [Education Data](https://data.census.gov/table?q=S1501:+Educational+Attainment&g=010XX00US\$0500000_040XX00US01\$0500000)
+
+The procedure to create and clean the final health and education dataset is exactly the same for both of them:
+
+Every yearly health/education file is imported using a specific function called: custom reader. This reader initially checks if the dataset contains an extra metadata row before the actual header, because some datasets may have a useless first line and column names starts on second row. If nothing is to be changed this step is skipped. All files are read using a semi column delimiter and all columns are intentionally imported as character strings to prevent automatic misinterpretation by the reader. This ensures the data remains exactly the same as it is initially in the source files.
+
+Then, the cleaning function is used. It first standardized column names which can vary across yearly datasets. Furthermore, it only keeps the variables of interest for the analysis and drops the rest, and adds a year identifier for each dataset. Additionally, all non identifier variables are converted from character strings to numeric values by preserving the numerical precision. 
+
+Finally, a loop is used to process all the yearly files and apply to all of them the same reading and cleaning function. Once the data has been imported and cleaned across all datasets, we merge them and form a single long format dataset (one for Education and one for Health). With this method we avoid redundant code and consistency across years is garanteed. 
+
+After having done this procedure for the Health and the Education datasets, they can be merged together by using County, State and Year as keys to create the final dataset used in this study. 
+
 
 ```{r}
+# Creation of the final Education Dataset:
 # Read step
 read_edu_file <- function(path) {
   first <- vroom_lines(path, n_max = 1)
@@ -159,7 +165,8 @@ read_edu_file <- function(path) {
 ```
 
 ```{r}
-#Clean step
+# Creation of the final Education Dataset:
+# Clean step
 clean_edu <- function(df, year) {
   out <- df |>
     select(
@@ -192,7 +199,8 @@ clean_edu <- function(df, year) {
 ```
 
 ```{r}
-#Loop Step
+# Creation of the final Education Dataset:
+# Loop Step
 
 edu_files <- list.files(
   path = here("Data"),
@@ -216,6 +224,8 @@ data_total <- edu_total |>
   left_join(health_total, by = c("County", "State", "year"))
 ```
 
+
+
 ```{r}
 here::i_am("Data-Management-Final-Project.Rproj")
 ```
@@ -230,6 +240,37 @@ education2021 <- vroom(here("Data", "Education2021.csv"))
 education2022 <- vroom(here("Data", "Education2022.csv"))
 education2023 <- vroom(here("Data", "Education2023.csv"))
 ```
+
+
+```{r}
+
+datasets <- list(
+  edu    = edu_total,
+  health = health_total,
+  full   = data_total
+)
+
+basic_info <- imap_dfr(datasets, ~{
+  df <- .x
+  tibble(
+    file = .y,
+    row_number = nrow(df),
+    col_number = ncol(df),
+    missing_number = sum(is.na(df)),
+    rows_with_missing_values = sum(rowSums(is.na(df)) > 0)
+  )
+})
+
+knitr::kable(basic_info, digits = 0, caption = "Basic information about the data files"
+)
+
+```
+
+# Description of the sources
+
+The education data set comes from the United States Census Bureau. It serves as the main national statistics agency in the US. It is a national data organization that serves the mission to be the US's leading provider of data about the US citizens and the country's economy. The bureau collects a varying range of data on businesses, education, and housing. The datasets which we have chosen from the US census bureau are the datasets relating to the educational attainment, 5-year ACS estimates, for the years 2020-2023. These datasets provides data on education across the counties of the US, dividing in different groups based on age, ethnicity, and poverty rate if needed.
+
+The Health dataset used in this study is constructed of data coming entirely from the CHR&R (County Health Rankings and Roadmaps) program. This initiative was created by the University of Wisconsin Population Health institute with support from the Robert Wood Johnson Foundation. It consists in providing annual data on health factors within and across almost the entirety of counties from the United States. The CHR&R provides data, evidence, guidance and examples to build awareness about the multiple factors influencing health conditions and disparities across the country. Furthermore, CHR&R puts an emphasis on the range of health-influencing measures that offer crucial context about community specific health conditions. In fact, Along with the data the program provides tools and evidence-based strategies, which can be used by the communities to move to action and solve the important health and societal issues concerning their people. As an example, The "2025 Annual data release" includes over 80 health-related measures, and focuses on the impact of certain societal factors present in the United States on community conditions.
 
 # Description of variables
 
@@ -257,43 +298,6 @@ Control variables to complete model:
 
 -   Mental health providers: This variable describes the rate of mental health providers per 100000 inhabitants.
 
-# Research question description:
-
-The topic we are going to analyse focuses on studying different health habits based on the educational attainment in an observed area, in this case, a county. The variables that will be looked into are adult smoking, excessive drinking, and teen births per 1000 15-19 year old women. We have chosen these variables because these are in someway based on choices that individuals make, rather than an unlucky occurrence in someones life. This means that, for example, getting sick can be the result of bad choices, however someone can not decide to become sick from one day to the other. On the contrary, choosing to smoke, choosing to excessively drink or delivering a baby during teen years are more closely related to choices and thus the environment. This is why we believe it is important to look into the determinants of these habits. One of the possible determinants is educational attainment because it not only influences individuals in their own lives, it also influences individuals in a community. Educational Attainment is computed as the proportion of people in a county that have obtained a Bachelors degree at least. The goal will be to analyse the aggregate decisions of individuals on health habits based on the aggregated educational attainment in a county and compare between more and less educated counties to see whether there are disparities based on educational attainment. Maralani V. (2014) advances that education on its own does not lead to better health, rather, the bundle of educational inequality and environment plays a much larger role in predicting whether someone will smoke. This research will thus try and adapt these findings further on smoking and adapting it to other health habits. The estimation will be completed with different control variables, which we believe can isolate the impact of educational attainment. these are: - Children in single parent households - mental health providers - Severe Housing Problems - Income inequality - Unemployment The vast amount of counties in this dataset, spread through the 51 states of the USA, allow for a large sample size, and thus the development of different conclusions, whether some choices are regionally based, due to a certain education level, or completely random.
-
-# Description of the sources:
-
-The education data set comes from the United States Census Bureau. It serves as the main national statistics agency in the US. It is a national data organization that serves the mission to be the US's leading provider of data about the US citizens and the country's economy. The bureau collects a varying range of data on businesses, education, and housing. The datasets which we have chosen from the US census bureau are the datasets relating to the educational attainment, 5-year ACS estimates, for the years 2020-2023. These datasets provides data on education across the counties of the US, dividing in different groups based on age, ethnicity, and poverty rate if needed.
-
-The Health dataset used in this study is constructed of data coming entirely from the CHR&R (County Health Rankings and Roadmaps) program. This initiative was created by the University of Wisconsin Population Health institute with support from the Robert Wood Johnson Foundation. It consists in providing annual data on health factors within and across almost the entirety of counties from the United States. The CHR&R provides data, evidence, guidance and examples to build awareness about the multiple factors influencing health conditions and disparities across the country. Furthermore, CHR&R puts an emphasis on the range of health-influencing measures that offer crucial context about community specific health conditions. In fact, Along with the data the program provides tools and evidence-based strategies, which can be used by the communities to move to action and solve the important health and societal issues concerning their people. As an example, The "2025 Annual data release" includes over 80 health-related measures, and focuses on the impact of certain societal factors present in the United States on community conditions.
-
-
-
-# General Table with information on all the datafiles
-
-```{r}
-
-datasets <- list(
-  edu    = edu_total,
-  health = health_total,
-  full   = data_total
-)
-
-basic_info <- imap_dfr(datasets, ~{
-  df <- .x
-  tibble(
-    file = .y,
-    row_number = nrow(df),
-    col_number = ncol(df),
-    missing_number = sum(is.na(df)),
-    rows_with_missing_values = sum(rowSums(is.na(df)) > 0)
-  )
-})
-
-knitr::kable(basic_info, digits = 0, caption = "Basic information about the data files"
-)
-
-```
 
 # Violin plots for Main Variables
 
@@ -303,7 +307,7 @@ Since there are 3144 counties, the data will be aggregated.
 
 ```{r}
 edu_total|>
-  ggplot(aes(y = Bacmore, x = year)) +
+  ggplot(aes(y = Bacmore, x = year, group= year)) +
   geom_violin()
 ```
 
@@ -336,7 +340,9 @@ health_total|>
 
 These violin plots showing the aggregated US average of Excessive drinking as a percentage of the population highlight a thicker upper tail as the years pass by, meaning there is a higher count of people excessively drinking. However the average of the percentage of excessive drinkers doesn't seem to change from from 2020 to 2023.
 
-# Descriptive statistics and Education gradients
+# Data Analysis
+
+## Descriptive statistics
 
 ```{r}
 
@@ -371,7 +377,7 @@ knitr::kable(desc_table, caption = "Descriptive statistics of main variables")
 
 ```
 
-# Within-state deviation analysis
+## Within-state deviation analysis
 
 ```{r}
 
@@ -426,7 +432,7 @@ ggplot(within_state, aes(x = edu_q, y = Deviation)) +
 
 This within state deviation analysis shown in the above violin plots illustrates how the studied health outcomes (at county level) differ from their state mean for each of the 4 quartiles. Each Violin plot represents the distribution of counties deviations from the mean state for a health outcome, conditional on belonging to a specific quartile (the data has been grouped by state and year). We set "Deviation from state mean" = county's value - state mean value. A deviation of 0 means a county's outcome is equal to its state average. When the deviation is positive (negative) it indicates a worse (better) outcome relative to its state average value. This analysis is helpful as we are comparing counties inside the same State, and we therefore control for state-level policies, institutions and factors. When focusing on the health variable "Excessive drinking", as the education quartile increases "Excessive drinking" deviation from mean state has larger positive values. This entails, that within the same state, counties with higher education levels tend to show higher excessive drinking rates compared to their state average. When focusing on the other two health variables: Smokers % and Teen births the opposite pattern occurs, namely counties with higher education level are associated with lower smoking rates and lower teen birth counts compared to their state mean value. The analysis of the 3 above violin plots follows the trends analysed and shown in the previous graphs such as the scatterplots and the education gradients.
 
-
+## Education gradients
 ```{r}
 ## 4) Plot B: trends over time by education quartile
 
@@ -464,7 +470,7 @@ ggplot(edu_trend, aes(x = year, y = Mean, color = edu_q, group = edu_q)) +
 
 These graphs are relatively similar to the previous ones, however, a time factor is added to that we can now analyse the evolution of the health habits per quartile over the 4 years we study. For excessive drinking, we can see that all quartiles on average follow the same pattern, except for the 1st quartile. a sharp increase in 2021, which may be due to covid, then slight decreases. For the first quartile, we can see that it even slightly increases after 2021. The more educated a county is, the higher the rate of excessive drinkers on average. For the smokers part, we can distinguish the same pattern as fro excssive drinking, meaning a sharp increase in 2021, followed by a slight decreases in 2022 and 2023. Different from excessive drinking, we can see here that higher smoking rates are ususally associated with lower education levels. Finally, regarding teen births, there is a general trend showing a decrease between 2020 and 2022, with a slight increase in 2023. The higher teen birth rates are associated with lower education levels.
 
-# Scatterplots
+## Scatterplots
 
 ```{r}
 
@@ -501,11 +507,11 @@ ggplot(scatter_df, aes(x = Bacmore, y = Value)) +
 
 These scatterplots add to what was previously stated. In fact, there is a positive correlation between education and drinking. Furthermore, there is also the negative correlation between smokers and education and between teen births and education.
 
-# Correlation heatmap
+## Correlation matrix
 
 ```{r}
 
-# Correlation heatmap (main variables)
+# Correlation matrix
 
 corr_df <- data_total |>
   select(
@@ -538,7 +544,7 @@ ggplot(corr_long, aes(x = Var1, y = Var2, fill = Corr)) +
 
 ```
 
-The above correlation matrix includes all the variables used in this analysis. It can be seen that health outcomes such as Teen birth rates and percentage of Smokers are strongly positively correlated with socioeconomic indicators like income inequality, unemployment and the share of children living in single-parent households. On the other hand, the percentage of excessive drinkers is strongly negatively correlated with Income ratio, percentage of Unemployed and the share of children living in single-parent households. The highlighted correlations suggest the shown health outcomes are probably embedded within broad socioeconomic contexts. (Furthermore, several of the socioeconomic indicators are closely related to educational attainment. Therefore, not including the socioeconomic indicators as control variables within the regressions would imply a risk of confounding in single bivariate analysis(or in simple terms "Omitted Variable Bias"). These specific controls are logically chosen for this regression analysis, to assess if education level effect on health outcomes persists once these related factors are taken into account.)
+The above correlation matrix includes all the variables used in this analysis. It can be seen that health outcomes such as Teen birth rates and percentage of Smokers are strongly positively correlated with socioeconomic indicators like income inequality, unemployment and the share of children living in single-parent households. On the other hand, the percentage of excessive drinkers is strongly negatively correlated with Income ratio, percentage of Unemployed and the share of children living in single-parent households. The highlighted correlations suggest the shown health outcomes are probably embedded within broad socioeconomic contexts. Furthermore, several of the socioeconomic indicators are closely related to educational attainment. Therefore, not including the socioeconomic indicators as control variables within the regressions would imply a risk of confounding in single bivariate analysis (or in simple terms "Omitted Variable Bias"). These specific controls are then chosen for this regression analysis, to assess if education level effect on health outcomes persists once these related factors are taken into account.)
 
 
 
@@ -549,11 +555,11 @@ data_total <-
   
 ```
 
-# Data Analysis
+## Regressions
 
 For interesting data analysis results, the regressions are run in different steps, first independent on dependent variable, then adding socioeconomic variables, then add the other variables. This way we can determine the general impact of each variable and how the effect of the independent variable takes from the other variables.
 
-## Regressions with only explanatory variable
+### Regressions with only explanatory variable
 
 ```{r}
 simple_smokers <- lm(Smokers ~ Bacmore, data = data_total)
@@ -567,11 +573,7 @@ summary(simple_drinking)
 
 These regressions are not interesting for causal estimation, however they are interesting to determine the general impact of education on our three dependent variables. It can be determined that education increases excessive drinking habits whilst when education increases, smoking and the amount of children born from teenage mothers decrease. All coefficients are statistically significant
 
-
-
-These regressions are not interesting for causal estimation, however they are interesting to determine the general impact of education on our three dependent variables. It can be determined that education increases excessive drinking habits whilst when education increases, smoking and the amount of children born from teenage mothers decrease. All coefficients are statistically significant
-
-## Regressions with all variables but without fixed effects
+### Regressions with all variables but without fixed effects
 
 ```{r}
 regression_smoking <- lm(Smokers ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
