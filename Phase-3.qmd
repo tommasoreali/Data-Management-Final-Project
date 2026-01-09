@@ -1,6 +1,11 @@
 ---
 title: "PHASE-3"
-format: html
+author: 
+  Tommaso Reali 
+  Sander Beerepot 
+format:
+  html: default
+  pdf:  default
 editor: visual
 execute: 
   warning: false
@@ -247,7 +252,7 @@ education2023 <- vroom(here("Data", "Education2023.csv"))
 datasets <- list(
   edu    = edu_total,
   health = health_total,
-  full   = data_total
+  total   = data_total
 )
 
 basic_info <- imap_dfr(datasets, ~{
@@ -274,29 +279,29 @@ The Health dataset used in this study is constructed of data coming entirely fro
 
 # Description of variables
 
-variables of Interest
+variables of Interest:
 
--   Adult smoking (in percentage of total of population of adults): This variable describes the reported rate of current daily smokers in the population of the county.
+-   Adult smoking (in percentage of total of population of adults): This variable describes the reported rate of current daily smokers in the population of the county, and is labelled as "Smokers".
 
--   Excessive drinking: This variable describes the self-reported rate of excessive drinkers of the population in the county.
+-   Excessive drinking: This variable describes the self-reported rate of excessive drinkers of the population in the county, and is labelled as "Excessive_drinking".
 
--   Teen births: This variable describes the amount of teen births per 1000 females aged 15-19.
+-   Teen births: This variable describes the amount of teen births per 1000 females aged 15-19, and is labelled as "Teen_births".
 
-Main variable
+Main variable:
 
--   Education level (percent of 25 \> year olds that have a Bachelors degree minimum): This variable describes the percentage of 25 year olds or older that have a diploma for a Bachelors degree or higher.
+-   Education level (percent of 25 \> year olds that have a Bachelors degree minimum): This variable describes the percentage of 25 year olds or older that have a diploma for a Bachelors degree or higher. This variable is labelled as "Bacmore" in this study
 
 Control variables to complete model:
 
--   Unemployment: This variable describes the unemployment rate in the county. Unemployed people are 16 years old or older and are actively looking for work.
+-   Unemployment: This variable describes the unemployment rate in the county. Unemployed people are 16 years old or older and are actively looking for work. It is labelled as "Ünemployed"
 
--   Income Inequality: This variable describes the income inequality levels, computed as the ratio of income at the 80th percentile over the income at the 20th percentile.
+-   Income Inequality: This variable describes the income inequality levels, computed as the ratio of income at the 80th percentile over the income at the 20th percentile. It is labelled as "Income_Ratio"
 
--   Severe Housing Problems: this variable describes the percentage of households that have at least one of the 4 reported housing problems: high housing costs, overcrowding, lack of kitchen or plumbing facilities.
+-   Severe Housing Problems: this variable describes the percentage of households that have at least one of the 4 reported housing problems: high housing costs, overcrowding, lack of kitchen or plumbing facilities. This variable is labelled as "Housing_Problems"
 
--   Children in single parent households: This variable describes the percentage of children that grow up in single parent households currently.
+-   Children in single parent households: This variable describes the percentage of children that grow up in single parent households currently, and is labelled as "Child_alone".
 
--   Mental health providers: This variable describes the rate of mental health providers per 100000 inhabitants.
+-   Mental health providers: This variable describes the rate of mental health providers per 100000 inhabitants, and is labelled as "Mental_help".
 
 
 # Violin plots for Main Variables
@@ -308,7 +313,12 @@ Since there are 3144 counties, the data will be aggregated.
 ```{r}
 edu_total|>
   ggplot(aes(y = Bacmore, x = year, group= year)) +
-  geom_violin()
+  geom_violin() +
+labs(
+    title = "Distribution of educational attainment by year",
+    x = "Year",
+    y = "Share with Bachelor's degree or higher (%)"
+  )
 ```
 
 While not the most accurate, these violin plots show the density of educational attainment aggregated in the US. The graphs show that every year, the average bachelors obtention increases slightly, going from about 17% to 20% between 2020 and 2023.
@@ -317,8 +327,13 @@ While not the most accurate, these violin plots show the density of educational 
 
 ```{r}
 health_total|>
-  ggplot(aes(y = Teen_births, x = year,, group = year)) +
-  geom_violin()
+  ggplot(aes(y = Teen_births, x = year, group = year)) +
+  geom_violin() +
+labs(
+    title = "Distribution of Teen births by year",
+    x = "Year",
+    y = "Teen Births per 1000 females"
+  )
 ```
 
 These violin plots show the aggregated US average of Teen birth rates as the amount of teen births per 1000 females aged 15-19. It is observed that the density of the violin plots gets more and more concentrated towards the bottom as the years pass by. As a matter of fact, the average of aggregated teen birth lowers from about 25% in 2020 to 19% in 2023.
@@ -326,7 +341,12 @@ These violin plots show the aggregated US average of Teen birth rates as the amo
 ```{r}
 health_total|>
   ggplot(aes(y = Smokers, x = year, group = year)) +
-  geom_violin()
+  geom_violin() +
+labs(
+    title = "Distribution of Smokers by year",
+    x = "Year",
+    y = "share of smokers (%)"
+  )
 ```
 
 These violin plots show the aggregated US average of adult smokers as a percentage of the population. It can be seen that each year the average of percentage of smokers gradually increases and the density of the violin plots gets slimmer. In fact, in 2020 the average percentage of aggregated smokers in the US is about just above 15%. It grows up until nearly 20% in 2021, and decreases to about 18% in 2023.
@@ -335,10 +355,15 @@ These violin plots show the aggregated US average of adult smokers as a percenta
 
 health_total|>
   ggplot(aes(y = Excessive_drinking, x = year, group = year)) +
-  geom_violin()
+  geom_violin()+
+labs(
+    title = "Distribution of Excessive drinkers by year",
+    x = "Year",
+    y = "share of Excessive drinkers (%)"
+  )
 ```
 
-These violin plots showing the aggregated US average of Excessive drinking as a percentage of the population highlight a thicker upper tail as the years pass by, meaning there is a higher count of people excessively drinking. However the average of the percentage of excessive drinkers doesn't seem to change from from 2020 to 2023.
+These violin plots showing the aggregated US average of Excessive drinking as a percentage of the population highlight a thicker upper tail as the years pass by, meaning there is a higher count of people excessively drinking. However the average of the percentage of excessive drinkers doesn't seem to change from 2020 to 2023.
 
 # Data Analysis
 
@@ -376,6 +401,9 @@ colnames(desc_table) <- c("Mean", "SD", "Min", "Max", "Median")
 knitr::kable(desc_table, caption = "Descriptive statistics of main variables")
 
 ```
+
+
+The above descriptive statistic table shows us that there is high heterogeneity observed across counties with wide ranges and high dispersion of data, especially for variables like Teen births, Mental help. Additionally, this is also the case for the educational attainment variable "Bacmore" as it holds values ranging from 0 % to almost 80 %. In fact this type of distribution for educational attainment justifies the use of quartiles for education in subsequent analyses. Furthermore it has a mean of ~23.31 % and a lower median of 20.9%, justifying the distribution is right skewed (which is also the case for other variables like Mental_help). However, behavioral health variables such as Smokers and Excessive_drinking have lower dispersion, entailing systematic difference across counties, a more even distribution and extreme outliers less present in the data. Finally, the socioeconomic control variables such as : Income_Ratio, Housing_problems and Unemployment also vary substantially and have plausible ranges. 
 
 ## Within-state deviation analysis
 
@@ -430,7 +458,7 @@ ggplot(within_state, aes(x = edu_q, y = Deviation)) +
 
 ```
 
-This within state deviation analysis shown in the above violin plots illustrates how the studied health outcomes (at county level) differ from their state mean for each of the 4 quartiles. Each Violin plot represents the distribution of counties deviations from the mean state for a health outcome, conditional on belonging to a specific quartile (the data has been grouped by state and year). We set "Deviation from state mean" = county's value - state mean value. A deviation of 0 means a county's outcome is equal to its state average. When the deviation is positive (negative) it indicates a worse (better) outcome relative to its state average value. This analysis is helpful as we are comparing counties inside the same State, and we therefore control for state-level policies, institutions and factors. When focusing on the health variable "Excessive drinking", as the education quartile increases "Excessive drinking" deviation from mean state has larger positive values. This entails, that within the same state, counties with higher education levels tend to show higher excessive drinking rates compared to their state average. When focusing on the other two health variables: Smokers % and Teen births the opposite pattern occurs, namely counties with higher education level are associated with lower smoking rates and lower teen birth counts compared to their state mean value. The analysis of the 3 above violin plots follows the trends analysed and shown in the previous graphs such as the scatterplots and the education gradients.
+This within state deviation analysis shown in the above violin plots illustrates how the studied health outcomes (at county level) differ from their state mean for each of the 4 quartiles. Each Violin plot represents the distribution of counties deviations from the mean state for a health outcome, conditional on belonging to a specific quartile (the data has been grouped by state and year). We set "Deviation from state mean" = county's value - state mean value. A deviation of 0 means a county's outcome is equal to its state average. When the deviation is positive (negative) it indicates a worse (better) outcome relative to its state average value. This analysis is helpful as we are comparing counties inside the same State, and we therefore control for state-level policies, institutions and factors. When focusing on the health variable "Excessive drinking", as the education quartile increases "Excessive drinking" deviation from mean state has larger positive values. This entails, that within the same state, counties with higher education levels tend to show higher excessive drinking rates compared to their state average. When focusing on the other two health variables: Smokers % and Teen births the opposite pattern occurs, namely counties with higher education level are associated with lower smoking rates and lower teen birth counts compared to their state mean value. 
 
 ## Education gradients
 ```{r}
@@ -468,7 +496,7 @@ ggplot(edu_trend, aes(x = year, y = Mean, color = edu_q, group = edu_q)) +
 
 ```
 
-These graphs are relatively similar to the previous ones, however, a time factor is added to that we can now analyse the evolution of the health habits per quartile over the 4 years we study. For excessive drinking, we can see that all quartiles on average follow the same pattern, except for the 1st quartile. a sharp increase in 2021, which may be due to covid, then slight decreases. For the first quartile, we can see that it even slightly increases after 2021. The more educated a county is, the higher the rate of excessive drinkers on average. For the smokers part, we can distinguish the same pattern as fro excssive drinking, meaning a sharp increase in 2021, followed by a slight decreases in 2022 and 2023. Different from excessive drinking, we can see here that higher smoking rates are ususally associated with lower education levels. Finally, regarding teen births, there is a general trend showing a decrease between 2020 and 2022, with a slight increase in 2023. The higher teen birth rates are associated with lower education levels.
+This education gradient analysis follows the trends first observed and discussed in the previous violin plots of the within state deviation analysis. These graphs reveal the evolution of the health habits per education quartile over the 4 years we study. For excessive drinking, we can see that all quartiles on average follow the same pattern, except for the 1st quartile. a sharp increase in 2021, which may be due to covid, then slight decreases. For the first quartile, we can see that it even slightly increases after 2021. The more educated a county is, the higher the rate of excessive drinkers on average. For the smokers part, we can distinguish the same pattern as for excessive drinking, meaning a sharp increase in 2021, followed by a slight decreases in 2022 and 2023. As opposed to excessive drinking, higher smoking rates are ususally associated with lower education levels. Finally, regarding teen births, there is a general trend showing a decrease between 2020 and 2022, with a slight increase in 2023. The higher teen birth rates are associated with lower education levels.
 
 ## Scatterplots
 
@@ -557,6 +585,7 @@ data_total <-
 
 ## Regressions
 
+The analysis and interpretation of the before shown graphs and plots states a clear direction between educational attainment and each specific health outcome. To confirm these trends and to mostly understand if we can talk about an actual impact of a variable on another, we will derive 3 main Regressions.
 For interesting data analysis results, the regressions are run in different steps, first independent on dependent variable, then adding socioeconomic variables, then add the other variables. This way we can determine the general impact of each variable and how the effect of the independent variable takes from the other variables.
 
 ### Regressions with only explanatory variable
@@ -573,7 +602,7 @@ summary(simple_drinking)
 
 These regressions are not interesting for causal estimation, however they are interesting to determine the general impact of education on our three dependent variables. It can be determined that education increases excessive drinking habits whilst when education increases, smoking and the amount of children born from teenage mothers decrease. All coefficients are statistically significant
 
-### Regressions with all variables but without fixed effects
+### Regressions including all control variables but without fixed effects
 
 ```{r}
 regression_smoking <- lm(Smokers ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
