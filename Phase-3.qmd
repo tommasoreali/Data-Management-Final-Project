@@ -14,7 +14,7 @@ filters:
 - wordcount
 ---
 
-Project repository: [GitHub repo](https://github.com/tommasoreali/Data-Management-Final-Project.git)
+Project repository: [GitHub Repository](https://github.com/tommasoreali/Data-Management-Final-Project.git)
 
 ```{r}
 library(ggplot2)
@@ -27,7 +27,6 @@ library(purrr)
 library(tibble)
 library(tidyr)
 library(readr)
-
 ```
 
 
@@ -293,9 +292,9 @@ Main variable:
 
 Control variables to complete model:
 
--   Unemployment: This variable describes the unemployment rate in the county. Unemployed people are 16 years old or older and are actively looking for work. It is labelled as "Ünemployed"
+-   Unemployment: This variable describes the unemployment rate in the county. Unemployed people are 16 years old or older and are actively looking for work. It is labelled as "Unemployed"
 
--   Income Inequality: This variable describes the income inequality levels, computed as the ratio of income at the 80th percentile over the income at the 20th percentile. It is labelled as "Income_Ratio"
+-   Income Ratio: This variable describes the income inequality levels, computed as the ratio of income at the 80th percentile over the income at the 20th percentile. It is labelled as "Income_Ratio"
 
 -   Severe Housing Problems: this variable describes the percentage of households that have at least one of the 4 reported housing problems: high housing costs, overcrowding, lack of kitchen or plumbing facilities. This variable is labelled as "Housing_Problems"
 
@@ -345,7 +344,7 @@ labs(
   )
 ```
 
-These violin plots show the aggregated US average of adult smokers as a percentage of the population. It can be seen that each year the average of percentage of smokers gradually increases and the density of the violin plots gets slimmer. In fact, in 2020 the average percentage of aggregated smokers in the US is about just above 15%. It grows up until nearly 20% in 2021, and decreases to about 18% in 2023.
+These violin plots show the aggregated US average of adult smokers as a percentage of the population. It can be seen that each year the average of percentage of smokers increases between 2020 and 2021, it then dips a little bit to stay stable in 2022 and 2023. The density of the violin plots gets slimmer. In fact, in 2020 the average percentage of aggregated smokers in the US is just above 15%. It grows up until nearly 20% in 2021, and decreases to about 18% in 2023.
 
 ```{r}
 
@@ -359,7 +358,7 @@ labs(
   )
 ```
 
-These violin plots showing the aggregated US average of Excessive drinking as a percentage of the population highlight a thicker upper tail as the years pass by, meaning there is a higher count of people excessively drinking. However the average of the percentage of excessive drinkers doesn't seem to change from 2020 to 2023.
+These violin plots showing the aggregated US average of self reported excessive drinking as a percentage of the population highlight a thicker upper tail as the years pass by, meaning there is a higher count of people excessively drinking. However, the average of the percentage of excessive drinkers stays stable between 2020 and 2023.
 
 # Data Analysis
 
@@ -530,7 +529,7 @@ ggplot(scatter_df, aes(x = Bacmore, y = Value)) +
   )
 ```
 
-These scatterplots add to what was previously stated. In fact, there is a positive correlation between education and drinking. Furthermore, there is also the negative correlation between smokers and education and between teen births and education.
+These scatterplots add to what was previously stated. There is a positive correlation between education and drinking. Furthermore, there is also the negative correlation between smokers and education and between teen births and education.
 
 ## Correlation matrix
 
@@ -582,8 +581,8 @@ data_total <-
 
 ## Regressions
 
-The analysis and interpretation of the before shown graphs and plots states a clear direction between educational attainment and each specific health outcome. To confirm these trends and to mostly understand if we can talk about an actual impact of a variable on another, we will derive 3 main Regressions.
-For interesting data analysis results, the regressions are run in different steps, first independent on dependent variable, then adding socioeconomic variables, then add the other variables. This way we can determine the general impact of each variable and how the effect of the independent variable takes from the other variables.
+The analysis and interpretation of the before shown graphs and plots states a clear direction between educational attainment and each specific health outcome. To confirm these trends and to mostly understand if we can talk about an actual impact of a variable on another, we will derive 3 main regressions.
+For interesting data analysis results, the regressions are run in different steps. A first independent on dependent variable regression will be ran to determine what the simple effect of the independent on dependent variable is. Then we are adding socioeconomic variables, this serves to  then add the other variables. This way we can determine the general impact of each variable and how the effect of the independent variable takes from the other variables.
 
 ### Regressions with only explanatory variable
 
@@ -596,20 +595,62 @@ simple_drinking <- lm(Excessive_drinking ~ Bacmore, data = data_total)
 summary(simple_drinking)
 ```
 
+These regressions are not interesting for causal estimation because they do not include and=y control variables and the coefficients are most probably biased. However, they are interesting to determine the general impact of education on our three dependent variables. It can be determined that education increases excessive drinking habits, whilst when education increases, smoking and the amount of children born from teenage mothers decrease. All coefficients are statistically significant. 
 
-These regressions are not interesting for causal estimation because they do not include and=y control variables and the coefficients are most probably biased. However, they are interesting to determine the general impact of education on our three dependent variables. It can be determined that education increases excessive drinking habits whilst when education increases, smoking and the amount of children born from teenage mothers decrease. All coefficients are statistically significant
+### Regressions including all control variables 
 
-### Regressions including all control variables but without fixed effects
+
+These are the regressions with the all of the variables. 
+
+
+#### Regression of educational attinment on smoking
 
 ```{r}
 regression_smoking <- lm(Smokers ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
 summary(regression_smoking)
+```
 
+For the smoking regression, we have an adjusted R-square of around 0.48, which means that about 48% of the variation in smoking is explained by the model. 
+As shown previously, the education coefficient is negative. A one unit increase in the rate of education in a county reduces the amount of smokers by 0.24 points. It is statistically significant. Further interesting things to note is that all coefficients are statistically significant but the mental help variable. Higher rates of single parent households and housing problems decreases the rate of smoking, whilst higher income inequality (a one unit increase in income ratio increases the level of smokers by 1.5 points) levels and unemployment (one unit increase in unemployment increases the level of smokers by 0.24 points) increases the amount of smokers. 
+
+
+#### Regression of educational attainment on teen births
+
+```{r}
 regression_births <- lm(Teen_births ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
 summary(regression_births)
+```
 
+For the teen birth rate regression, the adjusted R-square is around 0.55, which means that about 55% of the variation teen births is explained by the model. It is interesting to note that all variables are statistically significant at the 0.001 level except for mental help which is statistically significant at the 0.01 level. In line with what was previously explained, education levels decrease the teen birth rate in the county, in this case, an increase in one point of bachelors obtention decreases the teen birth rate by 0.7 points. Other interesting results in the model are that higher unemployment decreases the teen birth rate, whilst housing problems, and single parent households increase the teen birth rate. In the same line, we can see that higher income inequality has a large impact on teen births. A one unit increase in the income ratio increases the teen birth rate by 2.6 points. The mental help variable has a coefficient close to 0, which means that it does not really influence the teen birth rate. 
+
+
+#### regression of educational attainment on excesive drinking
+
+```{r}
 regression_drinking <- lm(Excessive_drinking ~ Bacmore + Housing_Problems + Income_Ratio + Mental_help + Child_alone + Unemployed, data = data_total)
 summary(regression_drinking)
 ```
+
+For the excessive drinking regression, the results again are in line with the previous results advanced, meaning that higher education levels in a county increase the level of excessive drinking in the community on average. The adjusted R-square is only of 0.285, meaning that only 28.5% of the variation in excessive drinking is explained by the model. Only the education, the income ratio and the single parent household variables are statistically significant at the 0.001 level whilst the other variables are not significant. the coefficients of the explanatory variables are quite low. A one unit increase in educational attainment leads to a 0.08 point increase in excessive drinking. A one unit increase in income inequality decreases excessive drinking by 0.7 points and a one unit increase in single parent households decreases excessive drinking by 0.1 point. 
+
+
+A general theme in these regressions is the very low coefficients of mental help, meaning that an increase in access to mental help in a county does automatically reduce health damaging habits.
+
+
+### Discussion of results
+
+In line with Maralani V. (2014), it can be inferred that higher educational levels decrease the level of smoking in a county. This could happen because higher educational levels in a county could decrease the educational inequality in said county, allowing for the community to make more informed decisions on damaging health habits. The same train of thought could be applied to teen births. A more educated county can create an environment in which community and individual decision making is more aware of the causes that lead to more teen births and the consequences that could come with them. 
+A result that goes against the proposed pattern is excessive drinking. For excessive drinking, we can determine that educational attainment increases excessive drinking. However, the coefficient is so low that its impact is quite low. It is highly likely that other factors explaining excessive drinking like traditions rooted in alcohol, ethnic/religious distribution,... in certain counties play a much larger role in explaning the disparities in excessive drinking levels between counties.
+
+#### Conclusion
+
+In conclusion, this report focused on how educational attainment (obtaining a Bachelor's degree or higher) plays a role in determining three different health habits like smoking, excessive drinking and teen births. The method used to find possible results is a regression. The results advance that increases in educational attainment decrease smoking and teen births and increase excessive drinking. This can be explained by the fact higher education levels in counties can create an environment more aware to the dangers of smoking and teen births. For smoking, it is likely that other non-socioeconomic factors play a larger role in explaining drinking habits in american counties. 
+
+
+## ANNEX
+
+### Sources
+
+Maralani V. (2014). Understanding the links between education and smoking. Social science research, 48, 20–34. https://doi.org/10.1016/j.ssresearch.2014.05.007
 
 this document has {{wordcount}} words

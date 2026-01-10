@@ -2,6 +2,9 @@
 title: "Data-Project_phase2"
 author: "Sander Beerepoot and Tommaso Reali"
 format: html
+execute: 
+  echo: false
+  warning: false
 ---
 
 Project repository: [GitHub repo](https://github.com/tommasoreali/Data-Management-Final-Project.git)
@@ -272,38 +275,28 @@ The Health dataset used in this study is constructed of data coming entirely fro
 
 # Tables per dataset
 
-## Table of education data set
-
 ```{r}
-data_name <- "Education Data"
 
-row_count <- nrow(EDU2Long)
-column_count <- ncol(EDU2Long)
-
-summary_table <- data.frame(
-  `Data File Name` = data_name,
-  `Number of Rows` = row_count,
-  `Number of Columns` = column_count,
-  check.names = FALSE
+datasets <- list(
+  edu    = edu_total,
+  health = health_total,
+  total   = data_total
 )
-print(summary_table)
-```
 
-## Table of health data set
+basic_info <- imap_dfr(datasets, ~{
+  df <- .x
+  tibble(
+    file = .y,
+    row_number = nrow(df),
+    col_number = ncol(df),
+    missing_number = sum(is.na(df)),
+    rows_with_missing_values = sum(rowSums(is.na(df)) > 0)
+  )
+})
 
-```{r}
-data_name <- "Health Data"
+knitr::kable(basic_info, digits = 0, caption = "Basic information about the data files"
+)
 
-row_count <- nrow(Healthtotal)
-column_count <- ncol(Healthtotal)
-
-summary_table <- data.frame(
-  `Data File Name` = data_name,
-  `Number of Rows` = row_count,
-  `Number of Columns` = column_count,
-  check.names = FALSE
-) |>
-  knitr::kable()
 ```
 
 # Tables for Main Variables
@@ -313,8 +306,8 @@ summary_table <- data.frame(
 Since there are 3144 counties, the data will be aggregated. 
 
 ```{r, message=FALSE}
-EDU2Long|>
-  ggplot(aes(y = Bacmore, x = Year)) +
+edu_total|>
+  ggplot(aes(y = Bacmore, x = year)) +
   geom_violin()
 ```
 While not the most accurate, these violin plots show the density of educational attainment aggregated in the US. The graphs show that every year, the average bachelors obtention increases slightly, going from about 17% to 20% between 2020 and 2023. 
@@ -322,16 +315,16 @@ While not the most accurate, these violin plots show the density of educational 
 ## Table for health main target variables (% Smokers, % Excessive drinkers, Teen birth rates)
 
 ```{r, message=FALSE}
-Healthtotal|>
-  ggplot(aes(y = TeenBirth, x = Year)) +
+health_total|>
+  ggplot(aes(y = Teen_births, x = year)) +
   geom_violin()
 ```
 
 These violin plots show the aggregated US average of Teen birth rates as the amount of teen births per 1000 females aged 15-19. It is observed that the density of the violin plots gets more and more concentrated towards the bottom as the years pass by. As a matter of fact, the average of aggregated teen birth lowers from about 25% in 2020 to 19% in 2023.
 
 ```{r, message=FALSE}
-Healthtotal|>
-  ggplot(aes(y = Smokers, x = Year)) +
+health_total|>
+  ggplot(aes(y = Smokers, x = year)) +
   geom_violin()
 ```
 
@@ -339,8 +332,8 @@ These violin plots show the aggregated US average of adult smokers as a percenta
 
 ```{r, message=FALSE}
 
-Healthtotal|>
-  ggplot(aes(y = ExcessiveDrink, x = Year)) +
+health_total|>
+  ggplot(aes(y = Excessive_drinking, x = year)) +
   geom_violin()
 ```
 
